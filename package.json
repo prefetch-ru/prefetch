@@ -1,6 +1,6 @@
 {
   "name": "@prefetchru/prefetch",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Мгновенная загрузка страниц для российского веба. Instant page loading for Russian web.",
   "main": "prefetch.js",
   "module": "prefetch.js",
