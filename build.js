@@ -19,6 +19,12 @@ async function build() {
     }
   });
   
+  // Создаём папку dist если не существует
+  const distDir = path.dirname(outputFile);
+  if (!fs.existsSync(distDir)) {
+    fs.mkdirSync(distDir, { recursive: true });
+  }
+  
   // Записываем результат в UTF-8 с BOM для гарантированного распознавания кодировки
   const BOM = '\uFEFF';
   fs.writeFileSync(outputFile, BOM + result.code, 'utf8');

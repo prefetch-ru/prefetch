@@ -18,7 +18,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
@@ -26,6 +26,13 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Remove auth token for OIDC
+        run: |
+          # Remove authToken from .npmrc to allow OIDC authentication
+          sed -i '/_authToken/d' $NPM_CONFIG_USERCONFIG
+          echo "Updated .npmrc:"
+          cat $NPM_CONFIG_USERCONFIG
 
       - name: Publish to npm (OIDC Trusted Publishing)
         run: npm publish --access public --provenance

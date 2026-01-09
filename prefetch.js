@@ -1,5 +1,5 @@
 /*!
- * prefetch.ru v1.0.3 - Мгновенная загрузка страниц
+ * prefetch.ru v1.0.4 - Мгновенная загрузка страниц
  * © 2026 Сергей Макаров | MIT License
  * https://prefetch.ru | https://github.com/prefetch-ru
  */
@@ -532,7 +532,7 @@
 
   // Минимальный публичный API
   window.Prefetch = {
-    version: '1.0.3',
+    version: '1.0.4',
     preload: function (url) { preload(url) }
   }
 })()
