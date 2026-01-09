@@ -339,16 +339,19 @@
     var href = a.href
     var cls = a.className || ''
 
+    // Извлекаем hostname для проверки доменов аналитики
+    var host = ''
+    try { host = new URL(href, location.href).hostname } catch (e) { host = '' }
+
     if (cls.indexOf('ym-') !== -1) return false
-    if (href.indexOf('mc.yandex.ru') !== -1) return false
-    if (href.indexOf('metrika.yandex') !== -1) return false
+    if (host === 'mc.yandex.ru' || host === 'metrika.yandex.ru') return false
 
     if (cls.indexOf('ga-') !== -1 || cls.indexOf('gtm-') !== -1) return false
-    if (href.indexOf('google-analytics.com') !== -1) return false
-    if (href.indexOf('googletagmanager.com') !== -1) return false
+    if (host === 'google-analytics.com' || host.endsWith('.google-analytics.com')) return false
+    if (host === 'googletagmanager.com' || host.endsWith('.googletagmanager.com')) return false
 
     if (cls.indexOf('piwik') !== -1 || cls.indexOf('matomo') !== -1) return false
-    if (href.indexOf('matomo') !== -1 || href.indexOf('piwik') !== -1) return false
+    if (host === 'matomo.org' || host.endsWith('.matomo.org') || host === 'piwik.org' || host.endsWith('.piwik.org')) return false
 
     return true
   }
