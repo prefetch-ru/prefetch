@@ -1,0 +1,49 @@
+{
+  "name": "@prefetchru/prefetch",
+  "version": "1.0.3",
+  "description": "Мгновенная загрузка страниц для российского веба. Instant page loading for Russian web.",
+  "main": "prefetch.js",
+  "module": "prefetch.js",
+  "browser": "dist/prefetch.min.js",
+  "unpkg": "dist/prefetch.min.js",
+  "jsdelivr": "dist/prefetch.min.js",
+  "files": [
+    "prefetch.js",
+    "dist/prefetch.min.js"
+  ],
+  "scripts": {
+    "minify": "node build.js",
+    "build": "npm run minify",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prefetch-ru/prefetch.git"
+  },
+  "keywords": [
+    "prefetch",
+    "preload",
+    "performance",
+    "speed",
+    "instant",
+    "russia",
+    "bitrix",
+    "tilda",
+    "insales",
+    "speculation-rules",
+    "prerender"
+  ],
+  "author": "Sergey Makarov <prefetch.ru>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/prefetch-ru/prefetch/issues"
+  },
+  "homepage": "https://prefetch.ru",
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "terser": "^5.27.0"
+  }
+}
+

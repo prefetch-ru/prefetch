@@ -1,0 +1,32 @@
+# Development files
+node_modules/
+.git/
+.gitignore
+.editorconfig
+.cursor/
+
+# Build tools
+build.js
+
+# Documentation (README is included by default)
+README_INTERNAL.md
+
+# Extra license files (LICENSE is enough)
+docs/
+
+# Demo/examples
+index.html
+assets/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Test files
+test/
+tests/
+*.test.js
+*.spec.js
