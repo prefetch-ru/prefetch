@@ -34,9 +34,7 @@ temp/
 README_INTERNAL.md
 RECO.md
 test.html
-index.html
-license.ru.txt
-license.txt
+deploy_guide/
 
 # Env
 .env

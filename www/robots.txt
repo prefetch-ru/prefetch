@@ -1,0 +1,14 @@
+# prefetch.ru - Landing page
+# https://prefetch.ru
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://prefetch.ru/sitemap.xml
+
+# Crawl-delay для вежливости к серверу (опционально)
+# Crawl-delay: 1
+
+# Разрешаем основной контент
+Allow: /

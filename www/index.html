@@ -1,0 +1,4007 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>prefetch.ru — Мгновенная загрузка страниц</title>
+  <meta name="description" content="Предзагрузка страниц за 65мс до клика. Оптимизировано для российского веба: Яндекс.Браузер, 1С-Битрикс. Работает с любыми CMS.">
+  <link rel="preconnect" href="//prefetch.ru" crossorigin>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2048 2048'%3E%3Cdefs%3E%3ClinearGradient gradientUnits='userSpaceOnUse' id='faviconGradient1' x1='1736.88' x2='878.53' y1='1055.66' y2='962.241'%3E%3Cstop offset='0' stop-color='rgb(101,5,238)' stop-opacity='1'/%3E%3Cstop offset='1' stop-color='rgb(167,9,247)' stop-opacity='1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M 1228.84 319.14 C 1241.17 318.114 1273.11 319.104 1286.65 319.118 L 1795.55 319.14 C 1842.74 319.98 1808.24 359.005 1795.55 376.961 C 1786.59 391.545 1769.55 412.897 1758.83 427.379 L 1522.25 752.934 C 1501.79 781.534 1482.79 807.26 1462.91 836.51 L 1634.88 836.551 C 1653.33 836.552 1734.11 833.996 1745.4 838.297 C 1783.2 852.688 1716.47 903.593 1705.81 915.01 L 964.859 1702.45 C 946.665 1722.67 920.205 1711.34 929.627 1687.91 C 938.192 1666.61 947.84 1645.76 957.27 1624.92 L 1197.52 1078.1 L 968.638 1078.05 C 952.945 1078.04 888.845 1080.47 878.948 1076.94 C 853.218 1067.78 877.83 1031.59 884.971 1016.92 L 972.665 836.983 C 983.233 814.793 993.169 792.273 1004.61 770.481 C 1016.72 747.408 1036.63 757.614 1042.87 777.672 C 1039.21 789.818 1019.73 826.469 1013.35 840.363 C 982.586 907.341 947.871 973.019 917.029 1040.02 L 1137.3 1040.01 C 1154.24 1040.01 1227.05 1038.75 1238.16 1041.91 C 1258.49 1058.01 1232.5 1095.05 1223.29 1115.46 L 1089.15 1421.55 C 1065.87 1474.52 1039.95 1531.11 1019.07 1584.88 C 1053.49 1551.51 1087.07 1512.78 1119.92 1477.8 L 1692.48 875.901 L 1515.14 875.901 C 1498.53 875.912 1377.78 889.125 1407.91 846.16 C 1416.68 833.644 1426.22 822.04 1435.16 809.716 L 1565.95 625.582 C 1630.11 535.485 1695.81 445.841 1762.85 357.91 L 1249.93 357.91 C 1195.69 459.701 1147.74 568.058 1095.59 671.417 C 1089.13 684.222 1080.94 706.134 1072.79 716.694 C 1059.88 733.431 1028.03 719.412 1040.98 692.957 L 1189.45 395.873 C 1198.76 377.471 1217.21 331.445 1228.84 319.14 z' fill='url(%23faviconGradient1)'/%3E%3Cpath d='M 1795.55 319.14 C 1842.74 319.98 1808.24 359.005 1795.55 376.961 C 1795.03 366.114 1811.57 356.38 1814.18 347.751 L 1813.28 346.412 C 1810.05 346.255 1809.12 346.4 1806.11 345.032 C 1792.76 322.601 1821.11 321.066 1780.19 320.714 C 1785.34 320.408 1789.43 320.215 1794.56 319.32 L 1795.55 319.14 z' fill='rgb(36,0,238)'/%3E%3Cpath d='M 556.732 447.35 L 942.181 447.333 C 952.301 447.329 973.09 445.821 982.179 447.65 C 1003.45 451.93 1000.25 475.272 985.01 485.939 C 976.901 487.103 962.057 486.121 953.247 486.044 L 671.5 485.939 L 298.899 485.985 C 280.23 486.019 230.24 493.832 228.85 468.254 C 227.406 441.683 271.839 447.258 289.81 447.333 L 556.732 447.35 z' fill='rgb(212,0,241)'/%3E%3Cpath d='M 268.422 1328.83 L 869.254 1328.81 C 894.275 1328.81 919.235 1328.61 944.317 1329.06 C 969.28 1329.5 971.095 1353.36 955.053 1366.96 C 943.74 1369.59 940.638 1368.61 929.267 1366.96 C 900.873 1370.03 858.03 1366.94 827.878 1366.95 L 291.004 1366.97 C 278.2 1367 241.371 1369.63 235.615 1361.63 C 211.289 1327.84 252.437 1328.57 268.422 1328.83 z' fill='rgb(212,0,241)'/%3E%3Cpath d='M 326.779 1551.81 L 731.739 1551.75 C 749.041 1551.72 766.732 1551.52 784.017 1551.96 C 809.336 1552.8 811.755 1586.79 789.795 1589.97 C 782.697 1590.99 772.445 1590.11 764.449 1590.09 L 708.75 1590.04 L 303.012 1590.1 C 285.309 1590.12 267.687 1590.31 249.937 1589.86 C 225.622 1589.24 223.355 1554.61 245.555 1552.92 C 271.855 1550.93 300.399 1551.75 326.779 1551.81 z' fill='rgb(212,0,241)'/%3E%3Cpath d='M 728.981 888.105 C 741.379 888.166 782.387 884.884 791.328 891.52 C 803.977 900.91 801.84 925.889 779.22 926.407 C 763.053 926.777 744.432 926.793 727.596 926.779 L 301.836 926.718 C 288.589 926.768 244.426 929.857 235.054 921.992 C 220.14 909.475 228.244 890.21 246.101 888.662 C 264.39 887.077 283.501 888.072 301.867 888.079 L 728.981 888.105 z' fill='rgb(212,0,241)'/%3E%3Cpath d='M 242.109 1110.98 C 323.9 1109.54 410.411 1110.99 492.561 1110.99 L 614.419 1110.94 C 632.299 1110.92 676.64 1109.28 694.432 1112.98 C 706.136 1115.41 714.78 1142.15 692.432 1150.01 C 676.525 1150.63 656.617 1150.07 640.365 1150.05 L 242.109 1150.01 C 224.962 1139.29 221.742 1120.28 242.109 1110.98 z' fill='rgb(212,0,241)'/%3E%3Cpath d='M 645.676 668.894 C 705.451 667.23 772.401 668.972 832.916 668.975 L 886.793 668.757 C 895.339 668.711 912.466 667.684 920.186 669.769 C 940.714 675.312 939.868 697.575 921.867 707.009 C 910.22 708.056 888.736 707.042 875.91 707.034 L 694.785 707.045 C 681.43 707.044 662.059 708.179 649.42 706.124 C 628.084 702.654 629.29 679.822 645.676 668.894 z' fill='rgb(212,0,241)'/%3E%3Cpath d='M 242.109 668.894 L 370.684 668.879 C 389.638 668.873 413.025 667.517 431.783 670.009 C 446.501 671.965 447.026 698.664 429.304 707.009 C 381.258 710.38 286.528 709.755 241.125 705.716 C 228.528 704.596 218.869 679.484 242.109 668.894 z' fill='rgb(212,0,241)'/%3E%3C/svg%3E">
+  <link rel="shortcut icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2048 2048'%3E%3Cdefs%3E%3ClinearGradient gradientUnits='userSpaceOnUse' id='faviconGradient2' x1='1736.88' x2='878.53' y1='1055.66' y2='962.241'%3E%3Cstop offset='0' stop-color='rgb(101,5,238)' stop-opacity='1'/%3E%3Cstop offset='1' stop-color='rgb(167,9,247)' stop-opacity='1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M 1228.84 319.14 C 1241.17 318.114 1273.11 319.104 1286.65 319.118 L 1795.55 319.14 C 1842.74 319.98 1808.24 359.005 1795.55 376.961 C 1786.59 391.545 1769.55 412.897 1758.83 427.379 L 1522.25 752.934 C 1501.79 781.534 1482.79 807.26 1462.91 836.51 L 1634.88 836.551 C 1653.33 836.552 1734.11 833.996 1745.4 838.297 C 1783.2 852.688 1716.47 903.593 1705.81 915.01 L 964.859 1702.45 C 946.665 1722.67 920.205 1711.34 929.627 1687.91 C 938.192 1666.61 947.84 1645.76 957.27 1624.92 L 1197.52 1078.1 L 968.638 1078.05 C 952.945 1078.04 888.845 1080.47 878.948 1076.94 C 853.218 1067.78 877.83 1031.59 884.971 1016.92 L 972.665 836.983 C 983.233 814.793 993.169 792.273 1004.61 770.481 C 1016.72 747.408 1036.63 757.614 1042.87 777.672 C 1039.21 789.818 1019.73 826.469 1013.35 840.363 C 982.586 907.341 947.871 973.019 917.029 1040.02 L 1137.3 1040.01 C 1154.24 1040.01 1227.05 1038.75 1238.16 1041.91 C 1258.49 1058.01 1232.5 1095.05 1223.29 1115.46 L 1089.15 1421.55 C 1065.87 1474.52 1039.95 1531.11 1019.07 1584.88 C 1053.49 1551.51 1087.07 1512.78 1119.92 1477.8 L 1692.48 875.901 L 1515.14 875.901 C 1498.53 875.912 1377.78 889.125 1407.91 846.16 C 1416.68 833.644 1426.22 822.04 1435.16 809.716 L 1565.95 625.582 C 1630.11 535.485 1695.81 445.841 1762.85 357.91 L 1249.93 357.91 C 1195.69 459.701 1147.74 568.058 1095.59 671.417 C 1089.13 684.222 1080.94 706.134 1072.79 716.694 C 1059.88 733.431 1028.03 719.412 1040.98 692.957 L 1189.45 395.873 C 1198.76 377.471 1217.21 331.445 1228.84 319.14 z' fill='url(%23faviconGradient2)'/%3E%3Cpath d='M 1795.55 319.14 C 1842.74 319.98 1808.24 359.005 1795.55 376.961 C 1795.03 366.114 1811.57 356.38 1814.18 347.751 L 1813.28 346.412 C 1810.05 346.255 1809.12 346.4 1806.11 345.032 C 1792.76 322.601 1821.11 321.066 1780.19 320.714 C 1785.34 320.408 1789.43 320.215 1794.56 319.32 L 1795.55 319.14 z' fill='rgb(36,0,238)'/%3E%3Cpath d='M 556.732 447.35 L 942.181 447.333 C 952.301 447.329 973.09 445.821 982.179 447.65 C 1003.45 451.93 1000.25 475.272 985.01 485.939 C 976.901 487.103 962.057 486.121 953.247 486.044 L 671.5 485.939 L 298.899 485.985 C 280.23 486.019 230.24 493.832 228.85 468.254 C 227.406 441.683 271.839 447.258 289.81 447.333 L 556.732 447.35 z' fill='rgb(212,0,241)'/%3E%3Cpath d='M 268.422 1328.83 L 869.254 1328.81 C 894.275 1328.81 919.235 1328.61 944.317 1329.06 C 969.28 1329.5 971.095 1353.36 955.053 1366.96 C 943.74 1369.59 940.638 1368.61 929.267 1366.96 C 900.873 1370.03 858.03 1366.94 827.878 1366.95 L 291.004 1366.97 C 278.2 1367 241.371 1369.63 235.615 1361.63 C 211.289 1327.84 252.437 1328.57 268.422 1328.83 z' fill='rgb(212,0,241)'/%3E%3Cpath d='M 326.779 1551.81 L 731.739 1551.75 C 749.041 1551.72 766.732 1551.52 784.017 1551.96 C 809.336 1552.8 811.755 1586.79 789.795 1589.97 C 782.697 1590.99 772.445 1590.11 764.449 1590.09 L 708.75 1590.04 L 303.012 1590.1 C 285.309 1590.12 267.687 1590.31 249.937 1589.86 C 225.622 1589.24 223.355 1554.61 245.555 1552.92 C 271.855 1550.93 300.399 1551.75 326.779 1551.81 z' fill='rgb(212,0,241)'/%3E%3Cpath d='M 728.981 888.105 C 741.379 888.166 782.387 884.884 791.328 891.52 C 803.977 900.91 801.84 925.889 779.22 926.407 C 763.053 926.777 744.432 926.793 727.596 926.779 L 301.836 926.718 C 288.589 926.768 244.426 929.857 235.054 921.992 C 220.14 909.475 228.244 890.21 246.101 888.662 C 264.39 887.077 283.501 888.072 301.867 888.079 L 728.981 888.105 z' fill='rgb(212,0,241)'/%3E%3Cpath d='M 242.109 1110.98 C 323.9 1109.54 410.411 1110.99 492.561 1110.99 L 614.419 1110.94 C 632.299 1110.92 676.64 1109.28 694.432 1112.98 C 706.136 1115.41 714.78 1142.15 692.432 1150.01 C 676.525 1150.63 656.617 1150.07 640.365 1150.05 L 242.109 1150.01 C 224.962 1139.29 221.742 1120.28 242.109 1110.98 z' fill='rgb(212,0,241)'/%3E%3Cpath d='M 645.676 668.894 C 705.451 667.23 772.401 668.972 832.916 668.975 L 886.793 668.757 C 895.339 668.711 912.466 667.684 920.186 669.769 C 940.714 675.312 939.868 697.575 921.867 707.009 C 910.22 708.056 888.736 707.042 875.91 707.034 L 694.785 707.045 C 681.43 707.044 662.059 708.179 649.42 706.124 C 628.084 702.654 629.29 679.822 645.676 668.894 z' fill='rgb(212,0,241)'/%3E%3Cpath d='M 242.109 668.894 L 370.684 668.879 C 389.638 668.873 413.025 667.517 431.783 670.009 C 446.501 671.965 447.026 698.664 429.304 707.009 C 381.258 710.38 286.528 709.755 241.125 705.716 C 228.528 704.596 218.869 679.484 242.109 668.894 z' fill='rgb(212,0,241)'/%3E%3C/svg%3E">
+  <style>
+    @font-face {
+      font-family: 'JetBrains Mono';
+      src: local('JetBrains Mono'), local('JetBrainsMono-Regular');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    :root {
+      --bg-primary: #0a0a0b;
+      --bg-secondary: #111113;
+      --bg-tertiary: #18181b;
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-muted: #52525b;
+      --accent: #22d3ee;
+      --accent-glow: rgba(34, 211, 238, 0.15);
+      --accent-secondary: #a78bfa;
+      --border: rgba(255, 255, 255, 0.06);
+      --gradient-1: linear-gradient(135deg, #22d3ee 0%, #a78bfa 100%);
+      --gradient-2: linear-gradient(180deg, rgba(34, 211, 238, 0.08) 0%, transparent 60%);
+      --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Фоновый шум и градиенты */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(34, 211, 238, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(167, 139, 250, 0.05) 0%, transparent 40%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Контейнер */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Шапка сайта */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 20px 0;
+      background: rgba(10, 10, 11, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      transition: transform 0.3s var(--ease-out);
+    }
+
+    header .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-mono);
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--gradient-1);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--text-primary);
+    }
+
+    .nav-cta {
+      background: var(--text-primary);
+      color: var(--bg-primary);
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s var(--ease-out);
+    }
+
+    .nav-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(255, 255, 255, 0.15);
+    }
+
+    /* Главный экран */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 140px 0 80px;
+      text-align: center;
+      position: relative;
+    }
+
+    .hero-content {
+      max-width: 900px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      padding: 8px 16px;
+      border-radius: 100px;
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: fadeInUp 0.8s var(--ease-out) 0.1s forwards;
+    }
+
+    .hero-badge-dot {
+      width: 6px;
+      height: 6px;
+      background: #22c55e;
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .hero h1 {
+      font-size: clamp(3rem, 8vw, 5.5rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeInUp 0.8s var(--ease-out) 0.2s forwards;
+    }
+
+    .hero h1 .gradient-text {
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1.125rem, 2.5vw, 1.375rem);
+      color: var(--text-secondary);
+      max-width: 640px;
+      margin: 0 auto 48px;
+      line-height: 1.7;
+      opacity: 0;
+      animation: fadeInUp 0.8s var(--ease-out) 0.35s forwards;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeInUp 0.8s var(--ease-out) 0.5s forwards;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 28px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.25s var(--ease-out);
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--text-primary);
+      color: var(--bg-primary);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 48px rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-tertiary);
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    /* Блок кода на главном экране */
+    .hero-code {
+      margin-top: 80px;
+      opacity: 0;
+      animation: fadeInUp 0.8s var(--ease-out) 0.65s forwards;
+    }
+
+    .code-window {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      text-align: left;
+      max-width: 640px;
+      margin: 0 auto;
+      box-shadow: 
+        0 0 0 1px rgba(255, 255, 255, 0.03),
+        0 24px 80px rgba(0, 0, 0, 0.5);
+    }
+
+    .code-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 20px;
+      background: var(--bg-tertiary);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .code-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+    }
+
+    .code-dot:nth-child(1) { background: #ff5f57; border-color: #e0443e; }
+    .code-dot:nth-child(2) { background: #febc2e; border-color: #dea123; }
+    .code-dot:nth-child(3) { background: #28c840; border-color: #1aab29; }
+
+    .code-title {
+      margin-left: auto;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    .code-copy-btn {
+      margin-left: 12px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: var(--font-sans);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .code-copy-btn:hover {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+    }
+
+    .code-copy-btn.copied {
+      background: var(--accent-glow);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .code-copy-btn svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .code-content {
+      padding: 24px;
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      line-height: 1.8;
+      overflow-x: auto;
+    }
+
+    .code-content code {
+      display: block;
+      white-space: pre-wrap;
+    }
+
+    .code-comment { color: var(--text-muted); }
+    .code-tag { color: #f472b6; }
+    .code-attr { color: var(--accent); }
+    .code-string { color: #a3e635; }
+    .code-keyword { color: var(--accent-secondary); }
+
+    /* Статистика */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-top: 80px;
+      opacity: 0;
+      animation: fadeInUp 0.8s var(--ease-out) 0.8s forwards;
+    }
+
+    .stat {
+      background: var(--bg-secondary);
+      padding: 32px 24px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    /* Секция возможностей */
+    .features {
+      padding: 160px 0;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 80px;
+    }
+
+    .section-label {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+    }
+
+    .section-desc {
+      font-size: 1.125rem;
+      color: var(--text-secondary);
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 36px;
+      transition: all 0.3s var(--ease-out);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--gradient-1);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .feature-card:hover::before {
+      opacity: 1;
+    }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--accent-glow);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+
+    .feature-card h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      letter-spacing: -0.01em;
+    }
+
+    .feature-card p {
+      color: var(--text-secondary);
+      font-size: 0.9375rem;
+      line-height: 1.6;
+    }
+
+    /* Платформы */
+    .platforms {
+      padding: 80px 0 160px;
+    }
+
+    .platforms-simple {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .platform-highlight {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      transition: all 0.3s var(--ease-out);
+    }
+
+    .platform-highlight:hover {
+      background: var(--bg-tertiary);
+      border-color: rgba(255, 255, 255, 0.1);
+      transform: translateX(8px);
+    }
+
+    .platform-highlight-icon {
+      flex-shrink: 0;
+      width: 64px;
+      height: 64px;
+      background: var(--accent-glow);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .platform-highlight-content h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+
+    .platform-highlight-content p {
+      color: var(--text-secondary);
+      font-size: 0.9375rem;
+      line-height: 1.6;
+    }
+
+    /* Как это работает */
+    .how-it-works {
+      padding: 160px 0;
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .timeline {
+      display: flex;
+      gap: 40px;
+      margin-top: 60px;
+      position: relative;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 40px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--border);
+    }
+
+    .timeline-step {
+      flex: 1;
+      position: relative;
+      text-align: center;
+    }
+
+    .timeline-number {
+      width: 80px;
+      height: 80px;
+      background: var(--bg-primary);
+      border: 2px solid var(--border);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 0 auto 24px;
+      position: relative;
+      z-index: 1;
+      transition: all 0.3s var(--ease-out);
+    }
+
+    .timeline-step:hover .timeline-number {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      transform: scale(1.1);
+    }
+
+    .timeline-step h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .timeline-step p {
+      color: var(--text-secondary);
+      font-size: 0.9375rem;
+    }
+
+    .timeline-time {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      color: var(--accent);
+      background: var(--accent-glow);
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 12px;
+      min-width: 80px;
+      text-align: center;
+    }
+
+    /* Установка */
+    .installation {
+      padding: 160px 0;
+    }
+
+    .install-options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px;
+      margin-top: 60px;
+    }
+
+    .install-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .install-card-header {
+      padding: 24px 28px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .install-card-header h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+    }
+
+    .install-tag {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      background: var(--accent-glow);
+      color: var(--accent);
+      border-radius: 6px;
+    }
+
+    .install-code {
+      padding: 24px 28px;
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      line-height: 1.8;
+      overflow-x: auto;
+    }
+
+    .install-code .code-copy {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-tertiary);
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+
+    .install-code .code-copy:last-child {
+      margin-bottom: 0;
+    }
+
+    .copy-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: var(--font-sans);
+    }
+
+    .copy-btn:hover {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+    }
+
+    .copy-btn.copied {
+      background: var(--accent-glow);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* Поддержка браузеров */
+    .browsers {
+      padding: 80px 0 160px;
+    }
+
+    .browser-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .browser-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      text-align: center;
+      transition: all 0.3s var(--ease-out);
+    }
+
+    .browser-card:hover {
+      background: var(--bg-tertiary);
+    }
+
+    .browser-icon {
+      font-size: 2.5rem;
+      margin-bottom: 16px;
+    }
+
+    .browser-name {
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .browser-check {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8125rem;
+      color: #22c55e;
+      margin-top: 8px;
+    }
+
+    /* Документация API */
+    .api {
+      padding: 160px 0;
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .api-section {
+      margin-top: 60px;
+    }
+
+    .api-section:first-of-type {
+      margin-top: 0;
+    }
+
+    .api-section-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+      letter-spacing: -0.01em;
+    }
+
+    .api-section-icon {
+      font-size: 1.5rem;
+    }
+
+    .api-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .api-grid-2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .api-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      transition: all 0.3s var(--ease-out);
+    }
+
+    .api-card:hover {
+      border-color: rgba(34, 211, 238, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .api-card-header {
+      margin-bottom: 12px;
+    }
+
+    .api-attr {
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      color: var(--accent);
+      background: var(--accent-glow);
+      padding: 6px 12px;
+      border-radius: 8px;
+      display: inline-block;
+    }
+
+    .api-card-desc {
+      color: var(--text-secondary);
+      font-size: 0.9375rem;
+      line-height: 1.6;
+    }
+
+    .api-card-desc code {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      color: var(--accent);
+      background: var(--accent-glow);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .api-values {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .api-value {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.875rem;
+    }
+
+    .api-value code {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      color: var(--accent-secondary);
+      background: rgba(167, 139, 250, 0.1);
+      padding: 4px 10px;
+      border-radius: 6px;
+      min-width: 100px;
+      text-align: center;
+    }
+
+    .api-value span {
+      color: var(--text-muted);
+    }
+
+    .api-js-card {
+      max-width: 700px;
+    }
+
+    .api-js-card .code-window {
+      margin: 0;
+    }
+
+    .api-examples {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    .api-example {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .api-example h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+    }
+
+    .code-window-small {
+      border-radius: 12px;
+    }
+
+    .code-window-small .code-content {
+      padding: 16px;
+      font-size: 0.8125rem;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 1024px) {
+      .api-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .api-examples {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .api-grid,
+      .api-grid-2 {
+        grid-template-columns: 1fr;
+      }
+
+      .api-value {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+
+      .api-value code {
+        min-width: auto;
+      }
+    }
+
+    /* Интерактивная демонстрация */
+    .demo {
+      padding: 160px 0;
+    }
+
+    .demo-container {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 40px;
+      align-items: start;
+      margin-top: 60px;
+    }
+
+    .demo-side {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .demo-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 8px;
+      align-self: flex-start;
+    }
+
+    .demo-label-slow {
+      background: rgba(251, 146, 60, 0.1);
+      color: #fb923c;
+      border: 1px solid rgba(251, 146, 60, 0.3);
+    }
+
+    .demo-label-fast {
+      background: var(--accent-glow);
+      color: var(--accent);
+      border: 1px solid rgba(34, 211, 238, 0.3);
+    }
+
+    .demo-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .demo-browser {
+      background: var(--bg-primary);
+    }
+
+    .demo-browser-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--bg-tertiary);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .demo-browser-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .demo-browser-dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--text-muted);
+    }
+
+    .demo-browser-dots span:nth-child(1) { background: #ff5f57; }
+    .demo-browser-dots span:nth-child(2) { background: #febc2e; }
+    .demo-browser-dots span:nth-child(3) { background: #28c840; }
+
+    .demo-url {
+      flex: 1;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: var(--bg-primary);
+      padding: 6px 12px;
+      border-radius: 6px;
+    }
+
+    .demo-browser-content {
+      min-height: 280px;
+      position: relative;
+    }
+
+    .demo-page {
+      padding: 32px;
+      display: none;
+    }
+
+    .demo-page.active {
+      display: block;
+    }
+
+    .demo-page h4 {
+      font-size: 1.25rem;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+    }
+
+    .demo-page p {
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+      font-size: 0.9375rem;
+    }
+
+    .demo-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 20px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .demo-link:hover {
+      background: var(--bg-secondary);
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .demo-link-icon {
+      font-size: 1.25rem;
+    }
+
+    .demo-prefetch-indicator {
+      position: absolute;
+      top: 80px;
+      right: 32px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--accent);
+      background: var(--accent-glow);
+      padding: 6px 12px;
+      border-radius: 6px;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    .demo-prefetch-indicator.active {
+      display: flex;
+    }
+
+    .demo-prefetch-indicator svg {
+      animation: bounce 1s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+
+    .demo-loading {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 32px;
+      min-height: 280px;
+    }
+
+    .demo-loading.active {
+      display: flex;
+    }
+
+    .demo-spinner {
+      width: 48px;
+      height: 48px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .demo-loading-text {
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+
+    .demo-loading-bar {
+      width: 100%;
+      max-width: 200px;
+      height: 4px;
+      background: var(--bg-tertiary);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .demo-loading-progress {
+      height: 100%;
+      background: var(--gradient-1);
+      width: 0;
+      transition: width 0.1s linear;
+    }
+
+    .demo-page-loaded {
+      text-align: center;
+      padding: 48px 32px;
+      min-height: 280px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .demo-page-loaded.active {
+      display: flex;
+    }
+
+    .demo-page-loaded h4 {
+      font-size: 1.5rem;
+      margin-bottom: 16px;
+    }
+
+    .demo-reset {
+      margin-top: 24px;
+      padding: 10px 20px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .demo-reset:hover {
+      background: var(--bg-secondary);
+      border-color: var(--accent);
+    }
+
+    .demo-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border-radius: 0 0 20px 20px;
+      overflow: hidden;
+    }
+
+    .demo-stat {
+      background: var(--bg-secondary);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      text-align: center;
+    }
+
+    .demo-stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 500;
+    }
+
+    .demo-stat-value {
+      font-family: var(--font-mono);
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .demo-stat-highlight {
+      color: #fb923c;
+      font-size: 1.25rem;
+    }
+
+    .demo-stat-accent {
+      color: var(--accent);
+    }
+
+    .demo-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 120px 0;
+    }
+
+    .demo-divider::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 2px;
+      background: var(--border);
+    }
+
+    .demo-divider span {
+      position: relative;
+      z-index: 1;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-primary);
+      border: 2px solid var(--border);
+      border-radius: 50%;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    .demo-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      background: rgba(34, 211, 238, 0.05);
+      border: 1px solid rgba(34, 211, 238, 0.15);
+      border-radius: 16px;
+      padding: 20px 24px;
+      margin-top: 48px;
+    }
+
+    .demo-note svg {
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .demo-note p {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    @media (max-width: 1024px) {
+      .demo-container {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+
+      .demo-divider {
+        padding: 0;
+        height: 48px;
+      }
+
+      .demo-divider::before {
+        top: 50%;
+        bottom: auto;
+        left: 0;
+        right: 0;
+        width: auto;
+        height: 2px;
+      }
+
+      .demo-stats {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .demo-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .demo-browser-content {
+        min-height: 240px;
+      }
+
+      .demo-page {
+        padding: 24px;
+      }
+
+      .demo-page-loaded {
+        padding: 32px 24px;
+        min-height: 240px;
+      }
+    }
+
+    /* Метрики и Core Web Vitals */
+    .metrics {
+      padding: 160px 0;
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 80px;
+    }
+
+    .metric-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s var(--ease-out);
+    }
+
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--gradient-1);
+    }
+
+    .metric-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .metric-badge {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: var(--accent-glow);
+      color: var(--accent);
+      margin-bottom: 16px;
+      letter-spacing: 0.05em;
+    }
+
+    .metric-card-lcp .metric-badge { background: rgba(34, 211, 238, 0.15); color: #22d3ee; }
+    .metric-card-inp .metric-badge { background: rgba(167, 139, 250, 0.15); color: #a78bfa; }
+    .metric-card-cls .metric-badge { background: rgba(74, 222, 128, 0.15); color: #4ade80; }
+
+    .metric-card h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      letter-spacing: -0.01em;
+    }
+
+    .metric-card p {
+      color: var(--text-secondary);
+      font-size: 0.9375rem;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .metric-impact {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      color: #4ade80;
+      background: rgba(74, 222, 128, 0.1);
+      padding: 8px 14px;
+      border-radius: 8px;
+    }
+
+    .metric-arrow {
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    /* Поведенческие метрики */
+    .behavior-section {
+      margin-top: 80px;
+    }
+
+    .behavior-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-top: 32px;
+    }
+
+    .behavior-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      transition: all 0.3s var(--ease-out);
+    }
+
+    .behavior-card:hover {
+      background: var(--bg-tertiary);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .behavior-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 16px;
+    }
+
+    .behavior-value {
+      font-family: var(--font-mono);
+      font-size: 2rem;
+      font-weight: 700;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .behavior-label {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .behavior-card p {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+
+    /* Заметка о UX */
+    .ux-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      background: linear-gradient(135deg, rgba(34, 211, 238, 0.08) 0%, rgba(167, 139, 250, 0.08) 100%);
+      border: 1px solid rgba(34, 211, 238, 0.2);
+      border-radius: 20px;
+      padding: 32px;
+      margin-top: 48px;
+    }
+
+    .ux-note-icon {
+      font-size: 2.5rem;
+      flex-shrink: 0;
+    }
+
+    .ux-note-content h4 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .ux-note-content p {
+      color: var(--text-secondary);
+      font-size: 0.9375rem;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 1024px) {
+      .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .metrics-grid .metric-card:last-child {
+        grid-column: span 2;
+      }
+
+      .behavior-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .metrics-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .metrics-grid .metric-card:last-child {
+        grid-column: span 1;
+      }
+
+      .behavior-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .ux-note {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+      }
+    }
+
+    /* Почему браузеры так не делают */
+    .why-browsers {
+      padding: 160px 0;
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+
+    .why-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      transition: all 0.3s var(--ease-out);
+    }
+
+    .why-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .why-icon {
+      width: 48px;
+      height: 48px;
+      background: rgba(251, 146, 60, 0.15);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .why-icon svg {
+      stroke: #fb923c;
+    }
+
+    .why-card h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      letter-spacing: -0.01em;
+    }
+
+    .why-card > p {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .why-solution {
+      background: rgba(34, 211, 238, 0.08);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 0.8125rem;
+      line-height: 1.5;
+    }
+
+    .why-solution-label {
+      display: block;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 4px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .why-solution span:last-child {
+      color: var(--text-secondary);
+    }
+
+    .why-solution code {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--accent);
+      background: var(--accent-glow);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .why-summary {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      background: linear-gradient(135deg, rgba(251, 146, 60, 0.08) 0%, rgba(34, 211, 238, 0.08) 100%);
+      border: 1px solid rgba(251, 146, 60, 0.2);
+      border-radius: 20px;
+      padding: 32px;
+    }
+
+    .why-summary-icon {
+      font-size: 2.5rem;
+      flex-shrink: 0;
+    }
+
+    .why-summary-content h4 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .why-summary-content p {
+      color: var(--text-secondary);
+      font-size: 0.9375rem;
+      line-height: 1.7;
+    }
+
+    .why-summary-content strong {
+      color: var(--text-primary);
+    }
+
+    /* Компромиссы */
+    .tradeoffs {
+      padding: 160px 0;
+    }
+
+    .tradeoffs-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 48px;
+    }
+
+    .tradeoff-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      transition: all 0.3s var(--ease-out);
+    }
+
+    .tradeoff-card:hover {
+      background: var(--bg-tertiary);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .tradeoff-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 16px;
+    }
+
+    .tradeoff-value {
+      font-family: var(--font-mono);
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #fb923c;
+    }
+
+    .tradeoff-value.tradeoff-icon {
+      display: flex;
+      align-items: center;
+    }
+
+    .tradeoff-value.tradeoff-icon svg {
+      stroke: #fb923c;
+    }
+
+    .tradeoff-label {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .tradeoff-card p {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+
+    .tradeoffs-roi {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      background: linear-gradient(135deg, rgba(74, 222, 128, 0.1) 0%, rgba(34, 211, 238, 0.1) 100%);
+      border: 1px solid rgba(74, 222, 128, 0.25);
+      border-radius: 20px;
+      padding: 32px;
+    }
+
+    .tradeoffs-roi-left {
+      flex-shrink: 0;
+      text-align: center;
+    }
+
+    .tradeoffs-roi-label {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 4px;
+    }
+
+    .tradeoffs-roi-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #4ade80 0%, #22d3ee 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .tradeoffs-roi-right p {
+      color: var(--text-secondary);
+      font-size: 0.9375rem;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 1024px) {
+      .why-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .tradeoffs-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .why-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .why-summary {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+      }
+
+      .tradeoffs-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .tradeoffs-roi {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+      }
+    }
+
+    /* Приватность */
+    .privacy {
+      padding: 160px 0;
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .privacy-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+
+    .privacy-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      transition: all 0.3s var(--ease-out);
+      position: relative;
+    }
+
+    .privacy-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(34, 211, 238, 0.3);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .privacy-icon {
+      font-size: 2rem;
+      margin-bottom: 16px;
+    }
+
+    .privacy-card h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      letter-spacing: -0.01em;
+    }
+
+    .privacy-card p {
+      color: var(--text-secondary);
+      font-size: 0.9375rem;
+      line-height: 1.6;
+    }
+
+    .privacy-card p a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(34, 211, 238, 0.3);
+      transition: all 0.2s ease;
+    }
+
+    .privacy-card p a:hover {
+      border-bottom-color: var(--accent);
+    }
+
+    .privacy-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      background: rgba(34, 211, 238, 0.05);
+      border: 1px solid rgba(34, 211, 238, 0.15);
+      border-radius: 16px;
+      padding: 24px 28px;
+    }
+
+    .privacy-note-icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .privacy-note p {
+      color: var(--text-secondary);
+      font-size: 0.9375rem;
+      line-height: 1.7;
+    }
+
+    /* Послесловие */
+    .ps-section {
+      padding: 80px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .ps-content {
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .ps-label {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .ps-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .ps-subtitle {
+      font-size: 1.125rem;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+    }
+
+    .ps-punch {
+      font-family: var(--font-mono);
+      font-size: 0.9375rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* Призыв к действию */
+    .cta {
+      padding: 160px 0;
+      text-align: center;
+      position: relative;
+    }
+
+    .cta::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-content {
+      position: relative;
+    }
+
+    .cta h2 {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 24px;
+    }
+
+    .cta p {
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      margin-bottom: 40px;
+    }
+
+    /* Подвал сайта */
+    footer {
+      padding: 48px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    footer .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: color 0.2s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--text-primary);
+    }
+
+    .footer-copy {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    /* Анимации */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Анимации при скролле */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s var(--ease-out);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Мобильное меню */
+    .mobile-menu-btn {
+      display: none;
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      cursor: pointer;
+      padding: 8px;
+    }
+
+    .mobile-menu-btn span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: currentColor;
+      margin: 5px 0;
+      transition: all 0.3s ease;
+    }
+
+    /* Адаптивная вёрстка */
+    @media (max-width: 1024px) {
+      .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .browser-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .privacy-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links, .nav-cta {
+        display: none;
+      }
+
+      .mobile-menu-btn {
+        display: block;
+      }
+
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .platform-highlight {
+        flex-direction: column;
+        gap: 16px;
+        padding: 24px;
+      }
+
+      .platform-highlight:hover {
+        transform: translateY(-4px);
+      }
+
+      .timeline {
+        flex-direction: column;
+        gap: 32px;
+      }
+
+      .timeline::before {
+        top: 0;
+        bottom: 0;
+        left: 40px;
+        right: auto;
+        width: 2px;
+        height: auto;
+      }
+
+      .timeline-step {
+        text-align: left;
+        padding-left: 100px;
+      }
+
+      .timeline-number {
+        position: absolute;
+        left: 0;
+        margin: 0;
+        width: 60px;
+        height: 60px;
+        font-size: 1.25rem;
+      }
+
+      .install-options {
+        grid-template-columns: 1fr;
+      }
+
+      .browser-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .privacy-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .privacy-note {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      footer .container {
+        flex-direction: column;
+        gap: 24px;
+        text-align: center;
+      }
+
+      .footer-links {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 0 16px;
+      }
+
+      .hero {
+        padding: 120px 0 60px;
+      }
+
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .stat {
+        padding: 24px 16px;
+      }
+
+      .btn {
+        padding: 14px 24px;
+        font-size: 0.9375rem;
+      }
+    }
+
+    /* Модальное окно лицензии */
+    .license-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      z-index: 1000;
+      padding: 20px;
+      overflow-y: auto;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .license-modal.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .license-modal-content {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      max-width: 800px;
+      width: 100%;
+      max-height: 90vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+      animation: slideUp 0.3s var(--ease-out);
+    }
+
+    .license-modal-header {
+      padding: 24px 32px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .license-modal-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .license-modal-close {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .license-modal-close:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .license-modal-body {
+      padding: 32px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .license-modal-text {
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      line-height: 1.8;
+      color: var(--text-secondary);
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .badge-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(161, 161, 170, 0.3);
+      transition: all 0.2s ease;
+    }
+
+    .badge-link:hover {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .footer-license-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .footer-license-link:hover {
+      color: var(--text-primary);
+      border-bottom-color: var(--text-primary);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .license-modal-content {
+        max-height: 95vh;
+        border-radius: 16px;
+      }
+
+      .license-modal-header {
+        padding: 20px 24px;
+      }
+
+      .license-modal-body {
+        padding: 24px;
+      }
+
+      .license-modal-text {
+        font-size: 0.8125rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Шапка сайта -->
+  <header>
+    <div class="container">
+      <a href="#" class="logo">
+        <span class="logo-icon"><svg width="32" height="32" viewBox="0 0 2048 2048" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient gradientUnits="userSpaceOnUse" id="logoGradient1" x1="1736.88" x2="878.53" y1="1055.66" y2="962.241"><stop offset="0" stop-color="rgb(101,5,238)" stop-opacity="1"></stop><stop offset="1" stop-color="rgb(167,9,247)" stop-opacity="1"></stop></linearGradient></defs><path d="M 1228.84 319.14 C 1241.17 318.114 1273.11 319.104 1286.65 319.118 L 1795.55 319.14 C 1842.74 319.98 1808.24 359.005 1795.55 376.961 C 1786.59 391.545 1769.55 412.897 1758.83 427.379 L 1522.25 752.934 C 1501.79 781.534 1482.79 807.26 1462.91 836.51 L 1634.88 836.551 C 1653.33 836.552 1734.11 833.996 1745.4 838.297 C 1783.2 852.688 1716.47 903.593 1705.81 915.01 L 964.859 1702.45 C 946.665 1722.67 920.205 1711.34 929.627 1687.91 C 938.192 1666.61 947.84 1645.76 957.27 1624.92 L 1197.52 1078.1 L 968.638 1078.05 C 952.945 1078.04 888.845 1080.47 878.948 1076.94 C 853.218 1067.78 877.83 1031.59 884.971 1016.92 L 972.665 836.983 C 983.233 814.793 993.169 792.273 1004.61 770.481 C 1016.72 747.408 1036.63 757.614 1042.87 777.672 C 1039.21 789.818 1019.73 826.469 1013.35 840.363 C 982.586 907.341 947.871 973.019 917.029 1040.02 L 1137.3 1040.01 C 1154.24 1040.01 1227.05 1038.75 1238.16 1041.91 C 1258.49 1058.01 1232.5 1095.05 1223.29 1115.46 L 1089.15 1421.55 C 1065.87 1474.52 1039.95 1531.11 1019.07 1584.88 C 1053.49 1551.51 1087.07 1512.78 1119.92 1477.8 L 1692.48 875.901 L 1515.14 875.901 C 1498.53 875.912 1377.78 889.125 1407.91 846.16 C 1416.68 833.644 1426.22 822.04 1435.16 809.716 L 1565.95 625.582 C 1630.11 535.485 1695.81 445.841 1762.85 357.91 L 1249.93 357.91 C 1195.69 459.701 1147.74 568.058 1095.59 671.417 C 1089.13 684.222 1080.94 706.134 1072.79 716.694 C 1059.88 733.431 1028.03 719.412 1040.98 692.957 L 1189.45 395.873 C 1198.76 377.471 1217.21 331.445 1228.84 319.14 z" fill="url(#logoGradient1)"></path><path d="M 1795.55 319.14 C 1842.74 319.98 1808.24 359.005 1795.55 376.961 C 1795.03 366.114 1811.57 356.38 1814.18 347.751 L 1813.28 346.412 C 1810.05 346.255 1809.12 346.4 1806.11 345.032 C 1792.76 322.601 1821.11 321.066 1780.19 320.714 C 1785.34 320.408 1789.43 320.215 1794.56 319.32 L 1795.55 319.14 z" fill="rgb(36,0,238)"></path><path d="M 556.732 447.35 L 942.181 447.333 C 952.301 447.329 973.09 445.821 982.179 447.65 C 1003.45 451.93 1000.25 475.272 985.01 485.939 C 976.901 487.103 962.057 486.121 953.247 486.044 L 671.5 485.939 L 298.899 485.985 C 280.23 486.019 230.24 493.832 228.85 468.254 C 227.406 441.683 271.839 447.258 289.81 447.333 L 556.732 447.35 z" fill="rgb(212,0,241)"></path><path d="M 268.422 1328.83 L 869.254 1328.81 C 894.275 1328.81 919.235 1328.61 944.317 1329.06 C 969.28 1329.5 971.095 1353.36 955.053 1366.96 C 943.74 1369.59 940.638 1368.61 929.267 1366.96 C 900.873 1370.03 858.03 1366.94 827.878 1366.95 L 291.004 1366.97 C 278.2 1367 241.371 1369.63 235.615 1361.63 C 211.289 1327.84 252.437 1328.57 268.422 1328.83 z" fill="rgb(212,0,241)"></path><path d="M 326.779 1551.81 L 731.739 1551.75 C 749.041 1551.72 766.732 1551.52 784.017 1551.96 C 809.336 1552.8 811.755 1586.79 789.795 1589.97 C 782.697 1590.99 772.445 1590.11 764.449 1590.09 L 708.75 1590.04 L 303.012 1590.1 C 285.309 1590.12 267.687 1590.31 249.937 1589.86 C 225.622 1589.24 223.355 1554.61 245.555 1552.92 C 271.855 1550.93 300.399 1551.75 326.779 1551.81 z" fill="rgb(212,0,241)"></path><path d="M 728.981 888.105 C 741.379 888.166 782.387 884.884 791.328 891.52 C 803.977 900.91 801.84 925.889 779.22 926.407 C 763.053 926.777 744.432 926.793 727.596 926.779 L 301.836 926.718 C 288.589 926.768 244.426 929.857 235.054 921.992 C 220.14 909.475 228.244 890.21 246.101 888.662 C 264.39 887.077 283.501 888.072 301.867 888.079 L 728.981 888.105 z" fill="rgb(212,0,241)"></path><path d="M 242.109 1110.98 C 323.9 1109.54 410.411 1110.99 492.561 1110.99 L 614.419 1110.94 C 632.299 1110.92 676.64 1109.28 694.432 1112.98 C 706.136 1115.41 714.78 1142.15 692.432 1150.01 C 676.525 1150.63 656.617 1150.07 640.365 1150.05 L 242.109 1150.01 C 224.962 1139.29 221.742 1120.28 242.109 1110.98 z" fill="rgb(212,0,241)"></path><path d="M 645.676 668.894 C 705.451 667.23 772.401 668.972 832.916 668.975 L 886.793 668.757 C 895.339 668.711 912.466 667.684 920.186 669.769 C 940.714 675.312 939.868 697.575 921.867 707.009 C 910.22 708.056 888.736 707.042 875.91 707.034 L 694.785 707.045 C 681.43 707.044 662.059 708.179 649.42 706.124 C 628.084 702.654 629.29 679.822 645.676 668.894 z" fill="rgb(212,0,241)"></path><path d="M 242.109 668.894 L 370.684 668.879 C 389.638 668.873 413.025 667.517 431.783 670.009 C 446.501 671.965 447.026 698.664 429.304 707.009 C 381.258 710.38 286.528 709.755 241.125 705.716 C 228.528 704.596 218.869 679.484 242.109 668.894 z" fill="rgb(212,0,241)"></path></svg></span>
+        prefetch.ru
+      </a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="#features">Возможности</a></li>
+          <li><a href="#how-it-works">Как работает</a></li>
+          <li><a href="#metrics">Метрики</a></li>
+          <li><a href="#install">Установка</a></li>
+          <li><a href="#api">API</a></li>
+          <li><a href="https://github.com/prefetch-ru/prefetch" target="_blank">GitHub</a></li>
+        </ul>
+      </nav>
+      <a href="#install" class="nav-cta">Начать</a>
+      <button class="mobile-menu-btn" aria-label="Меню">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Главный экран -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="hero-badge-dot"></span>
+          Версия 1.0.5 • <a href="#" class="badge-link" onclick="showLicense('ru'); return false;">Открытая лицензия</a> <a href="#" class="badge-link" onclick="showLicense('en'); return false;">MIT</a>
+        </div>
+        <h1>
+          Мгновенная<br>
+          <span class="gradient-text">загрузка страниц</span>
+        </h1>
+        <p class="hero-subtitle">
+          Предзагрузка ссылок за 65мс до клика. Пользователь не успевает моргнуть, 
+          а страница уже загружена. Оптимизировано для российского веба.
+        </p>
+        <div class="hero-actions">
+          <a href="#install" class="btn btn-primary">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Установить
+          </a>
+          <a href="https://github.com/prefetch-ru/prefetch" target="_blank" class="btn btn-secondary">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+            </svg>
+            GitHub
+          </a>
+        </div>
+
+        <!-- Пример кода -->
+        <div class="hero-code">
+          <div class="code-window">
+            <div class="code-header">
+              <span class="code-dot"></span>
+              <span class="code-dot"></span>
+              <span class="code-dot"></span>
+              <span class="code-title">index.html</span>
+              <button class="code-copy-btn" onclick="copyHeroCode(this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                  <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                </svg>
+                <span>Копировать</span>
+              </button>
+            </div>
+            <div class="code-content">
+<code><span class="code-comment">&lt;!-- Добавьте перед &lt;/body&gt; --&gt;</span>
+<span id="hero-code-to-copy">
+<span class="code-tag">&lt;script</span> <span class="code-attr">src</span>=<span class="code-string">"//prefetch.ru/v1.0.5/prefetch.min.js"</span>
+        <span class="code-attr">integrity</span>=<span class="code-string">"sha384-v7uJ6dV33vsw7nZSfVOCS0a3UQBLVcBCpwl55d3Zyz0mZEx4M0w/Sc4xHwcqKyu0"</span>
+        <span class="code-attr">crossorigin</span>=<span class="code-string">"anonymous"</span>
+        <span class="code-attr">type</span>=<span class="code-string">"module"</span>
+        <span class="code-attr">defer</span><span class="code-tag">&gt;&lt;/script&gt;</span></span></code>
+            </div>
+          </div>
+        </div>
+
+        <!-- Статистика -->
+        <div class="stats">
+          <div class="stat">
+            <div class="stat-value">65мс</div>
+            <div class="stat-label">До клика</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">~3КБ</div>
+            <div class="stat-label">gzip</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">0</div>
+            <div class="stat-label">Зависимостей</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">99%</div>
+            <div class="stat-label">Браузеров</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Возможности -->
+  <section class="features" id="features">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">Возможности</span>
+        <h2 class="section-title">Оптимизировано для РФ</h2>
+        <p class="section-desc">
+          Поддержка российских браузеров, CMS и платформ из коробки
+        </p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/>
+              <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>
+              <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/>
+              <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
+            </svg>
+          </div>
+          <h3>Speculation Rules API</h3>
+          <p>Используем современный API для Chromium 109+. Prerender загружает страницу полностью в фоне — переход мгновенный.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06z"/>
+              <path d="M10 2c1 .5 2 2 2 5"/>
+            </svg>
+          </div>
+          <h3>Поддержка iOS</h3>
+          <p>WebKit не поддерживает prefetch? Не проблема. Автоматический fallback на fetch с force-cache для всех браузеров iOS.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 3v18h18"/>
+              <path d="m19 9-5 5-4-4-3 3"/>
+            </svg>
+          </div>
+          <h3>Совместимость с аналитикой</h3>
+          <p>Не ломает Яндекс.Метрику, Google Analytics и Matomo. Prefetch — фоновая загрузка, не влияет на события кликов.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="14" height="20" x="5" y="2" rx="2" ry="2"/>
+              <path d="M12 18h.01"/>
+            </svg>
+          </div>
+          <h3>Умная экономия трафика</h3>
+          <p>Автоматически отключается при медленном соединении (2G, 3G) и режиме экономии трафика. Лимиты для мобильных устройств.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </div>
+          <h3>Гибкая настройка</h3>
+          <p>Data-атрибуты для конфигурации: задержка hover, режим viewport, белые списки, DOM observer для SPA.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+          </div>
+          <h3>Безопасность</h3>
+          <p>Не загружает внешние ссылки по умолчанию. Исключает служебные URL, формы авторизации и файлы.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Платформы -->
+  <section class="platforms">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">Платформы</span>
+        <h2 class="section-title">Работает везде</h2>
+        <p class="section-desc">
+          Один скрипт для любых сайтов — без настройки и интеграций
+        </p>
+      </div>
+      <div class="platforms-simple reveal">
+        <div class="platform-highlight">
+          <div class="platform-highlight-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+              <path d="m9 11 3 3L22 4"/>
+            </svg>
+          </div>
+          <div class="platform-highlight-content">
+            <h3>Любые CMS и платформы</h3>
+            <p>WordPress, OpenCart, Joomla, Drupal и любые другие — просто добавьте скрипт и он заработает. Специальная оптимизация для 1С-Битрикс и Tilda</p>
+          </div>
+        </div>
+        <div class="platform-highlight">
+          <div class="platform-highlight-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+              <path d="m9 12 2 2 4-4"/>
+            </svg>
+          </div>
+          <div class="platform-highlight-content">
+            <h3>Специальная поддержка 1С-Битрикс</h3>
+            <p>Для лидера российского рынка — автоопределение, исключение служебных URL, работа с AJAX-компонентами</p>
+          </div>
+        </div>
+        <div class="platform-highlight">
+          <div class="platform-highlight-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+            </svg>
+          </div>
+          <div class="platform-highlight-content">
+            <h3>Без конфигурации</h3>
+            <p>Умные исключения: автоматически пропускает ссылки авторизации (/login, /logout, /auth), действия (/cart, /add, /delete), файлы и служебные URL</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Как это работает -->
+  <section class="how-it-works" id="how-it-works">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">Принцип работы</span>
+        <h2 class="section-title">Быстрее, чем клик</h2>
+        <p class="section-desc">
+          Мозг воспринимает задержку менее 100мс как мгновенную
+        </p>
+      </div>
+      <div class="timeline reveal">
+        <div class="timeline-step">
+          <div class="timeline-number">01</div>
+          <h3>Наведение курсора</h3>
+          <span class="timeline-time">0 мс</span>
+          <p>Пользователь наводит курсор на ссылку</p>
+        </div>
+        <div class="timeline-step">
+          <div class="timeline-number">02</div>
+          <h3>Начало предзагрузки</h3>
+          <span class="timeline-time">65 мс</span>
+          <p>Скрипт начинает загрузку страницы</p>
+        </div>
+        <div class="timeline-step">
+          <div class="timeline-number">03</div>
+          <h3>Клик по ссылке</h3>
+          <span class="timeline-time">~200 мс</span>
+          <p>Пользователь решает перейти</p>
+        </div>
+        <div class="timeline-step">
+          <div class="timeline-number">04</div>
+          <h3>Мгновенный переход</h3>
+          <span class="timeline-time">~0 мс</span>
+          <p>Страница уже в кэше браузера</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Интерактивная демонстрация -->
+  <section class="demo">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">Интерактивная демонстрация</span>
+        <h2 class="section-title">Попробуйте сами</h2>
+        <p class="section-desc">
+          Наведите на ссылки и почувствуйте разницу
+        </p>
+      </div>
+      
+      <div class="demo-container reveal">
+        <div class="demo-side">
+          <div class="demo-label demo-label-slow">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fb923c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48 2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48 2.83-2.83"/>
+            </svg>
+            Без prefetch
+          </div>
+          <div class="demo-box" id="demo-slow">
+            <div class="demo-browser">
+              <div class="demo-browser-bar">
+                <div class="demo-browser-dots">
+                  <span></span><span></span><span></span>
+                </div>
+                <div class="demo-url">example.com</div>
+              </div>
+              <div class="demo-browser-content">
+                <div class="demo-page" id="demo-slow-page">
+                  <h4>Главная страница</h4>
+                  <p>Наведите на ссылку →</p>
+                  <a href="#" class="demo-link" data-demo="slow">
+                    <span class="demo-link-icon">📄</span>
+                    О компании
+                  </a>
+                </div>
+                <div class="demo-loading" id="demo-slow-loading">
+                  <div class="demo-spinner"></div>
+                  <div class="demo-loading-text">Загрузка <span id="demo-slow-time">0</span>мс...</div>
+                  <div class="demo-loading-bar">
+                    <div class="demo-loading-progress" id="demo-slow-progress"></div>
+                  </div>
+                </div>
+                <div class="demo-page demo-page-loaded" id="demo-slow-loaded">
+                  <h4>О компании</h4>
+                  <p>✓ Страница загружена</p>
+                  <button class="demo-reset" onclick="resetDemo('slow')">Попробовать снова</button>
+                </div>
+              </div>
+            </div>
+            <div class="demo-stats" id="demo-slow-stats">
+              <div class="demo-stat">
+                <span class="demo-stat-label">Клик</span>
+                <span class="demo-stat-value" id="demo-slow-click">0мс</span>
+              </div>
+              <div class="demo-stat">
+                <span class="demo-stat-label">Начало загрузки</span>
+                <span class="demo-stat-value" id="demo-slow-start">—</span>
+              </div>
+              <div class="demo-stat">
+                <span class="demo-stat-label">Отображение</span>
+                <span class="demo-stat-value demo-stat-highlight" id="demo-slow-end">—</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="demo-divider">
+          <span>VS</span>
+        </div>
+
+        <div class="demo-side">
+          <div class="demo-label demo-label-fast">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>
+            </svg>
+            С prefetch
+          </div>
+          <div class="demo-box" id="demo-fast">
+            <div class="demo-browser">
+              <div class="demo-browser-bar">
+                <div class="demo-browser-dots">
+                  <span></span><span></span><span></span>
+                </div>
+                <div class="demo-url">example.com</div>
+              </div>
+              <div class="demo-browser-content">
+                <div class="demo-page" id="demo-fast-page">
+                  <h4>Главная страница</h4>
+                  <p>Наведите на ссылку →</p>
+                  <a href="#" class="demo-link" data-demo="fast">
+                    <span class="demo-link-icon">📄</span>
+                    О компании
+                  </a>
+                  <div class="demo-prefetch-indicator" id="demo-fast-indicator">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                      <polyline points="7 10 12 15 17 10"/>
+                      <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Prefetching...
+                  </div>
+                </div>
+                <div class="demo-page demo-page-loaded" id="demo-fast-loaded">
+                  <h4>О компании</h4>
+                  <p>✓ Мгновенный переход!</p>
+                  <button class="demo-reset" onclick="resetDemo('fast')">Попробовать снова</button>
+                </div>
+              </div>
+            </div>
+            <div class="demo-stats" id="demo-fast-stats">
+              <div class="demo-stat">
+                <span class="demo-stat-label">Hover</span>
+                <span class="demo-stat-value" id="demo-fast-hover">—</span>
+              </div>
+              <div class="demo-stat">
+                <span class="demo-stat-label">Prefetch</span>
+                <span class="demo-stat-value demo-stat-accent" id="demo-fast-prefetch">—</span>
+              </div>
+              <div class="demo-stat">
+                <span class="demo-stat-label">Клик → показ</span>
+                <span class="demo-stat-value demo-stat-highlight" id="demo-fast-end">—</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-note reveal">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 16v-4"/>
+          <path d="M12 8h.01"/>
+        </svg>
+        <p>Это упрощённая демонстрация. В реальности разница ещё заметнее — браузер загружает весь HTML, CSS, JS и изображения целевой страницы до клика.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Метрики и UX -->
+  <section class="metrics" id="metrics">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">Метрики</span>
+        <h2 class="section-title">Скорость и пользовательский опыт</h2>
+        <p class="section-desc">
+          Мгновенные переходы улучшают ключевые показатели качества сайта
+        </p>
+      </div>
+      
+      <!-- Карточки производительности -->
+      <div class="metrics-grid reveal">
+        <div class="metric-card metric-card-lcp">
+          <div class="metric-badge">СКОРОСТЬ</div>
+          <h3>Время загрузки контента</h3>
+          <p>Prerender загружает и рендерит страницу в фоне до клика. При переходе — контент отображается мгновенно, время загрузки стремится к нулю.</p>
+          <div class="metric-impact">
+            <span class="metric-arrow">↓</span>
+            <span>до 90% быстрее</span>
+          </div>
+        </div>
+        <div class="metric-card metric-card-inp">
+          <div class="metric-badge">ОТКЛИК</div>
+          <h3>Отзывчивость интерфейса</h3>
+          <p>Предзагруженные страницы реагируют на взаимодействия без задержки — JavaScript уже выполнен, DOM готов к интерактивности.</p>
+          <div class="metric-impact">
+            <span class="metric-arrow">↓</span>
+            <span>мгновенный отклик</span>
+          </div>
+        </div>
+        <div class="metric-card metric-card-cls">
+          <div class="metric-badge">СТАБИЛЬНОСТЬ</div>
+          <h3>Визуальная стабильность</h3>
+          <p>Полностью отрендеренная страница отображается стабильно — без прыжков контента при загрузке изображений и шрифтов.</p>
+          <div class="metric-impact">
+            <span class="metric-arrow">↓</span>
+            <span>0 сдвигов</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Поведенческие метрики -->
+      <div class="behavior-section reveal">
+        <h3 class="api-section-title">
+          <span class="api-section-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </span>
+          Поведенческие факторы
+        </h3>
+        <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 24px;">Типичные результаты оптимизации скорости загрузки</p>
+        <div class="behavior-grid">
+          <div class="behavior-card">
+            <div class="behavior-stat">
+              <span class="behavior-value">−35%</span>
+              <span class="behavior-label">Показатель отказов</span>
+            </div>
+            <p>Пользователи не уходят с медленных страниц — они загружаются до того, как появится желание закрыть вкладку</p>
+          </div>
+          <div class="behavior-card">
+            <div class="behavior-stat">
+              <span class="behavior-value">+40%</span>
+              <span class="behavior-label">Глубина просмотра</span>
+            </div>
+            <p>Мгновенные переходы снижают «трение» навигации — пользователи просматривают больше страниц за визит</p>
+          </div>
+          <div class="behavior-card">
+            <div class="behavior-stat">
+              <span class="behavior-value">+25%</span>
+              <span class="behavior-label">Время на сайте</span>
+            </div>
+            <p>Быстрый сайт воспринимается как качественный — посетители задерживаются дольше и возвращаются чаще</p>
+          </div>
+          <div class="behavior-card">
+            <div class="behavior-stat">
+              <span class="behavior-value">+15%</span>
+              <span class="behavior-label">Конверсия</span>
+            </div>
+            <p>Каждые 100мс задержки снижают конверсию. Мгновенная загрузка убирает этот барьер полностью</p>
+          </div>
+        </div>
+        <p style="font-size: 0.8125rem; color: var(--text-muted); margin-top: 20px; text-align: center;">
+          *Данные основаны на исследованиях Google, Amazon, Walmart по влиянию скорости загрузки на метрики сайтов
+        </p>
+      </div>
+
+      <!-- Заметка о UX -->
+      <div class="ux-note reveal">
+        <div class="ux-note-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>
+            </svg>
+          </div>
+        <div class="ux-note-content">
+          <h4>Пользователи не ждут</h4>
+          <p>53% мобильных пользователей покидают сайт, если он загружается дольше 3 секунд. С предзагрузкой страницы открываются быстрее, чем пользователь успевает это заметить — создаётся ощущение нативного приложения.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Установка -->
+  <section class="installation" id="install">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">Установка</span>
+        <h2 class="section-title">Одна строка кода</h2>
+        <p class="section-desc">
+          Без сборщиков, без зависимостей, без настройки
+        </p>
+      </div>
+      <div class="install-options reveal">
+        <div class="install-card">
+          <div class="install-card-header">
+            <h3>CDN <span style="font-size: 0.85em; font-weight: 500;">(для небольших проектов)</span></h3>
+            <span class="install-tag">production</span>
+          </div>
+          <div class="install-code">
+            <div class="code-window code-window-small" style="margin: 0;">
+              <div class="code-content">
+<code id="install-cdn-code"><span class="code-tag">&lt;script</span> <span class="code-attr">src</span>=<span class="code-string">"//prefetch.ru/v1.0.5/prefetch.min.js"</span>
+        <span class="code-attr">integrity</span>=<span class="code-string">"sha384-v7uJ6dV33vsw7nZSfVOCS0a3UQBLVcBCpwl55d3Zyz0mZEx4M0w/Sc4xHwcqKyu0"</span>
+        <span class="code-attr">crossorigin</span>=<span class="code-string">"anonymous"</span>
+        <span class="code-attr">type</span>=<span class="code-string">"module"</span>
+        <span class="code-attr">defer</span><span class="code-tag">&gt;&lt;/script&gt;</span></code>
+              </div>
+            </div>
+            <button class="copy-btn" style="margin-top: 12px;" onclick="copyInstallCode(this)">Копировать</button>
+          </div>
+        </div>
+        <div class="install-card">
+          <div class="install-card-header">
+            <h3>npm <span style="font-size: 0.85em; font-weight: 500;">(для проектов с большой посещаемостью)</span></h3>
+            <span class="install-tag">package</span>
+          </div>
+          <div class="install-code">
+            <div class="code-copy">
+              <code>npm install @prefetchru/prefetch</code>
+              <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
+            </div>
+            <div class="code-copy">
+              <code>import '@prefetchru/prefetch'</code>
+              <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
+            </div>
+          </div>
+          <p style="font-size: 0.8125rem; color: var(--text-muted); margin-top: 16px; padding: 0 28px 16px;">Просим использовать <span style="color: var(--text-secondary);">для высоконагруженных проектов</span> или собственной сборки</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Документация API -->
+  <section class="api" id="api">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">API</span>
+        <h2 class="section-title">Настройка и управление</h2>
+        <p class="section-desc">
+          Data-атрибуты для конфигурации и JavaScript API для программного контроля
+        </p>
+      </div>
+
+      <!-- Атрибуты body -->
+      <div class="api-section reveal">
+        <h3 class="api-section-title">
+          <span class="api-section-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </span>
+          Глобальные атрибуты &lt;body&gt;
+        </h3>
+        <div class="api-grid">
+          <div class="api-card">
+            <div class="api-card-header">
+              <code class="api-attr">data-prefetch-intensity</code>
+            </div>
+            <p class="api-card-desc">Режим срабатывания предзагрузки</p>
+            <div class="api-values">
+              <div class="api-value"><code>65</code><span>задержка hover в мс (по умолчанию)</span></div>
+              <div class="api-value"><code>mousedown</code><span>по нажатию кнопки мыши</span></div>
+              <div class="api-value"><code>viewport</code><span>при появлении в видимой области (mobile)</span></div>
+              <div class="api-value"><code>viewport-all</code><span>viewport для всех устройств</span></div>
+            </div>
+          </div>
+          <div class="api-card">
+            <div class="api-card-header">
+              <code class="api-attr">data-prefetch-specrules</code>
+            </div>
+            <p class="api-card-desc">Включить Speculation Rules API (Chromium 109+). Требует явного указания атрибута</p>
+            <div class="api-values">
+              <div class="api-value"><code>(пусто)</code><span>prefetch — предзагрузка HTML</span></div>
+              <div class="api-value"><code>prerender</code><span>полный рендер страницы в фоне</span></div>
+              <div class="api-value"><code>no</code><span>явно отключить Speculation Rules</span></div>
+            </div>
+          </div>
+          <div class="api-card">
+            <div class="api-card-header">
+              <code class="api-attr">data-prefetch-whitelist</code>
+            </div>
+            <p class="api-card-desc">Режим белого списка — загружать только ссылки с атрибутом <code>data-prefetch</code></p>
+          </div>
+          <div class="api-card">
+            <div class="api-card-header">
+              <code class="api-attr">data-prefetch-allow-query-string</code>
+            </div>
+            <p class="api-card-desc">Разрешить ссылки с параметрами (?id=1, ?page=2)</p>
+          </div>
+          <div class="api-card">
+            <div class="api-card-header">
+              <code class="api-attr">data-prefetch-allow-external-links</code>
+            </div>
+            <p class="api-card-desc">Разрешить внешние ссылки (другие домены)</p>
+          </div>
+          <div class="api-card">
+            <div class="api-card-header">
+              <code class="api-attr">data-prefetch-observe-dom</code>
+            </div>
+            <p class="api-card-desc">Отслеживать новые ссылки в DOM (для SPA)</p>
+          </div>
+          <div class="api-card">
+            <div class="api-card-header">
+              <code class="api-attr">data-prefetch-nonce</code>
+            </div>
+            <p class="api-card-desc">Nonce для CSP. Используется для вставки speculationrules на сайтах со строгим CSP</p>
+          </div>
+          <div class="api-card">
+            <div class="api-card-header">
+              <code class="api-attr">data-prefetch-prerender-all</code>
+            </div>
+            <p class="api-card-desc">Разрешить prerender для всех ссылок (не рекомендуется — может влиять на аналитику)</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Атрибуты ссылок -->
+      <div class="api-section reveal">
+        <h3 class="api-section-title">
+          <span class="api-section-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+            </svg>
+          </span>
+          Атрибуты ссылок &lt;a&gt;
+        </h3>
+        <div class="api-grid">
+          <div class="api-card">
+            <div class="api-card-header">
+              <code class="api-attr">data-prefetch</code>
+            </div>
+            <p class="api-card-desc">Включить предзагрузку для ссылки. Используется в режиме whitelist или для включения внешних ссылок/query string.</p>
+          </div>
+          <div class="api-card">
+            <div class="api-card-header">
+              <code class="api-attr">data-no-prefetch</code>
+            </div>
+            <p class="api-card-desc">Исключить ссылку из предзагрузки. Полезно для ссылок корзины, авторизации и т.д.</p>
+          </div>
+          <div class="api-card">
+            <div class="api-card-header">
+              <code class="api-attr">data-prefetch-prerender</code>
+            </div>
+            <p class="api-card-desc">Точечный prerender для ссылки. Работает при <code>data-prefetch-specrules="prerender"</code> на body.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- JavaScript API -->
+      <div class="api-section reveal">
+        <h3 class="api-section-title">
+          <span class="api-section-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m7.5 4.27 9 5.15"/>
+              <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>
+              <path d="m3.3 7 8.7 5 8.7-5"/>
+              <path d="M12 22V12"/>
+            </svg>
+          </span>
+          JavaScript API
+        </h3>
+        <div class="api-js-card">
+          <div class="code-window">
+            <div class="code-header">
+              <span class="code-dot"></span>
+              <span class="code-dot"></span>
+              <span class="code-dot"></span>
+              <span class="code-title">script.js</span>
+            </div>
+            <div class="code-content">
+<code><span class="code-comment">// Объект window.Prefetch доступен после загрузки скрипта</span>
+
+<span class="code-comment">// Версия библиотеки</span>
+<span class="code-keyword">console</span>.<span class="code-attr">log</span>(Prefetch.<span class="code-attr">version</span>)  <span class="code-comment">// "1.0.5"</span>
+
+<span class="code-comment">// Программная предзагрузка URL</span>
+Prefetch.<span class="code-attr">preload</span>(<span class="code-string">'/catalog/product-123'</span>)</code>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Примеры -->
+      <div class="api-section reveal">
+        <h3 class="api-section-title">
+          <span class="api-section-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/>
+              <path d="M9 18h6"/>
+              <path d="M10 22h4"/>
+            </svg>
+          </span>
+          Примеры использования
+        </h3>
+        <div class="api-examples">
+          <div class="api-example">
+            <h4>Базовое использование</h4>
+            <div class="code-window code-window-small">
+              <div class="code-content">
+<code><span class="code-comment">&lt;!-- Добавьте перед &lt;/body&gt; --&gt;</span>
+<span class="code-tag">&lt;script</span> <span class="code-attr">src</span>=<span class="code-string">"//prefetch.ru/v1.0.5/prefetch.min.js"</span>
+        <span class="code-attr">integrity</span>=<span class="code-string">"sha384-v7uJ6dV33vsw7nZSfVOCS0a3UQBLVcBCpwl55d3Zyz0mZEx4M0w/Sc4xHwcqKyu0"</span>
+        <span class="code-attr">crossorigin</span>=<span class="code-string">"anonymous"</span>
+        <span class="code-attr">type</span>=<span class="code-string">"module"</span>
+        <span class="code-attr">defer</span><span class="code-tag">&gt;&lt;/script&gt;</span></code>
+              </div>
+            </div>
+          </div>
+          <div class="api-example">
+            <h4>Prerender для максимальной скорости</h4>
+            <div class="code-window code-window-small">
+              <div class="code-content">
+<code><span class="code-tag">&lt;body</span> <span class="code-attr">data-prefetch-specrules</span>=<span class="code-string">"prerender"</span><span class="code-tag">&gt;</span>
+  <span class="code-comment">&lt;!-- Страницы полностью отрисовываются в фоне --&gt;</span>
+<span class="code-tag">&lt;/body&gt;</span></code>
+              </div>
+            </div>
+          </div>
+          <div class="api-example">
+            <h4>Только выбранные ссылки</h4>
+            <div class="code-window code-window-small">
+              <div class="code-content">
+<code><span class="code-tag">&lt;body</span> <span class="code-attr">data-prefetch-whitelist</span><span class="code-tag">&gt;</span>
+  <span class="code-tag">&lt;a</span> <span class="code-attr">href</span>=<span class="code-string">"/catalog"</span> <span class="code-attr">data-prefetch</span><span class="code-tag">&gt;</span>Каталог<span class="code-tag">&lt;/a&gt;</span>
+  <span class="code-tag">&lt;a</span> <span class="code-attr">href</span>=<span class="code-string">"/cart"</span><span class="code-tag">&gt;</span>Корзина<span class="code-tag">&lt;/a&gt;</span> <span class="code-comment">&lt;!-- не загружается --&gt;</span>
+<span class="code-tag">&lt;/body&gt;</span></code>
+              </div>
+            </div>
+          </div>
+          <div class="api-example">
+            <h4>Исключение ссылок</h4>
+            <div class="code-window code-window-small">
+              <div class="code-content">
+<code><span class="code-tag">&lt;a</span> <span class="code-attr">href</span>=<span class="code-string">"/logout"</span> <span class="code-attr">data-no-prefetch</span><span class="code-tag">&gt;</span>Выйти<span class="code-tag">&lt;/a&gt;</span>
+<span class="code-tag">&lt;a</span> <span class="code-attr">href</span>=<span class="code-string">"/order/delete/123"</span> <span class="code-attr">data-prefetch-no</span><span class="code-tag">&gt;</span>Удалить заказ<span class="code-tag">&lt;/a&gt;</span>
+<span class="code-comment">&lt;!-- /cart, /add, /delete автоисключены --&gt;</span></code>
+              </div>
+            </div>
+          </div>
+          <div class="api-example">
+            <h4>CSP с nonce</h4>
+            <div class="code-window code-window-small">
+              <div class="code-content">
+<code><span class="code-tag">&lt;body</span> <span class="code-attr">data-prefetch-specrules</span>
+      <span class="code-attr">data-prefetch-nonce</span>=<span class="code-string">"abc123"</span><span class="code-tag">&gt;</span>
+  <span class="code-comment">&lt;!-- или nonce на скрипте --&gt;</span>
+  <span class="code-tag">&lt;script</span> <span class="code-attr">src</span>=<span class="code-string">"//prefetch.ru/v1.0.5/prefetch.min.js"</span> <span class="code-attr">integrity</span>=<span class="code-string">"sha384-v7uJ6dV33vsw7nZSfVOCS0a3UQBLVcBCpwl55d3Zyz0mZEx4M0w/Sc4xHwcqKyu0"</span> <span class="code-attr">crossorigin</span>=<span class="code-string">"anonymous"</span> <span class="code-attr">nonce</span>=<span class="code-string">"abc123"</span> <span class="code-attr">type</span>=<span class="code-string">"module"</span> <span class="code-attr">defer</span><span class="code-tag">&gt;&lt;/script&gt;</span>
+<span class="code-tag">&lt;/body&gt;</span></code>
+              </div>
+            </div>
+          </div>
+          <div class="api-example">
+            <h4>Точечный prerender</h4>
+            <div class="code-window code-window-small">
+              <div class="code-content">
+<code><span class="code-tag">&lt;body</span> <span class="code-attr">data-prefetch-specrules</span>=<span class="code-string">"prerender"</span><span class="code-tag">&gt;</span>
+  <span class="code-tag">&lt;a</span> <span class="code-attr">href</span>=<span class="code-string">"/pricing"</span> <span class="code-attr">data-prefetch-prerender</span><span class="code-tag">&gt;</span>Тарифы<span class="code-tag">&lt;/a&gt;</span>
+  <span class="code-tag">&lt;a</span> <span class="code-attr">href</span>=<span class="code-string">"/blog"</span><span class="code-tag">&gt;</span>Блог<span class="code-tag">&lt;/a&gt;</span> <span class="code-comment">&lt;!-- prefetch --&gt;</span>
+<span class="code-tag">&lt;/body&gt;</span></code>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Поддержка браузеров -->
+  <section class="browsers">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">Браузеры</span>
+        <h2 class="section-title">Поддержка в России</h2>
+        <p class="section-desc">
+          Оптимизировано для реального российского рынка браузеров
+        </p>
+      </div>
+      <div class="browser-grid reveal">
+        <div class="browser-card">
+          <div class="browser-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M2 12h20"/>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+            </svg>
+          </div>
+          <div class="browser-name">Яндекс.Браузер</div>
+          <div class="browser-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Поддерживается</div>
+        </div>
+        <div class="browser-card">
+          <div class="browser-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="10" fill="#4285f4"/>
+              <circle cx="12" cy="12" r="4" fill="#fff"/>
+            </svg>
+          </div>
+          <div class="browser-name">Chrome</div>
+          <div class="browser-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Да. Speculation Rules</div>
+        </div>
+        <div class="browser-card">
+          <div class="browser-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+            </svg>
+          </div>
+          <div class="browser-name">Safari / iOS</div>
+          <div class="browser-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Да. Fetch fallback</div>
+        </div>
+        <div class="browser-card">
+          <div class="browser-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="10" fill="#3f3f46"/>
+            </svg>
+          </div>
+          <div class="browser-name">Atom (VK)</div>
+          <div class="browser-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Поддерживается</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Почему браузеры так не делают -->
+  <section class="why-browsers" id="why-browsers">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">Честный разговор</span>
+        <h2 class="section-title">Почему браузеры так не делают?</h2>
+        <p class="section-desc">
+          Это не баг и не упущение — это сознательный выбор безопасности
+        </p>
+      </div>
+      
+      <div class="why-grid reveal">
+        <div class="why-card">
+          <div class="why-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+          </div>
+          <h3>GET ≠ безопасно</h3>
+          <p>Многие сайты вешают на GET-ссылки действия: «Удалить», «Добавить в корзину», «Отправить». Браузер предзагрузит — и случайно выполнит действие до клика.</p>
+          <div class="why-solution">
+            <span class="why-solution-label">Наше решение:</span>
+            <span>Автоисключение <code>/cart</code>, <code>/basket</code>, <code>/add</code>, <code>/delete</code>, <code>/remove</code>, <code>/login</code>, <code>/logout</code>, <code>/auth</code>. Плюс <code>data-no-prefetch</code> для точечного контроля</span>
+          </div>
+        </div>
+        
+        <div class="why-card">
+          <div class="why-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="6" width="20" height="12" rx="2"/>
+              <path d="M12 12h.01"/>
+              <path d="M17 12h.01"/>
+              <path d="M7 12h.01"/>
+            </svg>
+          </div>
+          <h3>Лимиты памяти</h3>
+          <p>Prerender держит в памяти целую страницу: 5-50 МБ каждая. Chrome ограничивает: 10 prerender на мобильных, 2 на десктопе. Иначе — тормоза и разряд батареи.</p>
+          <div class="why-solution">
+            <span class="why-solution-label">Наше решение:</span>
+            <span>Prefetch по умолчанию — только HTML. Prerender через <code>data-prefetch-specrules="prerender"</code> opt-in</span>
+          </div>
+        </div>
+        
+        <div class="why-card">
+          <div class="why-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 20v-6M6 20V10M18 20V4"/>
+            </svg>
+          </div>
+          <h3>Конкуренция за канал</h3>
+          <p>Prefetch помечен как «lowest priority», но на практике конкурирует с основным контентом. На медленных сетях это замедляет загрузку текущей страницы.</p>
+          <div class="why-solution">
+            <span class="why-solution-label">Наше решение:</span>
+            <span>Автоотключение на 2G/3G и режиме экономии трафика. Лимиты для мобильных устройств</span>
+          </div>
+        </div>
+        
+        <div class="why-card">
+          <div class="why-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m7.5 4.27 9 5.15"/>
+              <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>
+              <path d="m3.3 7 8.7 5 8.7-5"/>
+              <path d="M12 22V12"/>
+            </svg>
+          </div>
+          <h3>Побочные эффекты JS</h3>
+          <p>Prerender выполняет весь JavaScript целевой страницы. Старая аналитика засчитает просмотр, API получит запрос, видео запустится — до реального перехода.</p>
+          <div class="why-solution">
+            <span class="why-solution-label">Наше решение:</span>
+            <span>Prefetch по умолчанию — скрипты НЕ выполняются. Prerender только по opt-in</span>
+          </div>
+        </div>
+        
+        <div class="why-card">
+          <div class="why-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="2" y1="12" x2="22" y2="12"/>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+            </svg>
+          </div>
+          <h3>Firefox и Safari против</h3>
+          <p>Speculation Rules — API только для Chromium. Firefox и Safari сознательно отклонили эту функцию как преждевременную. 30%+ трафика без поддержки.</p>
+          <div class="why-solution">
+            <span class="why-solution-label">Наше решение:</span>
+            <span>Работаем везде: fallback на fetch с force-cache для Safari/iOS, <code>rel=prefetch</code> для Firefox</span>
+          </div>
+        </div>
+        
+        <div class="why-card">
+          <div class="why-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/>
+              <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/>
+              <path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/>
+            </svg>
+          </div>
+          <h3>Состояние сессии</h3>
+          <p>Между prefetch и переходом может измениться CSRF-токен, session-ID или cookies. Кэш станет неактуальным — странное поведение на сайте.</p>
+          <div class="why-solution">
+            <span class="why-solution-label">Наше решение:</span>
+            <span><code>/login</code>, <code>/logout</code>, <code>/auth</code>, <code>/register</code>, <code>/cart</code> исключены. Для остального — <code>data-no-prefetch</code></span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="why-summary reveal">
+        <div class="why-summary-icon">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/>
+            <path d="M9 18h6"/>
+            <path d="M10 22h4"/>
+          </svg>
+        </div>
+        <div class="why-summary-content">
+          <h4>Почему нам можно</h4>
+          <p>Браузеры консервативны, потому что работают со <strong>всеми сайтами в интернете</strong>. Мы добавили умные исключения по умолчанию и дали вам <code style="font-family: var(--font-mono); font-size: 0.875rem; background: var(--accent-glow); color: var(--accent); padding: 2px 8px; border-radius: 4px;">data-атрибуты</code> для точной настройки под ваш сайт.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Компромиссы -->
+  <section class="tradeoffs" id="tradeoffs">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">Честные минусы</span>
+        <h2 class="section-title">Цена мгновенности</h2>
+        <p class="section-desc">
+          Небольшой трафик «впустую» — это плата за мгновенную загрузку для тех, кто реально перешёл
+        </p>
+      </div>
+      
+      <div class="tradeoffs-grid reveal">
+        <div class="tradeoff-card">
+          <div class="tradeoff-stat">
+            <span class="tradeoff-value">+10-20%</span>
+            <span class="tradeoff-label">трафика</span>
+          </div>
+          <p>Часть prefetch-запросов не приведёт к переходу — пользователь передумал или навёл случайно. Это нормально.</p>
+        </div>
+        
+        <div class="tradeoff-card">
+          <div class="tradeoff-stat">
+            <span class="tradeoff-value">+5-15%</span>
+            <span class="tradeoff-label">нагрузки на сервер</span>
+          </div>
+          <p>Дополнительные запросы к серверу. На большинстве сайтов незаметно, но на highload стоит мониторить.</p>
+        </div>
+        
+        <div class="tradeoff-card">
+          <div class="tradeoff-stat">
+            <span class="tradeoff-value tradeoff-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+            <span class="tradeoff-label">Проверка ссылок</span>
+          </div>
+          <p>Основные исключения встроены. Проверьте свои GET-ссылки — если есть действия, добавьте <code style="font-family: var(--font-mono); font-size: 0.75rem; background: var(--accent-glow); color: var(--accent); padding: 2px 6px; border-radius: 4px;">data-no-prefetch</code></p>
+        </div>
+        
+        <div class="tradeoff-card">
+          <div class="tradeoff-stat">
+            <span class="tradeoff-value tradeoff-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h.01"/><path d="M7 20v-4"/><path d="M12 20v-8"/><path d="M17 20V8"/><path d="M22 4v16"/></svg></span>
+            <span class="tradeoff-label">Медленные сети</span>
+          </div>
+          <p>На 2G/3G prefetch может конкурировать с основным контентом. Мы отключаемся автоматически, но edge-cases возможны.</p>
+        </div>
+      </div>
+      
+      <div class="tradeoffs-roi reveal">
+        <div class="tradeoffs-roi-left">
+          <div class="tradeoffs-roi-label">ROI</div>
+          <div class="tradeoffs-roi-value">Всегда в плюс</div>
+        </div>
+        <div class="tradeoffs-roi-right">
+          <p>10-20% «лишнего» трафика против −35% отказов и +40% глубины просмотра. Мгновенная навигация конвертирует лучше, чем экономия на prefetch-запросах.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Приватность -->
+  <section class="privacy" id="privacy">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">Приватность</span>
+        <h2 class="section-title">Полная безопасность</h2>
+        <p class="section-desc">
+          Скрипт работает локально в браузере пользователя и не передаёт никакие данные
+        </p>
+      </div>
+      <div class="privacy-grid reveal">
+        <div class="privacy-card">
+          <div class="privacy-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="m4.9 4.9 14.2 14.2"/>
+            </svg>
+          </div>
+          <h3>Без cookies</h3>
+          <p>Скрипт не устанавливает и не читает cookies. Никаких баннеров о согласии не требуется.</p>
+        </div>
+        <div class="privacy-card">
+          <div class="privacy-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 3v18h18"/>
+              <path d="m19 9-5 5-4-4-3 3"/>
+            </svg>
+          </div>
+          <h3>Без аналитики</h3>
+          <p>Не собираем статистику, не трекаем пользователей, не передаём данные третьим сторонам.</p>
+        </div>
+        <div class="privacy-card">
+          <div class="privacy-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+          </div>
+          <h3>Серверы в России</h3>
+          <p>CDN на базе <a href="https://yandex.cloud/ru/security" target="_blank" rel="noopener">Yandex Cloud</a>. Все ресурсы размещены на территории Российской Федерации.</p>
+        </div>
+        <div class="privacy-card">
+          <div class="privacy-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/>
+              <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
+              <path d="M10 9H8"/>
+              <path d="M16 13H8"/>
+              <path d="M16 17H8"/>
+            </svg>
+          </div>
+          <h3>Открытый код</h3>
+          <p>MIT лицензия. Весь исходный код доступен на GitHub — проверяйте, форкайте, улучшайте.</p>
+        </div>
+        <div class="privacy-card">
+          <div class="privacy-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 9.9-1"/>
+            </svg>
+          </div>
+          <h3>Локальная работа</h3>
+          <p>Весь код исполняется в браузере пользователя. Никаких серверных запросов к нашим серверам.</p>
+        </div>
+        <div class="privacy-card">
+          <div class="privacy-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+              <path d="m9 11 3 3L22 4"/>
+            </svg>
+          </div>
+          <h3>Соответствие 152-ФЗ</h3>
+          <p>Не обрабатывает персональные данные. Не требует согласия пользователей и политики конфиденциальности.</p>
+        </div>
+      </div>
+      <div class="privacy-note reveal">
+        <div class="privacy-note-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 16v-4"/>
+            <path d="M12 8h.01"/>
+          </svg>
+        </div>
+        <p>Мы загружаем только статический JavaScript-файл. Скрипт не делает никаких запросов к внешним серверам, не собирает fingerprints, не использует localStorage/sessionStorage для отслеживания. Ваши пользователи остаются анонимными.</p>
+      </div>
+
+      <!-- Безопасность SRI -->
+      <div class="behavior-section reveal">
+        <h3 class="api-section-title">
+          <span class="api-section-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+              <path d="M12 8v4"/>
+              <path d="M12 16h.01"/>
+            </svg>
+          </span>
+          Защита от подмены (SRI)
+        </h3>
+        <div class="behavior-grid" style="grid-template-columns: repeat(4, 1fr);">
+          <div class="behavior-card">
+            <div class="behavior-stat">
+              <span class="behavior-value" style="font-size: 1.25rem;">integrity</span>
+              <span class="behavior-label">SRI Hash</span>
+            </div>
+            <p>Браузер проверяет хэш-сумму файла. Если хостинг взломают и подменят код — скрипт просто не загрузится</p>
+          </div>
+          <div class="behavior-card">
+            <div class="behavior-stat">
+              <span class="behavior-value" style="font-size: 1.25rem;">crossorigin</span>
+              <span class="behavior-label">anonymous</span>
+            </div>
+            <p>Запрос без cookies и credentials. Наш сервер не получает никаких данных о пользователе — полная анонимность</p>
+          </div>
+          <div class="behavior-card">
+            <div class="behavior-stat">
+              <span class="behavior-value" style="font-size: 1.25rem;">type</span>
+              <span class="behavior-label">module</span>
+            </div>
+            <p>ES-модуль в строгом режиме. Изолированная область видимости, не загрязняет глобальный window</p>
+          </div>
+          <div class="behavior-card">
+            <div class="behavior-stat">
+              <span class="behavior-value" style="font-size: 1.25rem;">defer</span>
+              <span class="behavior-label">async load</span>
+            </div>
+            <p>Загрузка не блокирует рендер страницы. Скрипт выполнится после парсинга DOM</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="ux-note reveal" style="margin-top: 32px;">
+        <div class="ux-note-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+              <path d="m9 12 2 2 4-4"/>
+            </svg>
+          </div>
+        <div class="ux-note-content">
+          <h4>Максимальный уровень паранойи</h4>
+          <p>Не доверяете внешним CDN? Это нормально. Клонируйте <a href="https://github.com/prefetch-ru/prefetch" target="_blank" style="color: var(--accent);">репозиторий</a>, проверьте код, соберите локально командой <code style="font-family: var(--font-mono); font-size: 0.875rem; color: var(--accent); background: var(--accent-glow); padding: 2px 8px; border-radius: 4px;">npm run build</code> и хостите на своём сервере. Полный контроль — это ваше право.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Призыв к действию -->
+  <section class="cta">
+    <div class="container">
+      <div class="cta-content reveal">
+        <h2>Ускорьте свой сайт сегодня</h2>
+        <p>Мгновенная загрузка страниц — это одна строка кода</p>
+        <div class="hero-actions">
+          <a href="#install" class="btn btn-primary">Начать бесплатно</a>
+          <a href="https://github.com/prefetch-ru/prefetch" target="_blank" class="btn btn-secondary">Документация</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Послесловие -->
+  <section class="ps-section">
+    <div class="container">
+      <div class="ps-content reveal">
+        <span class="ps-label">P.S.</span>
+        <h3 class="ps-title">Почему бесплатно?</h3>
+        <p class="ps-subtitle">Потому что это не стартап. Это скрипт.</p>
+        <p class="ps-punch">Стартап продаёт инфраструктуру. Скрипт — это честность.</p>
+        <p style="font-size: 0.9375rem; color: var(--text-secondary); margin-top: 32px; line-height: 1.7;">
+          Тем не менее, CDN и обслуживание стоят денег. Если хотите стать спонсором (ресурсами хостинга или оплатой) — с радостью добавлю ваш логотип. Пишите на: <a href="mailto:feedback@prefetch.ru" style="color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(34, 211, 238, 0.3); transition: border-color 0.2s ease;">feedback@prefetch.ru</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Подвал сайта -->
+  <footer>
+    <div class="container">
+      <a href="#" class="logo">
+        <span class="logo-icon"><svg width="32" height="32" viewBox="0 0 2048 2048" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient gradientUnits="userSpaceOnUse" id="logoGradient2" x1="1736.88" x2="878.53" y1="1055.66" y2="962.241"><stop offset="0" stop-color="rgb(101,5,238)" stop-opacity="1"></stop><stop offset="1" stop-color="rgb(167,9,247)" stop-opacity="1"></stop></linearGradient></defs><path d="M 1228.84 319.14 C 1241.17 318.114 1273.11 319.104 1286.65 319.118 L 1795.55 319.14 C 1842.74 319.98 1808.24 359.005 1795.55 376.961 C 1786.59 391.545 1769.55 412.897 1758.83 427.379 L 1522.25 752.934 C 1501.79 781.534 1482.79 807.26 1462.91 836.51 L 1634.88 836.551 C 1653.33 836.552 1734.11 833.996 1745.4 838.297 C 1783.2 852.688 1716.47 903.593 1705.81 915.01 L 964.859 1702.45 C 946.665 1722.67 920.205 1711.34 929.627 1687.91 C 938.192 1666.61 947.84 1645.76 957.27 1624.92 L 1197.52 1078.1 L 968.638 1078.05 C 952.945 1078.04 888.845 1080.47 878.948 1076.94 C 853.218 1067.78 877.83 1031.59 884.971 1016.92 L 972.665 836.983 C 983.233 814.793 993.169 792.273 1004.61 770.481 C 1016.72 747.408 1036.63 757.614 1042.87 777.672 C 1039.21 789.818 1019.73 826.469 1013.35 840.363 C 982.586 907.341 947.871 973.019 917.029 1040.02 L 1137.3 1040.01 C 1154.24 1040.01 1227.05 1038.75 1238.16 1041.91 C 1258.49 1058.01 1232.5 1095.05 1223.29 1115.46 L 1089.15 1421.55 C 1065.87 1474.52 1039.95 1531.11 1019.07 1584.88 C 1053.49 1551.51 1087.07 1512.78 1119.92 1477.8 L 1692.48 875.901 L 1515.14 875.901 C 1498.53 875.912 1377.78 889.125 1407.91 846.16 C 1416.68 833.644 1426.22 822.04 1435.16 809.716 L 1565.95 625.582 C 1630.11 535.485 1695.81 445.841 1762.85 357.91 L 1249.93 357.91 C 1195.69 459.701 1147.74 568.058 1095.59 671.417 C 1089.13 684.222 1080.94 706.134 1072.79 716.694 C 1059.88 733.431 1028.03 719.412 1040.98 692.957 L 1189.45 395.873 C 1198.76 377.471 1217.21 331.445 1228.84 319.14 z" fill="url(#logoGradient2)"></path><path d="M 1795.55 319.14 C 1842.74 319.98 1808.24 359.005 1795.55 376.961 C 1795.03 366.114 1811.57 356.38 1814.18 347.751 L 1813.28 346.412 C 1810.05 346.255 1809.12 346.4 1806.11 345.032 C 1792.76 322.601 1821.11 321.066 1780.19 320.714 C 1785.34 320.408 1789.43 320.215 1794.56 319.32 L 1795.55 319.14 z" fill="rgb(36,0,238)"></path><path d="M 556.732 447.35 L 942.181 447.333 C 952.301 447.329 973.09 445.821 982.179 447.65 C 1003.45 451.93 1000.25 475.272 985.01 485.939 C 976.901 487.103 962.057 486.121 953.247 486.044 L 671.5 485.939 L 298.899 485.985 C 280.23 486.019 230.24 493.832 228.85 468.254 C 227.406 441.683 271.839 447.258 289.81 447.333 L 556.732 447.35 z" fill="rgb(212,0,241)"></path><path d="M 268.422 1328.83 L 869.254 1328.81 C 894.275 1328.81 919.235 1328.61 944.317 1329.06 C 969.28 1329.5 971.095 1353.36 955.053 1366.96 C 943.74 1369.59 940.638 1368.61 929.267 1366.96 C 900.873 1370.03 858.03 1366.94 827.878 1366.95 L 291.004 1366.97 C 278.2 1367 241.371 1369.63 235.615 1361.63 C 211.289 1327.84 252.437 1328.57 268.422 1328.83 z" fill="rgb(212,0,241)"></path><path d="M 326.779 1551.81 L 731.739 1551.75 C 749.041 1551.72 766.732 1551.52 784.017 1551.96 C 809.336 1552.8 811.755 1586.79 789.795 1589.97 C 782.697 1590.99 772.445 1590.11 764.449 1590.09 L 708.75 1590.04 L 303.012 1590.1 C 285.309 1590.12 267.687 1590.31 249.937 1589.86 C 225.622 1589.24 223.355 1554.61 245.555 1552.92 C 271.855 1550.93 300.399 1551.75 326.779 1551.81 z" fill="rgb(212,0,241)"></path><path d="M 728.981 888.105 C 741.379 888.166 782.387 884.884 791.328 891.52 C 803.977 900.91 801.84 925.889 779.22 926.407 C 763.053 926.777 744.432 926.793 727.596 926.779 L 301.836 926.718 C 288.589 926.768 244.426 929.857 235.054 921.992 C 220.14 909.475 228.244 890.21 246.101 888.662 C 264.39 887.077 283.501 888.072 301.867 888.079 L 728.981 888.105 z" fill="rgb(212,0,241)"></path><path d="M 242.109 1110.98 C 323.9 1109.54 410.411 1110.99 492.561 1110.99 L 614.419 1110.94 C 632.299 1110.92 676.64 1109.28 694.432 1112.98 C 706.136 1115.41 714.78 1142.15 692.432 1150.01 C 676.525 1150.63 656.617 1150.07 640.365 1150.05 L 242.109 1150.01 C 224.962 1139.29 221.742 1120.28 242.109 1110.98 z" fill="rgb(212,0,241)"></path><path d="M 645.676 668.894 C 705.451 667.23 772.401 668.972 832.916 668.975 L 886.793 668.757 C 895.339 668.711 912.466 667.684 920.186 669.769 C 940.714 675.312 939.868 697.575 921.867 707.009 C 910.22 708.056 888.736 707.042 875.91 707.034 L 694.785 707.045 C 681.43 707.044 662.059 708.179 649.42 706.124 C 628.084 702.654 629.29 679.822 645.676 668.894 z" fill="rgb(212,0,241)"></path><path d="M 242.109 668.894 L 370.684 668.879 C 389.638 668.873 413.025 667.517 431.783 670.009 C 446.501 671.965 447.026 698.664 429.304 707.009 C 381.258 710.38 286.528 709.755 241.125 705.716 C 228.528 704.596 218.869 679.484 242.109 668.894 z" fill="rgb(212,0,241)"></path></svg></span>
+        prefetch.ru
+      </a>
+      <ul class="footer-links">
+        <li><a href="#privacy">Приватность</a></li>
+        <li><a href="https://github.com/prefetch-ru/prefetch" target="_blank">GitHub</a></li>
+        <li><a href="https://github.com/prefetch-ru/prefetch/issues" target="_blank">Issues</a></li>
+      </ul>
+      <span class="footer-copy"><a href="#" class="footer-license-link" onclick="showLicense('ru'); return false;">Открытая лицензия (ст. 1286.1 ГК РФ)</a> <a href="#" class="footer-license-link" onclick="showLicense('en'); return false;">MIT</a> © <span id="copyright-year">2026</span> Сергей Макаров</span>
+    </div>
+  </footer>
+
+  <!-- Модальное окно лицензии -->
+  <div class="license-modal" id="licenseModal" role="dialog" aria-modal="true" aria-labelledby="licenseModalTitle">
+    <div class="license-modal-content">
+      <div class="license-modal-header">
+        <h3 class="license-modal-title" id="licenseModalTitle">Лицензия</h3>
+        <button class="license-modal-close" onclick="closeLicenseModal()" aria-label="Закрыть">×</button>
+      </div>
+      <div class="license-modal-body">
+        <pre class="license-modal-text" id="licenseModalText">Загрузка...</pre>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Обновление года в копирайте
+    (function() {
+      const yearElement = document.getElementById('copyright-year');
+      if (yearElement) {
+        try {
+          const currentYear = new Date().getFullYear();
+          yearElement.textContent = currentYear;
+        } catch (e) {
+          // Запасной вариант 2026 уже указан в HTML
+          console.warn('Не удалось обновить год копирайта:', e);
+        }
+      }
+    })();
+
+    // Анимация появления при скролле
+    const reveals = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    });
+
+    reveals.forEach(el => revealObserver.observe(el));
+
+    // Копирование кода
+    function copyCode(btn) {
+      const code = btn.previousElementSibling.textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        btn.textContent = 'Скопировано!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Копировать';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+
+    // Копирование кода из главного экрана (без комментария)
+    function copyHeroCode(btn) {
+      const codeEl = document.getElementById('hero-code-to-copy');
+      const code = codeEl.textContent.trim();
+      navigator.clipboard.writeText(code).then(() => {
+        btn.querySelector('span').textContent = 'Скопировано!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.querySelector('span').textContent = 'Копировать';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+
+    // Копирование кода из блока установки CDN
+    function copyInstallCode(btn) {
+      const codeEl = document.getElementById('install-cdn-code');
+      const code = codeEl.textContent.trim();
+      navigator.clipboard.writeText(code).then(() => {
+        btn.textContent = 'Скопировано!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Копировать';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+
+    // Плавная прокрутка для якорных ссылок
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        // Пропускаем ссылки с onclick (например, модальные окна)
+        if (this.hasAttribute('onclick')) return;
+        
+        // Пропускаем демо-ссылки
+        if (this.hasAttribute('data-demo')) return;
+        
+        const href = this.getAttribute('href');
+        
+        // Пропускаем пустые хэши
+        if (!href || href === '#') return;
+        
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Скрытие шапки при прокрутке вниз
+    let lastScroll = 0;
+    const header = document.querySelector('header');
+
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.pageYOffset;
+      if (currentScroll > lastScroll && currentScroll > 100) {
+        header.style.transform = 'translateY(-100%)';
+      } else {
+        header.style.transform = 'translateY(0)';
+      }
+      lastScroll = currentScroll;
+    }, { passive: true });
+
+    // Модальное окно лицензии
+    function showLicense(type) {
+      const modal = document.getElementById('licenseModal');
+      const title = document.getElementById('licenseModalTitle');
+      const text = document.getElementById('licenseModalText');
+      const closeBtn = modal.querySelector('.license-modal-close');
+      
+      // Установка заголовка
+      if (type === 'ru') {
+        title.textContent = 'Открытая лицензия MIT (ст. 1286.1 ГК РФ)';
+      } else {
+        title.textContent = 'MIT License';
+      }
+      
+      // Показываем модальное окно сразу
+      modal.classList.add('active');
+      text.textContent = 'Загрузка...';
+      
+      // Управление фокусом
+      setTimeout(() => closeBtn.focus(), 100);
+      
+      // Загрузка текста лицензии
+      const licenseFile = type === 'ru' ? 'license.ru.txt' : 'license.txt';
+      fetch(licenseFile)
+        .then(response => {
+          if (!response.ok) throw new Error('Файл не найден');
+          return response.text();
+        })
+        .then(content => {
+          text.textContent = content;
+        })
+        .catch(error => {
+          console.error('Ошибка загрузки лицензии:', error);
+          text.textContent = 'Не удалось загрузить текст лицензии.\nПопробуйте обновить страницу.';
+        });
+    }
+
+    function closeLicenseModal() {
+      const modal = document.getElementById('licenseModal');
+      modal.classList.remove('active');
+    }
+
+    // Закрытие модального окна по клику вне его
+    document.getElementById('licenseModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeLicenseModal();
+      }
+    });
+
+    // Закрытие модального окна по клавише ESC
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeLicenseModal();
+      }
+    });
+
+    // Интерактивная демонстрация
+    (function() {
+      const demos = {
+        slow: {
+        hovering: false,
+        clicked: false,
+        hoverTime: 0,
+        clickTime: 0,
+        loadTime: 1200, // Медленная загрузка
+        },
+        fast: {
+          hovering: false,
+          clicked: false,
+          hoverTime: 0,
+          clickTime: 0,
+        prefetchTime: 65,
+        loadTime: 300, // Быстрая предзагрузка
+          prefetchStarted: false,
+          prefetchComplete: false,
+          hoverInterval: null,
+          prefetchTimer: null,
+        }
+      };
+
+      function initDemo(type) {
+        const link = document.querySelector(`[data-demo="${type}"]`);
+        const page = document.getElementById(`demo-${type}-page`);
+        const loading = document.getElementById(`demo-${type}-loading`);
+        const loaded = document.getElementById(`demo-${type}-loaded`);
+        const indicator = document.getElementById(`demo-${type}-indicator`);
+
+        // Проверяем наличие обязательных элементов (loading необязателен для быстрого демо)
+        if (!link || !page || !loaded) {
+          console.warn(`Демо ${type}: отсутствуют обязательные элементы`);
+          return;
+        }
+
+        // Для медленного демо элемент loading обязателен
+        if (type === 'slow' && !loading) {
+          console.warn('Демо slow: отсутствует элемент loading');
+          return;
+        }
+
+        // Обработчик начала наведения/касания
+        const handleHoverStart = () => {
+          if (demos[type].clicked) return;
+          
+          demos[type].hovering = true;
+          demos[type].hoverTime = Date.now();
+
+          if (type === 'fast') {
+            // Очищаем существующие таймеры
+            if (demos[type].hoverInterval) clearInterval(demos[type].hoverInterval);
+            if (demos[type].prefetchTimer) clearTimeout(demos[type].prefetchTimer);
+
+            // Начинаем обновлять время наведения
+            demos[type].hoverInterval = setInterval(() => {
+              if (demos[type].hovering && !demos[type].clicked) {
+                const elapsed = Date.now() - demos[type].hoverTime;
+                // Ограничиваем 10 секундами, затем показываем бесконечность
+                if (elapsed >= 10000) {
+                  updateStat(type, 'hover', '∞');
+                  clearInterval(demos[type].hoverInterval);
+                  demos[type].hoverInterval = null;
+                } else {
+                  updateStat(type, 'hover', Math.round(elapsed) + 'мс');
+                }
+              }
+            }, 10);
+
+            // Запускаем prefetch через 65мс
+            setTimeout(() => {
+              if (demos[type].hovering && !demos[type].clicked) {
+                demos[type].prefetchStarted = true;
+                if (indicator) indicator.classList.add('active');
+                
+                // Обновляем статистику prefetch
+                updateStat(type, 'prefetch', '65мс');
+
+                // Имитируем завершение prefetch
+                demos[type].prefetchTimer = setTimeout(() => {
+                  if (!demos[type].clicked) {
+                    demos[type].prefetchComplete = true;
+                    if (indicator) indicator.classList.remove('active');
+                  }
+                }, demos[type].loadTime);
+              }
+            }, demos[type].prefetchTime);
+          }
+        };
+
+        // Обработчик окончания наведения/касания
+        const handleHoverEnd = () => {
+          demos[type].hovering = false;
+          
+          if (type === 'fast') {
+            // Очищаем интервал наведения
+            if (demos[type].hoverInterval) {
+              clearInterval(demos[type].hoverInterval);
+              demos[type].hoverInterval = null;
+            }
+            
+            // Скрываем индикатор
+            if (indicator && !demos[type].clicked) {
+              indicator.classList.remove('active');
+            }
+          }
+        };
+
+        // События мыши
+        link.addEventListener('mouseenter', handleHoverStart);
+        link.addEventListener('mouseleave', handleHoverEnd);
+
+        // События касания для мобильных устройств
+        link.addEventListener('touchstart', (e) => {
+          // Предотвращаем срабатывание событий мыши после касания
+          e.preventDefault();
+          handleHoverStart();
+        });
+
+        link.addEventListener('touchend', (e) => {
+          e.preventDefault();
+          handleHoverEnd();
+        });
+
+        link.addEventListener('touchcancel', handleHoverEnd);
+
+        // Событие клика
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (demos[type].clicked) return;
+
+          demos[type].clicked = true;
+          demos[type].clickTime = Date.now();
+
+          // Очищаем отложенные таймеры
+          if (type === 'fast' && demos[type].hoverInterval) {
+            clearInterval(demos[type].hoverInterval);
+            demos[type].hoverInterval = null;
+          }
+          if (demos[type].prefetchTimer) {
+            clearTimeout(demos[type].prefetchTimer);
+            demos[type].prefetchTimer = null;
+          }
+
+          // Скрываем начальную страницу
+          if (page) page.classList.remove('active');
+
+          if (type === 'slow') {
+            // Сразу показываем индикатор загрузки
+            if (loading) loading.classList.add('active');
+            
+            // Обновляем статистику
+            updateStat('slow', 'click', '0мс');
+            updateStat('slow', 'start', '0мс');
+
+            // Имитируем загрузку
+            let progress = 0;
+            const progressBar = document.getElementById('demo-slow-progress');
+            const timeDisplay = document.getElementById('demo-slow-time');
+            const startTime = Date.now();
+
+            const interval = setInterval(() => {
+              const elapsed = Date.now() - startTime;
+              progress = Math.min((elapsed / demos[type].loadTime) * 100, 100);
+              
+              if (progressBar) progressBar.style.width = progress + '%';
+              if (timeDisplay) timeDisplay.textContent = Math.round(elapsed);
+
+              if (progress >= 100) {
+                clearInterval(interval);
+                if (loading) loading.classList.remove('active');
+                if (loaded) loaded.classList.add('active');
+                updateStat('slow', 'end', demos[type].loadTime + 'мс');
+              }
+            }, 10);
+          } else {
+            // Быстрое демо
+            if (indicator) indicator.classList.remove('active');
+            
+            if (demos[type].prefetchComplete) {
+              // Мгновенный переход
+              if (loaded) loaded.classList.add('active');
+              updateStat('fast', 'end', '~0мс');
+            } else if (demos[type].prefetchStarted) {
+              // Prefetch в процессе, вычисляем оставшееся время
+              const elapsedSincePrefetch = Date.now() - demos[type].hoverTime - demos[type].prefetchTime;
+              const remainingTime = Math.max(0, demos[type].loadTime - elapsedSincePrefetch);
+              
+              setTimeout(() => {
+                if (loaded) loaded.classList.add('active');
+                updateStat('fast', 'end', Math.round(remainingTime) + 'мс');
+              }, remainingTime);
+            } else {
+              // Клик до начала prefetch — показываем полное время загрузки
+              setTimeout(() => {
+                if (loaded) loaded.classList.add('active');
+                updateStat('fast', 'end', demos[type].loadTime + 'мс');
+              }, demos[type].loadTime);
+            }
+          }
+        });
+
+        // Инициализация
+        if (page) page.classList.add('active');
+      }
+
+      function updateStat(type, stat, value) {
+        const el = document.getElementById(`demo-${type}-${stat}`);
+        if (el) el.textContent = value;
+      }
+
+      window.resetDemo = function(type) {
+        if (!demos[type]) return;
+
+        // Очищаем все отложенные таймеры
+        if (type === 'fast') {
+          if (demos[type].hoverInterval) {
+            clearInterval(demos[type].hoverInterval);
+            demos[type].hoverInterval = null;
+          }
+          if (demos[type].prefetchTimer) {
+            clearTimeout(demos[type].prefetchTimer);
+            demos[type].prefetchTimer = null;
+          }
+        }
+
+        // Сбрасываем состояние
+        demos[type].hovering = false;
+        demos[type].clicked = false;
+        demos[type].hoverTime = 0;
+        demos[type].clickTime = 0;
+        
+        if (type === 'fast') {
+          demos[type].prefetchStarted = false;
+          demos[type].prefetchComplete = false;
+        }
+
+        // Сбрасываем UI
+        const page = document.getElementById(`demo-${type}-page`);
+        const loading = document.getElementById(`demo-${type}-loading`);
+        const loaded = document.getElementById(`demo-${type}-loaded`);
+        const indicator = document.getElementById(`demo-${type}-indicator`);
+        const progressBar = document.getElementById(`demo-${type}-progress`);
+
+        if (page) page.classList.add('active');
+        if (loading) loading.classList.remove('active');
+        if (loaded) loaded.classList.remove('active');
+        if (indicator) indicator.classList.remove('active');
+        if (progressBar) progressBar.style.width = '0';
+
+        // Сбрасываем статистику
+        if (type === 'slow') {
+          updateStat('slow', 'click', '0мс');
+          updateStat('slow', 'start', '—');
+          updateStat('slow', 'end', '—');
+          const timeDisplay = document.getElementById('demo-slow-time');
+          if (timeDisplay) timeDisplay.textContent = '0';
+        } else {
+          updateStat('fast', 'hover', '—');
+          updateStat('fast', 'prefetch', '—');
+          updateStat('fast', 'end', '—');
+        }
+      };
+
+      // Инициализируем оба демо когда DOM готов
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+          initDemo('slow');
+          initDemo('fast');
+        });
+      } else {
+        initDemo('slow');
+        initDemo('fast');
+      }
+    })();
+  </script>
+</body>
+</html>
+
