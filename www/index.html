@@ -3588,10 +3588,35 @@ Prefetch.<span class="code-attr">preload</span>(<span class="code-string">'/cata
 
     reveals.forEach(el => revealObserver.observe(el));
 
+    // Универсальная функция копирования с fallback
+    function copyToClipboard(text) {
+      // Современный API (HTTPS)
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text);
+      }
+      // Fallback для HTTP и старых браузеров
+      return new Promise((resolve, reject) => {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+          document.execCommand('copy');
+          resolve();
+        } catch (err) {
+          reject(err);
+        } finally {
+          document.body.removeChild(textarea);
+        }
+      });
+    }
+
     // Копирование кода
     function copyCode(btn) {
       const code = btn.previousElementSibling.textContent;
-      navigator.clipboard.writeText(code).then(() => {
+      copyToClipboard(code).then(() => {
         btn.textContent = 'Скопировано!';
         btn.classList.add('copied');
         setTimeout(() => {
@@ -3605,7 +3630,7 @@ Prefetch.<span class="code-attr">preload</span>(<span class="code-string">'/cata
     function copyHeroCode(btn) {
       const codeEl = document.getElementById('hero-code-to-copy');
       const code = codeEl.textContent.trim();
-      navigator.clipboard.writeText(code).then(() => {
+      copyToClipboard(code).then(() => {
         btn.querySelector('span').textContent = 'Скопировано!';
         btn.classList.add('copied');
         setTimeout(() => {
@@ -3619,7 +3644,7 @@ Prefetch.<span class="code-attr">preload</span>(<span class="code-string">'/cata
     function copyInstallCode(btn) {
       const codeEl = document.getElementById('install-cdn-code');
       const code = codeEl.textContent.trim();
-      navigator.clipboard.writeText(code).then(() => {
+      copyToClipboard(code).then(() => {
         btn.textContent = 'Скопировано!';
         btn.classList.add('copied');
         setTimeout(() => {
