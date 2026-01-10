@@ -61,6 +61,10 @@
       font-size: 16px;
     }
 
+    html {
+      overflow-x: hidden;
+    }
+
     body {
       font-family: var(--font-sans);
       background: var(--bg-primary);
@@ -90,10 +94,19 @@
     /* Контейнер */
     .container {
       max-width: 1200px;
+      width: 100%;
       margin: 0 auto;
       padding: 0 24px;
       position: relative;
       z-index: 1;
+      box-sizing: border-box;
+      overflow-x: hidden;
+    }
+
+    /* Секции */
+    section {
+      overflow-x: hidden;
+      max-width: 100vw;
     }
 
     /* Шапка сайта */
@@ -109,6 +122,7 @@
       -webkit-backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
       transition: transform 0.3s var(--ease-out);
+      overflow-x: hidden;
     }
 
     header .container {
@@ -288,6 +302,7 @@
       margin-top: 80px;
       opacity: 0;
       animation: fadeInUp 0.8s var(--ease-out) 0.65s forwards;
+      width: 100%;
     }
 
     .code-window {
@@ -297,10 +312,12 @@
       overflow: hidden;
       text-align: left;
       max-width: 640px;
+      width: 100%;
       margin: 0 auto;
       box-shadow: 
         0 0 0 1px rgba(255, 255, 255, 0.03),
         0 24px 80px rgba(0, 0, 0, 0.5);
+      box-sizing: border-box;
     }
 
     .code-header {
@@ -369,11 +386,14 @@
       font-size: 0.875rem;
       line-height: 1.8;
       overflow-x: auto;
+      max-width: 100%;
     }
 
     .code-content code {
       display: block;
       white-space: pre-wrap;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
 
     .code-comment { color: var(--text-muted); }
@@ -663,6 +683,8 @@
       border: 1px solid var(--border);
       border-radius: 20px;
       overflow: hidden;
+      max-width: 100%;
+      box-sizing: border-box;
     }
 
     .install-card-header {
@@ -703,10 +725,17 @@
       padding: 12px 16px;
       border-radius: 8px;
       margin-bottom: 8px;
+      gap: 12px;
     }
 
     .install-code .code-copy:last-child {
       margin-bottom: 0;
+    }
+
+    .install-code .code-copy code {
+      word-break: break-all;
+      flex: 1;
+      min-width: 0;
     }
 
     .copy-btn {
@@ -888,10 +917,12 @@
 
     .api-js-card {
       max-width: 700px;
+      width: 100%;
     }
 
     .api-js-card .code-window {
       margin: 0;
+      max-width: 100%;
     }
 
     .api-examples {
@@ -916,12 +947,17 @@
 
     .code-window-small {
       border-radius: 12px;
+      max-width: 100%;
     }
 
     .code-window-small .code-content {
       padding: 16px;
       font-size: 0.8125rem;
       line-height: 1.7;
+    }
+
+    .code-window-small .code-content code {
+      word-break: break-all;
     }
 
     @media (max-width: 1024px) {
@@ -999,6 +1035,8 @@
       border: 1px solid var(--border);
       border-radius: 20px;
       overflow: hidden;
+      max-width: 100%;
+      box-sizing: border-box;
     }
 
     .demo-browser {
@@ -1294,6 +1332,8 @@
       border-radius: 16px;
       padding: 20px 24px;
       margin-top: 48px;
+      box-sizing: border-box;
+      max-width: 100%;
     }
 
     .demo-note svg {
@@ -1506,6 +1546,8 @@
       border-radius: 20px;
       padding: 32px;
       margin-top: 48px;
+      box-sizing: border-box;
+      max-width: 100%;
     }
 
     .ux-note-icon {
@@ -1556,6 +1598,13 @@
         flex-direction: column;
         gap: 16px;
         text-align: center;
+        padding: 24px;
+      }
+
+      .demo-note {
+        flex-direction: column;
+        gap: 12px;
+        padding: 16px 20px;
       }
     }
 
@@ -1656,6 +1705,8 @@
       border: 1px solid rgba(251, 146, 60, 0.2);
       border-radius: 20px;
       padding: 32px;
+      box-sizing: border-box;
+      max-width: 100%;
     }
 
     .why-summary-icon {
@@ -1749,6 +1800,8 @@
       border: 1px solid rgba(74, 222, 128, 0.25);
       border-radius: 20px;
       padding: 32px;
+      box-sizing: border-box;
+      max-width: 100%;
     }
 
     .tradeoffs-roi-left {
@@ -1879,6 +1932,8 @@
       border: 1px solid rgba(34, 211, 238, 0.15);
       border-radius: 16px;
       padding: 24px 28px;
+      box-sizing: border-box;
+      max-width: 100%;
     }
 
     .privacy-note-icon {
@@ -2039,6 +2094,7 @@
       color: var(--text-primary);
       cursor: pointer;
       padding: 8px;
+      z-index: 101;
     }
 
     .mobile-menu-btn span {
@@ -2048,6 +2104,61 @@
       background: currentColor;
       margin: 5px 0;
       transition: all 0.3s ease;
+    }
+
+    .mobile-menu-btn.active span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .mobile-menu-btn.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .mobile-menu-btn.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(5px, -5px);
+    }
+
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(10, 10, 11, 0.98);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 99;
+      padding: 100px 24px 40px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+    }
+
+    .mobile-nav.active {
+      display: flex;
+    }
+
+    .mobile-nav a {
+      color: var(--text-primary);
+      text-decoration: none;
+      font-size: 1.5rem;
+      font-weight: 600;
+      transition: color 0.2s ease;
+    }
+
+    .mobile-nav a:hover {
+      color: var(--accent);
+    }
+
+    .mobile-nav .nav-cta-mobile {
+      margin-top: 24px;
+      background: var(--text-primary);
+      color: var(--bg-primary);
+      padding: 14px 32px;
+      border-radius: 12px;
+      font-size: 1.125rem;
     }
 
     /* Адаптивная вёрстка */
@@ -2147,6 +2258,77 @@
         flex-wrap: wrap;
         justify-content: center;
       }
+
+      /* Блоки кода */
+      .code-window {
+        max-width: 100%;
+      }
+
+      .code-content {
+        padding: 20px;
+        font-size: 0.8125rem;
+      }
+
+      .hero-code {
+        margin-top: 48px;
+      }
+
+      /* API секции */
+      .api-examples {
+        grid-template-columns: 1fr;
+      }
+
+      /* Поведенческие метрики */
+      .behavior-grid {
+        grid-template-columns: 1fr !important;
+      }
+
+      /* Компромиссы */
+      .tradeoffs-grid {
+        grid-template-columns: 1fr;
+      }
+
+      /* Почему браузеры */
+      .why-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .why-summary {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+      }
+
+      /* Секции */
+      .features,
+      .platforms,
+      .installation,
+      .browsers,
+      .privacy,
+      .tradeoffs,
+      .demo,
+      .cta {
+        padding: 100px 0;
+      }
+
+      .how-it-works,
+      .metrics,
+      .api,
+      .why-browsers {
+        padding: 100px 0;
+      }
+
+      .section-header {
+        margin-bottom: 48px;
+      }
+
+      .section-title {
+        font-size: 1.75rem;
+      }
+
+      .section-desc {
+        font-size: 1rem;
+      }
     }
 
     @media (max-width: 480px) {
@@ -2173,6 +2355,121 @@
       .btn {
         padding: 14px 24px;
         font-size: 0.9375rem;
+      }
+
+      /* Блоки кода на узких экранах */
+      .code-window {
+        border-radius: 12px;
+      }
+
+      .code-content {
+        padding: 16px;
+        font-size: 0.75rem;
+        line-height: 1.6;
+      }
+
+      .code-header {
+        padding: 12px 16px;
+      }
+
+      .code-copy-btn {
+        padding: 4px 8px;
+        font-size: 0.6875rem;
+      }
+
+      .code-title {
+        display: none;
+      }
+
+      /* API секции */
+      .api-grid {
+        gap: 16px;
+      }
+
+      .api-card {
+        padding: 20px;
+      }
+
+      .api-examples {
+        gap: 16px;
+      }
+
+      .api-example {
+        padding: 20px;
+      }
+
+      /* Установка */
+      .install-code {
+        padding: 16px;
+      }
+
+      .install-code .code-copy {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .install-code .code-copy code {
+        word-break: break-all;
+        font-size: 0.75rem;
+      }
+
+      /* Платформы */
+      .platform-highlight-icon {
+        width: 48px;
+        height: 48px;
+      }
+
+      .platform-highlight-icon svg {
+        width: 32px;
+        height: 32px;
+      }
+
+      /* Секция почему браузеры */
+      .why-card {
+        padding: 20px;
+      }
+
+      .why-solution {
+        padding: 10px 12px;
+        font-size: 0.75rem;
+      }
+
+      .why-solution code {
+        font-size: 0.6875rem;
+        padding: 1px 4px;
+      }
+
+      /* Компромиссы */
+      .tradeoff-card {
+        padding: 20px;
+      }
+
+      .tradeoff-value {
+        font-size: 1.5rem;
+      }
+
+      .tradeoffs-roi {
+        padding: 24px;
+      }
+
+      /* Поведенческие метрики */
+      .behavior-card {
+        padding: 20px;
+      }
+
+      .behavior-value {
+        font-size: 1.5rem;
+      }
+
+      /* Приватность */
+      .privacy-card {
+        padding: 24px;
+      }
+
+      /* Метрики */
+      .metric-card {
+        padding: 24px;
       }
     }
 
@@ -2349,6 +2646,17 @@
       </button>
     </div>
   </header>
+
+  <!-- Мобильное меню -->
+  <nav class="mobile-nav" id="mobileNav">
+    <a href="#features">Возможности</a>
+    <a href="#how-it-works">Как работает</a>
+    <a href="#metrics">Метрики</a>
+    <a href="#install">Установка</a>
+    <a href="#api">API</a>
+    <a href="https://github.com/prefetch-ru/prefetch" target="_blank">GitHub</a>
+    <a href="#install" class="nav-cta-mobile">Начать</a>
+  </nav>
 
   <!-- Главный экран -->
   <section class="hero">
@@ -3706,6 +4014,27 @@ Prefetch.<span class="code-attr">preload</span>(<span class="code-string">'/cata
       }
       lastScroll = currentScroll;
     }, { passive: true });
+
+    // Мобильное меню
+    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+    const mobileNav = document.getElementById('mobileNav');
+
+    if (mobileMenuBtn && mobileNav) {
+      mobileMenuBtn.addEventListener('click', () => {
+        mobileMenuBtn.classList.toggle('active');
+        mobileNav.classList.toggle('active');
+        document.body.style.overflow = mobileNav.classList.contains('active') ? 'hidden' : '';
+      });
+
+      // Закрытие меню при клике на ссылку
+      mobileNav.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenuBtn.classList.remove('active');
+          mobileNav.classList.remove('active');
+          document.body.style.overflow = '';
+        });
+      });
+    }
 
     // Модальное окно лицензии
     function showLicense(type) {
