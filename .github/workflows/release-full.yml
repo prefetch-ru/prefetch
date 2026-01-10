@@ -301,35 +301,40 @@ jobs:
           SRI_HASH: ${{ steps.sri.outputs.sri_hash }}
           VERSION: ${{ steps.version.outputs.version }}
           VERSION_FOLDER: ${{ steps.version.outputs.version_folder }}
-          BUCKET_CDN: ${{ secrets.YANDEX_STORAGE_BUCKET_CDN }}
         run: |
           echo "📝 Updating release notes..."
           
           # Get current release body
           CURRENT_BODY=$(gh release view "${{ github.event.release.tag_name }}" --json body -q '.body')
           
-          # Append SRI info
-          NEW_BODY="${CURRENT_BODY}
-
+          # Create notes file with heredoc
+          cat > /tmp/release_notes.md << 'NOTES_EOF'
+          
 ---
 
 ## Integrity (SRI)
 
-\`\`\`
-${SRI_HASH}
-\`\`\`
+```
+NOTES_EOF
+          echo "${SRI_HASH}" >> /tmp/release_notes.md
+          cat >> /tmp/release_notes.md << 'NOTES_EOF'
+```
 
 ## CDN Usage
 
-\`\`\`html
-<script src=\"//prefetch.ru/${VERSION_FOLDER}/prefetch.min.js\" 
-        integrity=\"${SRI_HASH}\" 
-        crossorigin=\"anonymous\"></script>
-\`\`\`
-"
+```html
+NOTES_EOF
+          echo "<script src=\"//prefetch.ru/${VERSION_FOLDER}/prefetch.min.js\"" >> /tmp/release_notes.md
+          echo "        integrity=\"${SRI_HASH}\"" >> /tmp/release_notes.md
+          echo "        crossorigin=\"anonymous\"></script>" >> /tmp/release_notes.md
+          echo '```' >> /tmp/release_notes.md
+          
+          # Combine current body with new notes
+          echo "${CURRENT_BODY}" > /tmp/full_notes.md
+          cat /tmp/release_notes.md >> /tmp/full_notes.md
           
           # Update release
-          gh release edit "${{ github.event.release.tag_name }}" --notes "$NEW_BODY"
+          gh release edit "${{ github.event.release.tag_name }}" --notes-file /tmp/full_notes.md
           
           echo "✅ Release notes updated with SRI hash"
       
