@@ -362,6 +362,7 @@ jobs:
       
       - name: Publish to npm (OIDC Trusted Publishing)
         run: npm publish --access public --provenance
+        continue-on-error: true  # Don't fail if version already exists
       
       # ============================================
       # 15. Publish to GitHub Packages
