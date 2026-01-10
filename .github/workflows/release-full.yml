@@ -320,27 +320,25 @@ jobs:
           TAG="${{ steps.version.outputs.tag }}"
           CURRENT_BODY=$(gh release view "$TAG" --json body -q '.body')
           
-          # Create notes file with heredoc
-          cat > /tmp/release_notes.md << 'NOTES_EOF'
-          
----
-
-## Integrity (SRI)
-
-```
-NOTES_EOF
-          echo "${SRI_HASH}" >> /tmp/release_notes.md
-          cat >> /tmp/release_notes.md << 'NOTES_EOF'
-```
-
-## CDN Usage
-
-```html
-NOTES_EOF
-          echo "<script src=\"//prefetch.ru/${VERSION_FOLDER}/prefetch.min.js\"" >> /tmp/release_notes.md
-          echo "        integrity=\"${SRI_HASH}\"" >> /tmp/release_notes.md
-          echo "        crossorigin=\"anonymous\"></script>" >> /tmp/release_notes.md
-          echo '```' >> /tmp/release_notes.md
+          # Create notes file
+          {
+            echo ""
+            echo "---"
+            echo ""
+            echo "## Integrity (SRI)"
+            echo ""
+            echo '```'
+            echo "${SRI_HASH}"
+            echo '```'
+            echo ""
+            echo "## CDN Usage"
+            echo ""
+            echo '```html'
+            echo "<script src=\"//prefetch.ru/${VERSION_FOLDER}/prefetch.min.js\""
+            echo "        integrity=\"${SRI_HASH}\""
+            echo "        crossorigin=\"anonymous\"></script>"
+            echo '```'
+          } > /tmp/release_notes.md
           
           # Combine current body with new notes
           echo "${CURRENT_BODY}" > /tmp/full_notes.md
