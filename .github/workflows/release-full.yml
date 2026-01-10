@@ -165,8 +165,11 @@ jobs:
           # Replace all version paths: /v1.0.X/ -> /vNEW/
           sed -i "s|/v[0-9]*\.[0-9]*\.[0-9]*/|/${VERSION_FOLDER}/|g" www/index.html
           
-          # Replace all SRI hashes
+          # Replace all SRI hashes (handles both plain HTML and syntax-highlighted code)
+          # Pattern 1: integrity="sha384-..."
           sed -i "s|integrity=\"sha384-[^\"]*\"|integrity=\"${SRI_HASH}\"|g" www/index.html
+          # Pattern 2: "sha384-..." in code spans (for syntax highlighting)
+          sed -i "s|\"sha384-[^\"]*\"|\"${SRI_HASH}\"|g" www/index.html
           
           # Replace "Версия X.X.X" text
           sed -i "s|Версия [0-9]*\.[0-9]*\.[0-9]*|Версия ${VERSION}|g" www/index.html
