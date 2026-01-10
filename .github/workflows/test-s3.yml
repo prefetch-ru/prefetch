@@ -1,0 +1,130 @@
+name: Test S3 Connection
+
+on:
+  workflow_dispatch:
+    inputs:
+      test_message:
+        description: 'Test message to include in test file'
+        required: false
+        default: 'GitHub Actions S3 test'
+
+jobs:
+  test-s3:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Install AWS CLI
+        run: pip install awscli
+      
+      - name: Configure AWS CLI for Yandex Cloud
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.YANDEX_STORAGE_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.YANDEX_STORAGE_SECRET_KEY }}
+        run: |
+          aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+          aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+          aws configure set default.region ru-central1
+      
+      - name: Create test file
+        run: |
+          TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          echo "Test file created at: $TIMESTAMP" > test-file.txt
+          echo "Message: ${{ github.event.inputs.test_message }}" >> test-file.txt
+          echo "Commit: ${{ github.sha }}" >> test-file.txt
+          echo "Workflow run: ${{ github.run_id }}" >> test-file.txt
+          
+          echo "📄 Test file content:"
+          cat test-file.txt
+      
+      - name: Test MAIN bucket (upload)
+        env:
+          BUCKET: ${{ secrets.YANDEX_STORAGE_BUCKET_MAIN }}
+          ENDPOINT: ${{ secrets.YANDEX_STORAGE_ENDPOINT }}
+        run: |
+          echo "📤 Uploading test file to MAIN bucket: $BUCKET"
+          
+          aws s3 cp test-file.txt \
+            s3://${BUCKET}/.github-test/test-file.txt \
+            --endpoint-url ${ENDPOINT}
+          
+          echo "✅ Upload to MAIN bucket successful"
+      
+      - name: Test MAIN bucket (verify)
+        env:
+          BUCKET: ${{ secrets.YANDEX_STORAGE_BUCKET_MAIN }}
+          ENDPOINT: ${{ secrets.YANDEX_STORAGE_ENDPOINT }}
+        run: |
+          echo "🔍 Verifying file in MAIN bucket..."
+          
+          aws s3 ls s3://${BUCKET}/.github-test/ \
+            --endpoint-url ${ENDPOINT}
+          
+          echo "✅ File verified in MAIN bucket"
+      
+      - name: Test CDN bucket (upload)
+        env:
+          BUCKET: ${{ secrets.YANDEX_STORAGE_BUCKET_CDN }}
+          ENDPOINT: ${{ secrets.YANDEX_STORAGE_ENDPOINT }}
+        run: |
+          echo "📤 Uploading test file to CDN bucket: $BUCKET"
+          
+          aws s3 cp test-file.txt \
+            s3://${BUCKET}/.github-test/test-file.txt \
+            --endpoint-url ${ENDPOINT}
+          
+          echo "✅ Upload to CDN bucket successful"
+      
+      - name: Test CDN bucket (verify)
+        env:
+          BUCKET: ${{ secrets.YANDEX_STORAGE_BUCKET_CDN }}
+          ENDPOINT: ${{ secrets.YANDEX_STORAGE_ENDPOINT }}
+        run: |
+          echo "🔍 Verifying file in CDN bucket..."
+          
+          aws s3 ls s3://${BUCKET}/.github-test/ \
+            --endpoint-url ${ENDPOINT}
+          
+          echo "✅ File verified in CDN bucket"
+      
+      - name: Cleanup MAIN bucket
+        env:
+          BUCKET: ${{ secrets.YANDEX_STORAGE_BUCKET_MAIN }}
+          ENDPOINT: ${{ secrets.YANDEX_STORAGE_ENDPOINT }}
+        run: |
+          echo "🧹 Cleaning up test file from MAIN bucket..."
+          
+          aws s3 rm s3://${BUCKET}/.github-test/test-file.txt \
+            --endpoint-url ${ENDPOINT}
+          
+          echo "✅ Cleanup MAIN bucket complete"
+      
+      - name: Cleanup CDN bucket
+        env:
+          BUCKET: ${{ secrets.YANDEX_STORAGE_BUCKET_CDN }}
+          ENDPOINT: ${{ secrets.YANDEX_STORAGE_ENDPOINT }}
+        run: |
+          echo "🧹 Cleaning up test file from CDN bucket..."
+          
+          aws s3 rm s3://${BUCKET}/.github-test/test-file.txt \
+            --endpoint-url ${ENDPOINT}
+          
+          echo "✅ Cleanup CDN bucket complete"
+      
+      - name: Summary
+        env:
+          BUCKET_MAIN: ${{ secrets.YANDEX_STORAGE_BUCKET_MAIN }}
+          BUCKET_CDN: ${{ secrets.YANDEX_STORAGE_BUCKET_CDN }}
+          ENDPOINT: ${{ secrets.YANDEX_STORAGE_ENDPOINT }}
+        run: |
+          echo ""
+          echo "=========================================="
+          echo "🎉 S3 Connection Test Complete!"
+          echo "=========================================="
+          echo "MAIN Bucket: $BUCKET_MAIN"
+          echo "CDN Bucket: $BUCKET_CDN"
+          echo "Endpoint: $ENDPOINT"
+          echo "Status: All tests passed"
+          echo "=========================================="

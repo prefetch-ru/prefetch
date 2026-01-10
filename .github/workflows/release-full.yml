@@ -1,0 +1,392 @@
+name: Full Release Pipeline
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+      packages: write
+    
+    steps:
+      # ============================================
+      # 1. Checkout and Setup
+      # ============================================
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Install AWS CLI
+        run: pip install awscli
+      
+      - name: Configure AWS CLI for Yandex Cloud
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.YANDEX_STORAGE_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.YANDEX_STORAGE_SECRET_KEY }}
+        run: |
+          aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+          aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+          aws configure set default.region ru-central1
+      
+      # ============================================
+      # 2. Extract version from release tag
+      # ============================================
+      - name: Extract version from tag
+        id: version
+        run: |
+          # Get tag from release event (e.g., v1.0.6)
+          TAG="${{ github.event.release.tag_name }}"
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          
+          # Remove 'v' prefix to get version (e.g., 1.0.6)
+          VERSION="${TAG#v}"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "version_folder=v${VERSION}" >> $GITHUB_OUTPUT
+          
+          echo "📦 Release tag: $TAG"
+          echo "📦 Version: $VERSION"
+      
+      # ============================================
+      # 3. Update package.json and package-lock.json
+      # ============================================
+      - name: Update package.json version
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          echo "📝 Updating package.json to version $VERSION..."
+          npm version $VERSION --no-git-tag-version --allow-same-version
+          
+          echo "✅ package.json updated"
+          grep '"version"' package.json | head -1
+      
+      # ============================================
+      # 4. Update prefetch.js version
+      # ============================================
+      - name: Update prefetch.js version
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          echo "📝 Updating prefetch.js to version $VERSION..."
+          
+          # Update header comment (line 2): prefetch.ru v1.0.X
+          sed -i "s/prefetch\.ru v[0-9]*\.[0-9]*\.[0-9]*/prefetch.ru v${VERSION}/" prefetch.js
+          
+          # Update Prefetch.version in the public API
+          sed -i "s/version: '[0-9]*\.[0-9]*\.[0-9]*'/version: '${VERSION}'/" prefetch.js
+          
+          echo "✅ prefetch.js updated"
+          grep -n "prefetch.ru v" prefetch.js | head -1
+          grep -n "version:" prefetch.js | tail -1
+      
+      # ============================================
+      # 5. Build dist/prefetch.min.js
+      # ============================================
+      - name: Build prefetch.min.js
+        run: |
+          echo "🔨 Building dist/prefetch.min.js..."
+          npm run build
+          
+          echo "✅ Build complete"
+          ls -la dist/
+      
+      # ============================================
+      # 6. Calculate SRI Hash
+      # ============================================
+      - name: Calculate SRI integrity hash
+        id: sri
+        run: |
+          echo "🔐 Calculating SRI hash..."
+          
+          SRI_HASH=$(openssl dgst -sha384 -binary dist/prefetch.min.js | openssl base64 -A)
+          FULL_SRI="sha384-${SRI_HASH}"
+          
+          echo "sri_hash=$FULL_SRI" >> $GITHUB_OUTPUT
+          echo "🔐 SRI Hash: $FULL_SRI"
+      
+      # ============================================
+      # 7. Upload to CDN bucket
+      # ============================================
+      - name: Upload prefetch.min.js to CDN
+        env:
+          BUCKET: ${{ secrets.YANDEX_STORAGE_BUCKET_CDN }}
+          ENDPOINT: ${{ secrets.YANDEX_STORAGE_ENDPOINT }}
+          VERSION_FOLDER: ${{ steps.version.outputs.version_folder }}
+          VERSION: ${{ steps.version.outputs.version }}
+          SRI_HASH: ${{ steps.sri.outputs.sri_hash }}
+        run: |
+          echo "📤 Uploading to CDN: $BUCKET/$VERSION_FOLDER/prefetch.min.js"
+          
+          aws s3 cp dist/prefetch.min.js \
+            s3://${BUCKET}/${VERSION_FOLDER}/prefetch.min.js \
+            --endpoint-url ${ENDPOINT} \
+            --content-type "application/javascript; charset=utf-8" \
+            --cache-control "public, max-age=31536000, immutable" \
+            --metadata "version=${VERSION},sri-hash=${SRI_HASH}"
+          
+          echo "✅ Uploaded to: s3://${BUCKET}/${VERSION_FOLDER}/prefetch.min.js"
+      
+      # ============================================
+      # 8. Update www/index.html
+      # ============================================
+      - name: Update index.html with new version and SRI
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          VERSION_FOLDER: ${{ steps.version.outputs.version_folder }}
+          SRI_HASH: ${{ steps.sri.outputs.sri_hash }}
+        run: |
+          echo "📝 Updating www/index.html..."
+          
+          # Replace all version paths: /v1.0.X/ -> /vNEW/
+          sed -i "s|/v[0-9]*\.[0-9]*\.[0-9]*/|/${VERSION_FOLDER}/|g" www/index.html
+          
+          # Replace all SRI hashes
+          sed -i "s|integrity=\"sha384-[^\"]*\"|integrity=\"${SRI_HASH}\"|g" www/index.html
+          
+          # Replace "Версия X.X.X" text
+          sed -i "s|Версия [0-9]*\.[0-9]*\.[0-9]*|Версия ${VERSION}|g" www/index.html
+          
+          # Replace version in code examples: // "X.X.X"
+          sed -i "s|// \"[0-9]*\.[0-9]*\.[0-9]*\"|// \"${VERSION}\"|g" www/index.html
+          
+          echo "✅ www/index.html updated"
+          echo ""
+          echo "📄 Updated lines:"
+          grep -n "/${VERSION_FOLDER}/" www/index.html | head -5
+          grep -n "Версия ${VERSION}" www/index.html | head -2
+      
+      # ============================================
+      # 9. Update www/sitemap.xml
+      # ============================================
+      - name: Update sitemap.xml with current date
+        run: |
+          echo "📝 Updating www/sitemap.xml..."
+          
+          TODAY=$(date -u +"%Y-%m-%d")
+          sed -i "s|<lastmod>[0-9-]*</lastmod>|<lastmod>${TODAY}</lastmod>|g" www/sitemap.xml
+          
+          echo "✅ www/sitemap.xml updated with date: $TODAY"
+          cat www/sitemap.xml
+      
+      # ============================================
+      # 10. Upload www/ to MAIN bucket
+      # ============================================
+      - name: Upload www/ to MAIN bucket
+        env:
+          BUCKET: ${{ secrets.YANDEX_STORAGE_BUCKET_MAIN }}
+          ENDPOINT: ${{ secrets.YANDEX_STORAGE_ENDPOINT }}
+        run: |
+          echo "📤 Uploading www/ to MAIN bucket: $BUCKET"
+          
+          aws s3 sync ./www/ s3://${BUCKET}/ \
+            --endpoint-url ${ENDPOINT} \
+            --delete \
+            --exclude ".git*" \
+            --exclude ".github*"
+          
+          echo "✅ www/ uploaded to MAIN bucket"
+      
+      - name: Verify MAIN bucket contents
+        env:
+          BUCKET: ${{ secrets.YANDEX_STORAGE_BUCKET_MAIN }}
+          ENDPOINT: ${{ secrets.YANDEX_STORAGE_ENDPOINT }}
+        run: |
+          echo "📁 Contents of MAIN bucket:"
+          aws s3 ls s3://${BUCKET}/ \
+            --endpoint-url ${ENDPOINT} \
+            --recursive \
+            --human-readable
+      
+      # ============================================
+      # 11. Commit changes back to repository
+      # ============================================
+      - name: Commit version updates
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          
+          # Check if there are changes
+          if git diff --quiet && git diff --cached --quiet; then
+            echo "ℹ️ No changes to commit"
+          else
+            git add package.json package-lock.json prefetch.js www/index.html www/sitemap.xml
+            git commit -m "chore: release v${VERSION} - update version, SRI hash, sitemap [skip ci]"
+            git push origin main
+            echo "✅ Changes committed and pushed"
+          fi
+      
+      # ============================================
+      # 12. Create release artifacts
+      # ============================================
+      - name: Create release artifacts
+        env:
+          SRI_HASH: ${{ steps.sri.outputs.sri_hash }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          echo "📦 Creating release artifacts..."
+          
+          # Create artifacts directory
+          mkdir -p artifacts
+          
+          # Copy prefetch.min.js
+          cp dist/prefetch.min.js artifacts/
+          
+          # Create ZIP
+          cd artifacts
+          zip prefetch.min.js.zip prefetch.min.js
+          
+          # Create MD5
+          md5sum prefetch.min.js > prefetch.min.js.md5
+          
+          # Create SRI file
+          echo "${SRI_HASH}" > prefetch.min.js.sri
+          
+          cd ..
+          
+          echo "✅ Artifacts created:"
+          ls -la artifacts/
+          echo ""
+          echo "📄 MD5:"
+          cat artifacts/prefetch.min.js.md5
+          echo ""
+          echo "📄 SRI:"
+          cat artifacts/prefetch.min.js.sri
+      
+      # ============================================
+      # 13. Upload artifacts to release
+      # ============================================
+      - name: Upload release assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "📤 Uploading assets to release..."
+          
+          # Upload ZIP
+          gh release upload "${{ github.event.release.tag_name }}" \
+            artifacts/prefetch.min.js.zip \
+            --clobber
+          
+          # Upload MD5
+          gh release upload "${{ github.event.release.tag_name }}" \
+            artifacts/prefetch.min.js.md5 \
+            --clobber
+          
+          # Upload SRI
+          gh release upload "${{ github.event.release.tag_name }}" \
+            artifacts/prefetch.min.js.sri \
+            --clobber
+          
+          echo "✅ Assets uploaded to release"
+      
+      - name: Update release notes with SRI hash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SRI_HASH: ${{ steps.sri.outputs.sri_hash }}
+          VERSION: ${{ steps.version.outputs.version }}
+          VERSION_FOLDER: ${{ steps.version.outputs.version_folder }}
+          BUCKET_CDN: ${{ secrets.YANDEX_STORAGE_BUCKET_CDN }}
+        run: |
+          echo "📝 Updating release notes..."
+          
+          # Get current release body
+          CURRENT_BODY=$(gh release view "${{ github.event.release.tag_name }}" --json body -q '.body')
+          
+          # Append SRI info
+          NEW_BODY="${CURRENT_BODY}
+
+---
+
+## Integrity (SRI)
+
+\`\`\`
+${SRI_HASH}
+\`\`\`
+
+## CDN Usage
+
+\`\`\`html
+<script src=\"//prefetch.ru/${VERSION_FOLDER}/prefetch.min.js\" 
+        integrity=\"${SRI_HASH}\" 
+        crossorigin=\"anonymous\"></script>
+\`\`\`
+"
+          
+          # Update release
+          gh release edit "${{ github.event.release.tag_name }}" --notes "$NEW_BODY"
+          
+          echo "✅ Release notes updated with SRI hash"
+      
+      # ============================================
+      # 14. Publish to npm
+      # ============================================
+      - name: Remove auth token for OIDC
+        run: |
+          # Remove authToken from .npmrc to allow OIDC authentication
+          sed -i '/_authToken/d' $NPM_CONFIG_USERCONFIG 2>/dev/null || true
+      
+      - name: Publish to npm (OIDC Trusted Publishing)
+        run: npm publish --access public --provenance
+      
+      # ============================================
+      # 15. Publish to GitHub Packages
+      # ============================================
+      - name: Setup for GitHub Packages
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@prefetch-ru'
+      
+      - name: Update package name for GitHub Packages
+        run: npm pkg set name="@prefetch-ru/prefetch"
+      
+      - name: Publish to GitHub Packages
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+      
+      # ============================================
+      # Summary
+      # ============================================
+      - name: Release Summary
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          VERSION_FOLDER: ${{ steps.version.outputs.version_folder }}
+          SRI_HASH: ${{ steps.sri.outputs.sri_hash }}
+          BUCKET_CDN: ${{ secrets.YANDEX_STORAGE_BUCKET_CDN }}
+          BUCKET_MAIN: ${{ secrets.YANDEX_STORAGE_BUCKET_MAIN }}
+        run: |
+          echo ""
+          echo "=========================================="
+          echo "🎉 Release v${VERSION} Complete!"
+          echo "=========================================="
+          echo ""
+          echo "📦 Version: ${VERSION}"
+          echo "🔐 SRI Hash: ${SRI_HASH}"
+          echo ""
+          echo "📁 CDN: s3://${BUCKET_CDN}/${VERSION_FOLDER}/prefetch.min.js"
+          echo "📁 Main: s3://${BUCKET_MAIN}/ (www/ synced)"
+          echo ""
+          echo "📄 HTML:"
+          echo "<script src=\"//prefetch.ru/${VERSION_FOLDER}/prefetch.min.js\""
+          echo "        integrity=\"${SRI_HASH}\""
+          echo "        crossorigin=\"anonymous\"></script>"
+          echo ""
+          echo "=========================================="

@@ -1,0 +1,76 @@
+name: Deploy WWW to Main Bucket
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'www/**'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    # Skip if commit message contains [skip ci]
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Install AWS CLI
+        run: pip install awscli
+      
+      - name: Configure AWS CLI for Yandex Cloud
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.YANDEX_STORAGE_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.YANDEX_STORAGE_SECRET_KEY }}
+        run: |
+          aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+          aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+          aws configure set default.region ru-central1
+      
+      - name: Show changed files
+        run: |
+          echo "📁 Files in www/:"
+          ls -la www/
+      
+      - name: Deploy www/ to MAIN bucket
+        env:
+          BUCKET: ${{ secrets.YANDEX_STORAGE_BUCKET_MAIN }}
+          ENDPOINT: ${{ secrets.YANDEX_STORAGE_ENDPOINT }}
+        run: |
+          echo "📤 Deploying www/ to MAIN bucket: $BUCKET"
+          
+          aws s3 sync ./www/ s3://${BUCKET}/ \
+            --endpoint-url ${ENDPOINT} \
+            --delete \
+            --exclude ".git*" \
+            --exclude ".github*"
+          
+          echo "✅ Deployment complete"
+      
+      - name: Verify deployment
+        env:
+          BUCKET: ${{ secrets.YANDEX_STORAGE_BUCKET_MAIN }}
+          ENDPOINT: ${{ secrets.YANDEX_STORAGE_ENDPOINT }}
+        run: |
+          echo "📁 Contents of MAIN bucket:"
+          aws s3 ls s3://${BUCKET}/ \
+            --endpoint-url ${ENDPOINT} \
+            --recursive \
+            --human-readable
+      
+      - name: Deployment Summary
+        env:
+          BUCKET: ${{ secrets.YANDEX_STORAGE_BUCKET_MAIN }}
+        run: |
+          echo ""
+          echo "=========================================="
+          echo "🎉 WWW Deployment Complete!"
+          echo "=========================================="
+          echo "Bucket: $BUCKET"
+          echo "Commit: ${{ github.sha }}"
+          echo "Date: $(date -u +%Y-%m-%d\ %H:%M:%S\ UTC)"
+          echo "=========================================="
