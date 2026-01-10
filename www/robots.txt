@@ -1,5 +1,4 @@
-﻿# prefetch.ru - Landing page
-# https://prefetch.ru
+﻿# https://prefetch.ru
 
 User-agent: *
 Allow: /
@@ -7,8 +6,4 @@ Allow: /
 # Sitemap
 Sitemap: https://prefetch.ru/sitemap.xml
 
-# Crawl-delay для вежливости к серверу (опционально)
-# Crawl-delay: 1
-
-# Разрешаем основной контент
-Allow: /
+Clean-param: utm_source&utm_medium&utm_campaign&utm_content&utm_term /
