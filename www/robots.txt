@@ -1,4 +1,4 @@
-# prefetch.ru - Landing page
+﻿# prefetch.ru - Landing page
 # https://prefetch.ru
 
 User-agent: *
