@@ -337,7 +337,7 @@ jobs:
             echo "## CDN Usage"
             echo ""
             echo '```html'
-            echo "<script src=\"//prefetch.ru/${VERSION_FOLDER}/prefetch.min.js\""
+            echo "<script src=\"//cdn.prefetch.ru/${VERSION_FOLDER}/prefetch.min.js\""
             echo "        integrity=\"${SRI_HASH}\""
             echo "        crossorigin=\"anonymous\"></script>"
             echo '```'
