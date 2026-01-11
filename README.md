@@ -98,7 +98,7 @@ import '@prefetchru/prefetch'
 // Доступен объект window.Prefetch после загрузки скрипта
 
 // Версия библиотеки
-console.log(Prefetch.version)  // "1.0.5"
+console.log(Prefetch.version)  // "1.0.7"
 
 // Программная предзагрузка URL
 Prefetch.preload('/catalog/product-123')
