@@ -4207,14 +4207,25 @@ Prefetch.<span class="code-attr">preload</span>(<span class="code-string">'/cata
         link.addEventListener('mouseleave', handleHoverEnd);
 
         // События касания для мобильных устройств
+        let touchStartTime = 0;
+        let touchMoved = false;
+
         link.addEventListener('touchstart', (e) => {
-          // Предотвращаем срабатывание событий мыши после касания
-          e.preventDefault();
+          touchStartTime = Date.now();
+          touchMoved = false;
           handleHoverStart();
-        });
+        }, { passive: true });
+
+        link.addEventListener('touchmove', () => {
+          touchMoved = true;
+        }, { passive: true });
 
         link.addEventListener('touchend', (e) => {
-          e.preventDefault();
+          // Если не было движения и касание было коротким — это тап (клик)
+          if (!touchMoved && Date.now() - touchStartTime < 300) {
+            e.preventDefault(); // Предотвращаем двойное срабатывание
+            link.click(); // Симулируем клик
+          }
           handleHoverEnd();
         });
 
