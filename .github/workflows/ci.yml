@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      
+      - name: Установка зависимостей
+        run: npm ci
+      
+      - name: Проверка билда
+        run: npm run build
+      
+      - name: Проверка безопасности
+        run: npm audit --audit-level=high
