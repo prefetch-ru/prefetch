@@ -23,7 +23,7 @@ jobs:
       # 1. Checkout and Setup
       # ============================================
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: main
           token: ${{ secrets.GITHUB_TOKEN }}
