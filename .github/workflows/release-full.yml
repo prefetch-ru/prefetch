@@ -261,15 +261,16 @@ jobs:
           # Copy prefetch.min.js
           cp dist/prefetch.min.js artifacts/
           
-          # Create ZIP
           cd artifacts
-          zip prefetch.min.js.zip prefetch.min.js
           
           # Create MD5
           md5sum prefetch.min.js > prefetch.min.js.md5
           
           # Create SRI file
           echo "${SRI_HASH}" > prefetch.min.js.sri
+          
+          # Create ZIP with all files
+          zip prefetch.min.js.zip prefetch.min.js prefetch.min.js.md5 prefetch.min.js.sri
           
           cd ..
           
@@ -281,6 +282,9 @@ jobs:
           echo ""
           echo "📄 SRI:"
           cat artifacts/prefetch.min.js.sri
+          echo ""
+          echo "📦 ZIP contents:"
+          unzip -l artifacts/prefetch.min.js.zip
       
       # ============================================
       # 13. Upload artifacts to release
@@ -291,21 +295,10 @@ jobs:
         run: |
           echo "📤 Uploading assets to release..."
           
-          # Upload ZIP
           TAG="${{ steps.version.outputs.tag }}"
           
           gh release upload "$TAG" \
             artifacts/prefetch.min.js.zip \
-            --clobber
-          
-          # Upload MD5
-          gh release upload "$TAG" \
-            artifacts/prefetch.min.js.md5 \
-            --clobber
-          
-          # Upload SRI
-          gh release upload "$TAG" \
-            artifacts/prefetch.min.js.sri \
             --clobber
           
           echo "✅ Assets uploaded to release"
@@ -314,8 +307,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SRI_HASH: ${{ steps.sri.outputs.sri_hash }}
-          VERSION: ${{ steps.version.outputs.version }}
-          VERSION_FOLDER: ${{ steps.version.outputs.version_folder }}
         run: |
           echo "📝 Updating release notes..."
           
@@ -323,7 +314,7 @@ jobs:
           TAG="${{ steps.version.outputs.tag }}"
           CURRENT_BODY=$(gh release view "$TAG" --json body -q '.body')
           
-          # Create notes file
+          # Create notes file with only SRI
           {
             echo ""
             echo "---"
@@ -332,14 +323,6 @@ jobs:
             echo ""
             echo '```'
             echo "${SRI_HASH}"
-            echo '```'
-            echo ""
-            echo "## CDN Usage"
-            echo ""
-            echo '```html'
-            echo "<script src=\"//cdn.prefetch.ru/${VERSION_FOLDER}/prefetch.min.js\""
-            echo "        integrity=\"${SRI_HASH}\""
-            echo "        crossorigin=\"anonymous\"></script>"
             echo '```'
           } > /tmp/release_notes.md
           
