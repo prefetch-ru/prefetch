@@ -1,5 +1,5 @@
 /*!
- * prefetch.ru v1.0.6 - Мгновенная загрузка страниц
+ * prefetch.ru v1.0.7 - Мгновенная загрузка страниц
  * © 2026 Сергей Макаров | MIT License
  * https://prefetch.ru | https://github.com/prefetch-ru
  */
@@ -108,7 +108,12 @@
     // <body data-prefetch-specrules="prerender">
     // <body data-prefetch-specrules="no">
     var hasSr = 'prefetchSpecrules' in ds || 'instantSpecrules' in ds
-    if (!isIOS && hasSr && HTMLScriptElement.supports && HTMLScriptElement.supports('speculationrules')) {
+    if (
+      !isIOS &&
+      hasSr &&
+      HTMLScriptElement.supports &&
+      HTMLScriptElement.supports('speculationrules')
+    ) {
       var sr = ds.prefetchSpecrules || ds.instantSpecrules
       if (sr === 'prerender') {
         specMode = 'prerender'
@@ -238,7 +243,11 @@
     var a = getAnchorFromEventTarget(e.target)
     if (!canPreload(a)) return
 
-    a.addEventListener('mouseout', onMouseOut, { passive: true, once: true })
+    // v1.0.7: защита от множественных mouseover по вложенным элементам (не плодим таймеры)
+    if (hoverTimers.has(a)) return
+
+    // mouseleave не срабатывает при перемещении внутри ссылки (в отличие от mouseout)
+    a.addEventListener('mouseleave', onMouseLeave, { passive: true, once: true })
 
     var t = setTimeout(function () {
       preload(a.href, a)
@@ -247,10 +256,9 @@
     hoverTimers.set(a, t)
   }
 
-  function onMouseOut(e) {
-    var a = getAnchorFromEventTarget(e.target)
+  function onMouseLeave(e) {
+    var a = e.currentTarget
     if (!a) return
-    if (e.relatedTarget && e.relatedTarget.closest && a === e.relatedTarget.closest('a')) return
 
     var t = hoverTimers.get(a)
     if (t) {
@@ -268,7 +276,13 @@
   }
 
   function canPreload(a) {
-    if (!a || !a.href) return false
+    if (!a) return false
+
+    // v1.0.7: исключаем <a href=""> и <a> без href (часто используются как кнопки)
+    var hrefAttr = a.getAttribute('href')
+    if (hrefAttr === null || hrefAttr.trim() === '') return false
+
+    if (!a.href) return false
 
     // Не навигация в текущей вкладке
     if (a.target && a.target !== '_self') return false
@@ -296,6 +310,9 @@
     // Якорь на той же странице
     if (a.hash && a.pathname + a.search === location.pathname + location.search) return false
 
+    // v1.0.7: не префетчим текущую страницу (в т.ч. для случаев вроде href="")
+    if (urlKey(a.href) === urlKey(location.href)) return false
+
     // Уже загружено (ключ НЕ модифицирует реальный URL запроса!)
     var key = urlKey(a.href)
     if (preloaded.has(key)) return false
@@ -309,14 +326,30 @@
   function checkPlatform(a) {
     var href = a.href
 
+    // v1.0.7: для точных проверок /add /delete /remove используем pathname
+    var pathname = ''
+    var hash = ''
+    try {
+      var u = new URL(href, location.href)
+      pathname = u.pathname || ''
+      hash = u.hash || ''
+    } catch (e) {
+      pathname = ''
+      hash = ''
+    }
+
     if (platform === 'bitrix' || platform === 'bitrix24') {
       if (href.indexOf('/bitrix/') !== -1 || href.indexOf('sessid=') !== -1) return false
       if (a.classList.contains('bx-ajax')) return false
     }
 
     if (platform === 'tilda') {
-      if (href.indexOf('#popup:') !== -1 || href.indexOf('#rec') !== -1) return false
+      // Можно проверять и по href, но hash надёжнее/дешевле
+      if (hash.indexOf('#popup:') !== -1 || hash.indexOf('#rec') !== -1) return false
     }
+
+    // v1.0.7: /add /delete /remove — только как отдельный сегмент пути (или имя файла типа /delete.php)
+    var isActionPath = /(^|\/)(add|delete|remove)(\/|$|\.)/i.test(pathname)
 
     if (
       href.indexOf('/login') !== -1 ||
@@ -325,12 +358,10 @@
       href.indexOf('/register') !== -1 ||
       href.indexOf('/cart') !== -1 ||
       href.indexOf('/basket') !== -1 ||
-      href.indexOf('/add') !== -1 ||
-      href.indexOf('/delete') !== -1 ||
-      href.indexOf('/remove') !== -1
+      isActionPath
     ) return false
 
-    if (/\.(pdf|doc|docx|xls|xlsx|zip|rar|exe)($|\?)/.test(href)) return false
+    if (/\.(pdf|doc|docx|xls|xlsx|zip|rar|exe)($|\?)/i.test(href)) return false
 
     return true
   }
@@ -351,7 +382,12 @@
     if (host === 'googletagmanager.com' || host.endsWith('.googletagmanager.com')) return false
 
     if (cls.indexOf('piwik') !== -1 || cls.indexOf('matomo') !== -1) return false
-    if (host === 'matomo.org' || host.endsWith('.matomo.org') || host === 'piwik.org' || host.endsWith('.piwik.org')) return false
+    if (
+      host === 'matomo.org' ||
+      host.endsWith('.matomo.org') ||
+      host === 'piwik.org' ||
+      host.endsWith('.piwik.org')
+    ) return false
 
     return true
   }
@@ -535,7 +571,7 @@
 
   // Минимальный публичный API
   window.Prefetch = {
-    version: '1.0.6',
+    version: '1.0.7',
     preload: function (url) { preload(url) }
   }
 })()
