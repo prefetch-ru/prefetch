@@ -1,10 +1,15 @@
 /*!
- * prefetch.ru v1.0.8 - Мгновенная загрузка страниц
+ * prefetch.ru v1.0.8 (ESM) - Мгновенная загрузка страниц
  * © 2026 Сергей Макаров | MIT License
  * https://prefetch.ru | https://github.com/prefetch-ru
  */
-;(function () {
+function createPrefetch(importMetaUrl) {
   'use strict'
+
+  // SSR/Non-browser guard
+  if (typeof window === 'undefined' || typeof document === 'undefined') {
+    return { version: '1.0.8', preload: function () {} }
+  }
 
   // Состояние
   var preloaded = new Set()
@@ -41,13 +46,36 @@
   var viewportMode = false
   var observeDom = false
 
+  function detectNonceFromImportMeta(metaUrl) {
+    try {
+      if (!metaUrl) return null
+      // script.src и import.meta.url обычно оба абсолютные → можно сравнивать напрямую
+      var scripts = document.getElementsByTagName('script')
+      for (var i = 0; i < scripts.length; i++) {
+        var s = scripts[i]
+        if (!s || !s.src) continue
+        if (s.src === metaUrl) {
+          var n = s.nonce || s.getAttribute('nonce') || null
+          if (n) return n
+          break
+        }
+      }
+    } catch (e) {}
+    return null
+  }
+
   // Инициализация
   ;(function init() {
-    // CSP nonce (если скрипт подключён с nonce)
-    try {
-      var cs = document.currentScript
-      if (cs && cs.nonce) scriptNonce = cs.nonce
-    } catch (e) {}
+    // CSP nonce (ESM): через import.meta.url → находим <script type="module" src="..."> и читаем nonce
+    scriptNonce = detectNonceFromImportMeta(importMetaUrl)
+
+    // fallback: на случай окружений, где currentScript всё же доступен
+    if (!scriptNonce) {
+      try {
+        var cs = document.currentScript
+        if (cs && cs.nonce) scriptNonce = cs.nonce
+      } catch (e) {}
+    }
 
     // rel=prefetch support
     try {
@@ -344,7 +372,6 @@
     }
 
     if (platform === 'tilda') {
-      // Можно проверять и по href, но hash надёжнее/дешевле
       if (hash.indexOf('#popup:') !== -1 || hash.indexOf('#rec') !== -1) return false
     }
 
@@ -570,8 +597,18 @@
   }
 
   // Минимальный публичный API
-  window.Prefetch = {
+  var api = {
     version: '1.0.8',
     preload: function (url) { preload(url) }
   }
-})()
+
+  window.Prefetch = api
+  return api
+}
+
+// Guard от двойной инициализации (если уже есть window.Prefetch — используем его)
+var Prefetch =
+  (typeof window !== 'undefined' && window.Prefetch) ? window.Prefetch : createPrefetch(import.meta.url)
+
+export { Prefetch }
+export default Prefetch

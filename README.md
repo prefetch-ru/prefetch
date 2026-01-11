@@ -40,7 +40,38 @@ npm install @prefetchru/prefetch
 ```
 
 ```javascript
+// ESM (рекомендуется)
 import '@prefetchru/prefetch'
+
+// CommonJS
+require('@prefetchru/prefetch')
+```
+
+### ESM версия
+
+npm пакет включает ESM версию с поддержкой SSR и автоматическим определением CSP nonce:
+
+| Файл | Описание |
+|------|----------|
+| `prefetch.js` | IIFE версия (классический `<script>`) |
+| `prefetch.esm.js` | ESM версия (для бандлеров и `<script type="module">`) |
+| `dist/prefetch.min.js` | Минифицированная IIFE |
+| `dist/prefetch.esm.min.js` | Минифицированная ESM |
+
+**Важно о CSP nonce:**
+
+ESM версия автоматически определяет `nonce` через `import.meta.url`, но это работает только при прямом подключении:
+
+```html
+<!-- ✅ nonce определится автоматически -->
+<script type="module" src="prefetch.esm.js" nonce="abc123"></script>
+```
+
+При импорте из бандлера (Vite, Webpack, Rollup) `import.meta.url` указывает на бандл, а не на исходный скрипт. В этом случае передавайте nonce через `data-prefetch-nonce`:
+
+```html
+<!-- При использовании через бандлер -->
+<body data-prefetch-nonce="{{RANDOM_NONCE}}">
 ```
 
 ### CDN
@@ -106,7 +137,7 @@ import '@prefetchru/prefetch'
 // Доступен объект window.Prefetch после загрузки скрипта
 
 // Версия библиотеки
-console.log(Prefetch.version)  // "1.0.7"
+console.log(Prefetch.version)  // "1.0.8"
 
 // Программная предзагрузка URL
 Prefetch.preload('/catalog/product-123')

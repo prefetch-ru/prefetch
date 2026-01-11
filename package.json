@@ -1,15 +1,26 @@
 {
   "name": "@prefetchru/prefetch",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Мгновенная загрузка страниц для российского веба. Instant page loading for Russian web.",
   "main": "prefetch.js",
-  "module": "prefetch.js",
+  "module": "prefetch.esm.js",
   "browser": "dist/prefetch.min.js",
   "unpkg": "dist/prefetch.min.js",
   "jsdelivr": "dist/prefetch.min.js",
+  "exports": {
+    ".": {
+      "import": "./prefetch.esm.js",
+      "require": "./prefetch.js",
+      "browser": "./dist/prefetch.min.js"
+    },
+    "./esm": "./prefetch.esm.js",
+    "./esm/min": "./dist/prefetch.esm.min.js"
+  },
   "files": [
     "prefetch.js",
+    "prefetch.esm.js",
     "dist/prefetch.min.js",
+    "dist/prefetch.esm.min.js",
     "README.md"
   ],
   "scripts": {

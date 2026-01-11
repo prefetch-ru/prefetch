@@ -104,12 +104,40 @@ jobs:
           grep -n "prefetch.ru v" prefetch.js | head -1
           grep -n "version:" prefetch.js | tail -1
       
-      # ============================================
-      # 5. Build dist/prefetch.min.js
-      # ============================================
-      - name: Build prefetch.min.js
+      - name: Update prefetch.esm.js version
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
         run: |
-          echo "🔨 Building dist/prefetch.min.js..."
+          echo "📝 Updating prefetch.esm.js to version $VERSION..."
+          
+          # Update header comment (line 2): prefetch.ru v1.0.X (ESM)
+          sed -i "s/prefetch\.ru v[0-9]*\.[0-9]*\.[0-9]*/prefetch.ru v${VERSION}/" prefetch.esm.js
+          
+          # Update Prefetch.version in the public API (multiple places in ESM)
+          sed -i "s/version: '[0-9]*\.[0-9]*\.[0-9]*'/version: '${VERSION}'/g" prefetch.esm.js
+          
+          echo "✅ prefetch.esm.js updated"
+          grep -n "prefetch.ru v" prefetch.esm.js | head -1
+          grep -n "version:" prefetch.esm.js | head -2
+      
+      - name: Update README.md version
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          echo "📝 Updating README.md to version $VERSION..."
+          
+          # Update version in JavaScript API example: // "1.0.X"
+          sed -i "s|// \"[0-9]*\.[0-9]*\.[0-9]*\"|// \"${VERSION}\"|g" README.md
+          
+          echo "✅ README.md updated"
+          grep -n "Prefetch.version" README.md | head -1
+      
+      # ============================================
+      # 5. Build dist/prefetch.min.js + dist/prefetch.esm.min.js
+      # ============================================
+      - name: Build minified versions
+        run: |
+          echo "🔨 Building dist/prefetch.min.js + dist/prefetch.esm.min.js..."
           npm run build
           
           echo "✅ Build complete"
@@ -239,7 +267,7 @@ jobs:
           if git diff --quiet && git diff --cached --quiet; then
             echo "ℹ️ No changes to commit"
           else
-            git add package.json package-lock.json prefetch.js www/index.html www/sitemap.xml
+            git add package.json package-lock.json prefetch.js prefetch.esm.js README.md www/index.html www/sitemap.xml
             git commit -m "chore: release v${VERSION} - update version, SRI hash, sitemap [skip ci]"
             git push origin main
             echo "✅ Changes committed and pushed"
@@ -258,8 +286,9 @@ jobs:
           # Create artifacts directory
           mkdir -p artifacts
           
-          # Copy prefetch.min.js
+          # Copy minified files
           cp dist/prefetch.min.js artifacts/
+          cp dist/prefetch.esm.min.js artifacts/
           
           cd artifacts
           
@@ -269,8 +298,12 @@ jobs:
           # Create SRI file
           echo "${SRI_HASH}" > prefetch.min.js.sri
           
-          # Create ZIP with all files
+          # Create ZIP with IIFE version
           zip prefetch.min.js.zip prefetch.min.js prefetch.min.js.md5 prefetch.min.js.sri
+          
+          # Create ZIP with ESM version (source + minified, no SRI — not for CDN)
+          cp ../prefetch.esm.js .
+          zip prefetch.esm.js.zip prefetch.esm.js prefetch.esm.min.js
           
           cd ..
           
@@ -283,8 +316,11 @@ jobs:
           echo "📄 SRI:"
           cat artifacts/prefetch.min.js.sri
           echo ""
-          echo "📦 ZIP contents:"
+          echo "📦 IIFE ZIP contents:"
           unzip -l artifacts/prefetch.min.js.zip
+          echo ""
+          echo "📦 ESM ZIP contents:"
+          unzip -l artifacts/prefetch.esm.js.zip
       
       # ============================================
       # 13. Upload artifacts to release
@@ -299,6 +335,7 @@ jobs:
           
           gh release upload "$TAG" \
             artifacts/prefetch.min.js.zip \
+            artifacts/prefetch.esm.js.zip \
             --clobber
           
           echo "✅ Assets uploaded to release"
