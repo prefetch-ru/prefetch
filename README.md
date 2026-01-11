@@ -1,12 +1,12 @@
 # prefetch.ru
 
-[![npm](https://img.shields.io/npm/v/@prefetchru/prefetch?color=cb0000)](https://www.npmjs.com/package/@prefetchru/prefetch)
-[![downloads](https://img.shields.io/npm/dm/@prefetchru/prefetch?color=cb0000)](https://www.npmjs.com/package/@prefetchru/prefetch)
-[![size](https://img.shields.io/bundlephobia/minzip/@prefetchru/prefetch?color=cb0000&label=gzip)](https://bundlephobia.com/package/@prefetchru/prefetch)
-[![license](https://img.shields.io/npm/l/@prefetchru/prefetch?color=cb0000)](LICENSE)
-[![release](https://img.shields.io/github/v/release/prefetch-ru/prefetch?color=cb0000)](https://github.com/prefetch-ru/prefetch/releases)
-[![updated](https://img.shields.io/github/last-commit/prefetch-ru/prefetch?color=cb0000&label=updated)](https://github.com/prefetch-ru/prefetch/commits)
-[![lang](https://img.shields.io/badge/язык-русский-cb0000)](https://prefetch.ru)
+[![npm](https://img.shields.io/npm/v/@prefetchru/prefetch?color=0969da)](https://www.npmjs.com/package/@prefetchru/prefetch)
+[![downloads](https://img.shields.io/npm/dm/@prefetchru/prefetch?color=0969da)](https://www.npmjs.com/package/@prefetchru/prefetch)
+[![size](https://img.shields.io/bundlephobia/minzip/@prefetchru/prefetch?color=0969da&label=gzip)](https://bundlephobia.com/package/@prefetchru/prefetch)
+[![license](https://img.shields.io/npm/l/@prefetchru/prefetch?color=0969da)](LICENSE)
+[![release](https://img.shields.io/github/v/release/prefetch-ru/prefetch?color=0969da)](https://github.com/prefetch-ru/prefetch/releases)
+[![updated](https://img.shields.io/github/last-commit/prefetch-ru/prefetch?color=0969da&label=updated)](https://github.com/prefetch-ru/prefetch/commits)
+[![lang](https://img.shields.io/badge/язык-русский-0969da)](https://prefetch.ru)
 
 **Instant page loading for Russian web**
 
