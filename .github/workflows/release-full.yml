@@ -356,7 +356,7 @@ jobs:
             echo ""
             echo "---"
             echo ""
-            echo "## Integrity (SRI)"
+            echo "## Integrity (SRI) IIFE — prefetch.min.js"
             echo ""
             echo '```'
             echo "${SRI_HASH}"
