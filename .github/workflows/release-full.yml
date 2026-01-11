@@ -151,11 +151,18 @@ jobs:
         run: |
           echo "🔐 Calculating SRI hash..."
           
+          # IIFE версия
           SRI_HASH=$(openssl dgst -sha384 -binary dist/prefetch.min.js | openssl base64 -A)
           FULL_SRI="sha384-${SRI_HASH}"
           
+          # ESM версия
+          ESM_SRI_HASH=$(openssl dgst -sha384 -binary dist/prefetch.esm.min.js | openssl base64 -A)
+          FULL_ESM_SRI="sha384-${ESM_SRI_HASH}"
+          
           echo "sri_hash=$FULL_SRI" >> $GITHUB_OUTPUT
-          echo "🔐 SRI Hash: $FULL_SRI"
+          echo "esm_sri_hash=$FULL_ESM_SRI" >> $GITHUB_OUTPUT
+          echo "🔐 IIFE SRI Hash: $FULL_SRI"
+          echo "🔐 ESM SRI Hash: $FULL_ESM_SRI"
       
       # ============================================
       # 7. Upload to CDN bucket
@@ -279,6 +286,7 @@ jobs:
       - name: Create release artifacts
         env:
           SRI_HASH: ${{ steps.sri.outputs.sri_hash }}
+          ESM_SRI_HASH: ${{ steps.sri.outputs.esm_sri_hash }}
           VERSION: ${{ steps.version.outputs.version }}
         run: |
           echo "📦 Creating release artifacts..."
@@ -292,35 +300,36 @@ jobs:
           
           cd artifacts
           
-          # Create MD5
+          # IIFE version: MD5 + SRI + ZIP
           md5sum prefetch.min.js > prefetch.min.js.md5
-          
-          # Create SRI file
           echo "${SRI_HASH}" > prefetch.min.js.sri
-          
-          # Create ZIP with IIFE version
           zip prefetch.min.js.zip prefetch.min.js prefetch.min.js.md5 prefetch.min.js.sri
           
-          # Create ZIP with ESM version (source + minified, no SRI — not for CDN)
-          cp ../prefetch.esm.js .
-          zip prefetch.esm.js.zip prefetch.esm.js prefetch.esm.min.js
+          # ESM version: MD5 + SRI + ZIP
+          md5sum prefetch.esm.min.js > prefetch.esm.min.js.md5
+          echo "${ESM_SRI_HASH}" > prefetch.esm.min.js.sri
+          zip prefetch.esm.min.js.zip prefetch.esm.min.js prefetch.esm.min.js.md5 prefetch.esm.min.js.sri
           
           cd ..
           
           echo "✅ Artifacts created:"
           ls -la artifacts/
           echo ""
-          echo "📄 MD5:"
+          echo "📄 IIFE MD5:"
           cat artifacts/prefetch.min.js.md5
-          echo ""
-          echo "📄 SRI:"
+          echo "📄 IIFE SRI:"
           cat artifacts/prefetch.min.js.sri
+          echo ""
+          echo "📄 ESM MD5:"
+          cat artifacts/prefetch.esm.min.js.md5
+          echo "📄 ESM SRI:"
+          cat artifacts/prefetch.esm.min.js.sri
           echo ""
           echo "📦 IIFE ZIP contents:"
           unzip -l artifacts/prefetch.min.js.zip
           echo ""
           echo "📦 ESM ZIP contents:"
-          unzip -l artifacts/prefetch.esm.js.zip
+          unzip -l artifacts/prefetch.esm.min.js.zip
       
       # ============================================
       # 13. Upload artifacts to release
@@ -335,7 +344,7 @@ jobs:
           
           gh release upload "$TAG" \
             artifacts/prefetch.min.js.zip \
-            artifacts/prefetch.esm.js.zip \
+            artifacts/prefetch.esm.min.js.zip \
             --clobber
           
           echo "✅ Assets uploaded to release"
