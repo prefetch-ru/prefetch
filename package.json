@@ -9,7 +9,8 @@
   "jsdelivr": "dist/prefetch.min.js",
   "files": [
     "prefetch.js",
-    "dist/prefetch.min.js"
+    "dist/prefetch.min.js",
+    "README.md"
   ],
   "scripts": {
     "minify": "node build.js",
