@@ -3,11 +3,10 @@ node_modules/
 yarn.lock
 pnpm-lock.yaml
 
-# Build
+# Build (generated files - workflow uses git add -f to commit them)
+prefetch.js
+prefetch.esm.js
 dist/
-build/
-*.min.js
-*.min.js.map
 
 # IDE
 .idea/
