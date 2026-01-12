@@ -232,7 +232,39 @@ jobs:
           cat www/sitemap.xml
       
       # ============================================
-      # 10. Upload www/ to MAIN bucket
+      # 10. Minify index.html
+      # ============================================
+      - name: Minify index.html
+        run: |
+          echo "🔨 Minifying www/index.html..."
+          
+          # Размер до минификации
+          BEFORE=$(stat -c%s www/index.html)
+          echo "📄 Before: $BEFORE bytes"
+          
+          # Минификация HTML
+          npx --yes html-minifier-terser \
+            --collapse-whitespace \
+            --remove-comments \
+            --remove-redundant-attributes \
+            --remove-script-type-attributes \
+            --remove-style-link-type-attributes \
+            --minify-css true \
+            --minify-js true \
+            --input-dir www \
+            --output-dir www \
+            --file-ext html
+          
+          # Размер после минификации
+          AFTER=$(stat -c%s www/index.html)
+          SAVED=$((BEFORE - AFTER))
+          PERCENT=$((SAVED * 100 / BEFORE))
+          
+          echo "📄 After: $AFTER bytes"
+          echo "✅ Saved: $SAVED bytes ($PERCENT%)"
+      
+      # ============================================
+      # 11. Upload www/ to MAIN bucket
       # ============================================
       - name: Upload www/ to MAIN bucket
         env:
@@ -261,7 +293,7 @@ jobs:
             --human-readable
       
       # ============================================
-      # 11. Commit changes back to repository
+      # 12. Commit changes back to repository
       # ============================================
       - name: Commit version updates
         env:
@@ -281,7 +313,7 @@ jobs:
           fi
       
       # ============================================
-      # 12. Create release artifacts
+      # 13. Create release artifacts
       # ============================================
       - name: Create release artifacts
         env:
@@ -332,7 +364,7 @@ jobs:
           unzip -l artifacts/prefetch.esm.min.js.zip
       
       # ============================================
-      # 13. Upload artifacts to release
+      # 14. Upload artifacts to release
       # ============================================
       - name: Upload release assets
         env:
@@ -382,7 +414,7 @@ jobs:
           echo "✅ Release notes updated with SRI hash"
       
       # ============================================
-      # 14. Publish to npm
+      # 15. Publish to npm
       # ============================================
       - name: Remove auth token for OIDC
         run: |
@@ -394,7 +426,7 @@ jobs:
         continue-on-error: true  # Don't fail if version already exists
       
       # ============================================
-      # 15. Publish to GitHub Packages
+      # 16. Publish to GitHub Packages
       # ============================================
       - name: Setup for GitHub Packages
         uses: actions/setup-node@v6

@@ -38,6 +38,35 @@ jobs:
           echo "📁 Files in www/:"
           ls -la www/
       
+      - name: Minify index.html
+        run: |
+          echo "🔨 Minifying www/index.html..."
+          
+          # Размер до минификации
+          BEFORE=$(stat -c%s www/index.html)
+          echo "📄 Before: $BEFORE bytes"
+          
+          # Минификация HTML
+          npx --yes html-minifier-terser \
+            --collapse-whitespace \
+            --remove-comments \
+            --remove-redundant-attributes \
+            --remove-script-type-attributes \
+            --remove-style-link-type-attributes \
+            --minify-css true \
+            --minify-js true \
+            --input-dir www \
+            --output-dir www \
+            --file-ext html
+          
+          # Размер после минификации
+          AFTER=$(stat -c%s www/index.html)
+          SAVED=$((BEFORE - AFTER))
+          PERCENT=$((SAVED * 100 / BEFORE))
+          
+          echo "📄 After: $AFTER bytes"
+          echo "✅ Saved: $SAVED bytes ($PERCENT%)"
+      
       - name: Deploy www/ to MAIN bucket
         env:
           BUCKET: ${{ secrets.YANDEX_STORAGE_BUCKET_MAIN }}
