@@ -2,7 +2,7 @@
 
 [![npm](https://img.shields.io/npm/v/@prefetchru/prefetch?color=0969da)](https://www.npmjs.com/package/@prefetchru/prefetch)
 [![downloads](https://img.shields.io/npm/dm/@prefetchru/prefetch?color=0969da)](https://www.npmjs.com/package/@prefetchru/prefetch)
-[![size](https://img.shields.io/bundlephobia/minzip/@prefetchru/prefetch?color=0969da&label=gzip)](https://bundlephobia.com/package/@prefetchru/prefetch)
+[![size](https://img.shields.io/badge/gzip-~4KB-0969da)](https://prefetch.ru)
 [![license](https://img.shields.io/npm/l/@prefetchru/prefetch?color=0969da)](LICENSE)
 [![release](https://img.shields.io/github/v/release/prefetch-ru/prefetch?color=0969da)](https://github.com/prefetch-ru/prefetch/releases)
 [![updated](https://img.shields.io/github/last-commit/prefetch-ru/prefetch?color=0969da&label=updated)](https://github.com/prefetch-ru/prefetch/commits)
@@ -27,7 +27,7 @@ Prefetch pages 65ms before user clicks. Pre-loads links on hover with smart fall
 - Специальная поддержка 1С-Битрикс и Tilda
 - Отключается на медленных соединениях (2G/3G) и режиме экономии трафика
 - Не влияет на работу аналитики (Яндекс.Метрика, Google Analytics)
-- ~3KB gzip, без зависимостей
+- ~4KB gzip, без зависимостей
 
 ---
 
