@@ -286,8 +286,9 @@ jobs:
           git config --local user.name "github-actions[bot]"
           
           # Add all files first (including gitignored with -f)
-          # prefetch.js, prefetch.esm.js and dist/ are in .gitignore — use -f to force add
-          git add -f prefetch.js prefetch.esm.js dist/
+          # prefetch.js and prefetch.esm.js are in .gitignore — use -f to force add
+          # dist/ is NOT committed — only used for CDN upload, npm publish, and release artifacts
+          git add -f prefetch.js prefetch.esm.js
           git add package.json package-lock.json README.md www/index.html www/sitemap.xml
           
           # Check if there are staged changes
