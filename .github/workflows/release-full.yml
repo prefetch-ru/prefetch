@@ -203,11 +203,14 @@ jobs:
           cat www/sitemap.xml
       
       # ============================================
-      # 10. Minify index.html
+      # 10. Minify index.html (only for deploy, not for commit)
       # ============================================
-      - name: Minify index.html
+      - name: Minify index.html for deploy
         run: |
-          echo "🔨 Minifying www/index.html..."
+          echo "🔨 Minifying www/index.html for deploy..."
+          
+          # Сохраняем оригинал для коммита (в репо всегда несжатый)
+          cp www/index.html www/index.html.original
           
           # Размер до минификации
           BEFORE=$(stat -c%s www/index.html)
@@ -264,7 +267,16 @@ jobs:
             --human-readable
       
       # ============================================
-      # 12. Commit changes back to repository
+      # 12. Restore original index.html for commit
+      # ============================================
+      - name: Restore original index.html
+        run: |
+          echo "📄 Restoring original (unminified) www/index.html for commit..."
+          mv www/index.html.original www/index.html
+          echo "✅ Original restored"
+      
+      # ============================================
+      # 13. Commit changes back to repository
       # ============================================
       - name: Commit version updates
         env:
@@ -286,7 +298,7 @@ jobs:
           fi
       
       # ============================================
-      # 13. Create release artifacts
+      # 14. Create release artifacts
       # ============================================
       - name: Create release artifacts
         env:
@@ -337,7 +349,7 @@ jobs:
           unzip -l artifacts/prefetch.esm.min.js.zip
       
       # ============================================
-      # 14. Upload artifacts to release
+      # 15. Upload artifacts to release
       # ============================================
       - name: Upload release assets
         env:
@@ -387,7 +399,7 @@ jobs:
           echo "✅ Release notes updated with SRI hash"
       
       # ============================================
-      # 15. Publish to npm
+      # 16. Publish to npm
       # ============================================
       - name: Remove auth token for OIDC
         run: |
@@ -399,7 +411,7 @@ jobs:
         continue-on-error: true  # Don't fail if version already exists
       
       # ============================================
-      # 16. Publish to GitHub Packages
+      # 17. Publish to GitHub Packages
       # ============================================
       - name: Setup for GitHub Packages
         uses: actions/setup-node@v6

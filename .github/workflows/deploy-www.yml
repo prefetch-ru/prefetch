@@ -38,15 +38,15 @@ jobs:
           echo "📁 Files in www/:"
           ls -la www/
       
-      - name: Minify index.html
+      - name: Minify index.html for deploy
         run: |
-          echo "🔨 Minifying www/index.html..."
+          echo "🔨 Minifying www/index.html for deploy..."
           
           # Размер до минификации
           BEFORE=$(stat -c%s www/index.html)
           echo "📄 Before: $BEFORE bytes"
           
-          # Минификация HTML
+          # Минификация HTML (только для загрузки, не коммитим)
           npx --yes html-minifier-terser \
             --collapse-whitespace \
             --remove-comments \
@@ -66,6 +66,9 @@ jobs:
           
           echo "📄 After: $AFTER bytes"
           echo "✅ Saved: $SAVED bytes ($PERCENT%)"
+          
+          # ВАЖНО: deploy-www.yml НЕ коммитит изменения,
+          # поэтому минифицированная версия НЕ попадёт в репо
       
       - name: Deploy www/ to MAIN bucket
         env:
