@@ -1,5 +1,5 @@
 /*!
- * prefetch.ru v1.0.8 (ESM) - Мгновенная загрузка страниц
+ * prefetch.ru v1.0.9 (ESM) - Мгновенная загрузка страниц
  * © 2026 Сергей Макаров | MIT License
  * https://prefetch.ru | https://github.com/prefetch-ru
  */
@@ -8,7 +8,7 @@ function createPrefetch(importMetaUrl) {
 
   // SSR/Non-browser guard
   if (typeof window === 'undefined' || typeof document === 'undefined') {
-    return { version: '1.0.8', preload: function () {} }
+    return { __prefetchRu: true, version: '1.0.9', preload: function () {} }
   }
 
   // Состояние
@@ -198,8 +198,8 @@ function createPrefetch(importMetaUrl) {
       rIC(startViewportObserver, { timeout: 1500 })
     }
 
-    // Mutation observer
-    if (observeDom) startMutationObserver()
+    // v1.0.9: MutationObserver нужен только для viewport режима (отслеживать новые ссылки)
+    if (observeDom && viewportMode) startMutationObserver()
   }
 
   function detectPlatform() {
@@ -223,7 +223,8 @@ function createPrefetch(importMetaUrl) {
   }
 
   function onTouchStart(e) {
-    lastTouchTime = e.timeStamp || Date.now()
+    // v1.0.9: используем Date.now() для единой шкалы времени
+    lastTouchTime = Date.now()
 
     var a = getAnchorFromEventTarget(e.target)
     if (!canPreload(a)) return
@@ -266,7 +267,8 @@ function createPrefetch(importMetaUrl) {
   }
 
   function onMouseOver(e) {
-    if (lastTouchTime && e.timeStamp && e.timeStamp - lastTouchTime < 2500) return
+    // v1.0.9: единая шкала времени Date.now()
+    if (lastTouchTime && Date.now() - lastTouchTime < 2500) return
 
     var a = getAnchorFromEventTarget(e.target)
     if (!canPreload(a)) return
@@ -297,7 +299,8 @@ function createPrefetch(importMetaUrl) {
 
   function onMouseDown(e) {
     if (typeof e.button === 'number' && e.button === 2) return
-    if (lastTouchTime && e.timeStamp && e.timeStamp - lastTouchTime < 2500) return
+    // v1.0.9: единая шкала времени Date.now()
+    if (lastTouchTime && Date.now() - lastTouchTime < 2500) return
 
     var a = getAnchorFromEventTarget(e.target)
     if (canPreload(a)) preload(a.href, a)
@@ -375,18 +378,11 @@ function createPrefetch(importMetaUrl) {
       if (hash.indexOf('#popup:') !== -1 || hash.indexOf('#rec') !== -1) return false
     }
 
-    // v1.0.7: /add /delete /remove — только как отдельный сегмент пути (или имя файла типа /delete.php)
-    var isActionPath = /(^|\/)(add|delete|remove)(\/|$|\.)/i.test(pathname)
+    // v1.0.9: все опасные пути проверяем по сегментам pathname, не по подстроке href
+    // Это исправляет ложные блокировки /author, /cartoon, /authentication и т.д.
+    var isDangerousPath = /(^|\/)(login|logout|auth|register|cart|basket|add|delete|remove)(\/|$|\.)/i.test(pathname)
 
-    if (
-      href.indexOf('/login') !== -1 ||
-      href.indexOf('/logout') !== -1 ||
-      href.indexOf('/auth') !== -1 ||
-      href.indexOf('/register') !== -1 ||
-      href.indexOf('/cart') !== -1 ||
-      href.indexOf('/basket') !== -1 ||
-      isActionPath
-    ) return false
+    if (isDangerousPath) return false
 
     if (/\.(pdf|doc|docx|xls|xlsx|zip|rar|exe)($|\?)/i.test(href)) return false
 
@@ -506,7 +502,14 @@ function createPrefetch(importMetaUrl) {
     l.as = 'document'
     try { l.fetchPriority = 'low' } catch (e) {}
 
-    l.onerror = function () { preloaded.delete(key) }
+    // v1.0.9: удаляем link после загрузки, чтобы не раздувать DOM
+    function cleanup() {
+      l.onload = l.onerror = null
+      if (l.parentNode) l.parentNode.removeChild(l)
+    }
+
+    l.onload = cleanup
+    l.onerror = function () { preloaded.delete(key); cleanup() }
     head.appendChild(l)
   }
 
@@ -598,7 +601,8 @@ function createPrefetch(importMetaUrl) {
 
   // Минимальный публичный API
   var api = {
-    version: '1.0.8',
+    __prefetchRu: true,
+    version: '1.0.9',
     preload: function (url) { preload(url) }
   }
 
@@ -606,9 +610,11 @@ function createPrefetch(importMetaUrl) {
   return api
 }
 
-// Guard от двойной инициализации (если уже есть window.Prefetch — используем его)
+// v1.0.9: Guard от двойной инициализации (проверяем маркер __prefetchRu)
 var Prefetch =
-  (typeof window !== 'undefined' && window.Prefetch) ? window.Prefetch : createPrefetch(import.meta.url)
+  (typeof window !== 'undefined' && window.Prefetch && window.Prefetch.__prefetchRu)
+    ? window.Prefetch
+    : createPrefetch(import.meta.url)
 
 export { Prefetch }
 export default Prefetch
