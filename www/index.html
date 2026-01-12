@@ -59,10 +59,8 @@
     html {
       scroll-behavior: smooth;
       font-size: 16px;
-    }
-
-    html {
       overflow-x: hidden;
+      overscroll-behavior: none;
     }
 
     body {
@@ -72,6 +70,7 @@
       line-height: 1.6;
       min-height: 100vh;
       overflow-x: hidden;
+      overscroll-behavior: none;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
@@ -388,6 +387,8 @@
       line-height: 1.8;
       overflow-x: auto;
       max-width: 100%;
+      touch-action: pan-x pan-y;
+      overscroll-behavior-x: contain;
     }
 
     .code-content code {
@@ -716,6 +717,8 @@
       font-size: 0.875rem;
       line-height: 1.8;
       overflow-x: auto;
+      touch-action: pan-x pan-y;
+      overscroll-behavior-x: contain;
     }
 
     .install-code .code-copy {
@@ -2488,6 +2491,7 @@
       z-index: 1000;
       padding: 20px;
       overflow-y: auto;
+      overscroll-behavior: contain;
       animation: fadeIn 0.2s ease-out;
     }
 
@@ -2549,6 +2553,7 @@
     .license-modal-body {
       padding: 32px;
       overflow-y: auto;
+      overscroll-behavior: contain;
       flex: 1;
     }
 
