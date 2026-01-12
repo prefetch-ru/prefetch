@@ -2271,6 +2271,8 @@
       .code-content {
         padding: 20px;
         font-size: 0.8125rem;
+        /* На мобильных overflow-x контейнеры могут \"перехватывать\" вертикальный скролл */
+        overflow-x: hidden;
       }
 
       .hero-code {
@@ -2405,6 +2407,8 @@
       /* Установка */
       .install-code {
         padding: 16px;
+        /* На мобильных отключаем горизонтальный скролл контейнера, чтобы не залипал скролл страницы */
+        overflow-x: hidden;
       }
 
       .install-code .code-copy {
@@ -4021,23 +4025,49 @@ Prefetch.<span class="code-attr">preload</span>(<span class="code-string">'/cata
       });
     });
 
+    // Мобильное меню
+    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+    const mobileNav = document.getElementById('mobileNav');
+
     // Скрытие шапки при прокрутке вниз
+    // Фиксим дёргание шапки на резиновом скролле и в конце страницы (throttle + порог)
     let lastScroll = 0;
+    let scrollTicking = false;
     const header = document.querySelector('header');
 
-    window.addEventListener('scroll', () => {
-      const currentScroll = window.pageYOffset;
-      if (currentScroll > lastScroll && currentScroll > 100) {
+    function updateHeaderOnScroll() {
+      const currentScroll = window.pageYOffset || 0;
+      const delta = currentScroll - lastScroll;
+
+      // Игнорируем мелкие колебания (особенно на iOS, когда страница \"пружинит\")
+      if (Math.abs(delta) < 6) {
+        scrollTicking = false;
+        return;
+      }
+
+      // Если открыто мобильное меню — не прячем шапку
+      const isMenuOpen = mobileNav && mobileNav.classList.contains('active');
+      if (isMenuOpen) {
+        header.style.transform = 'translateY(0)';
+        scrollTicking = false;
+        return;
+      }
+
+      if (delta > 0 && currentScroll > 120) {
         header.style.transform = 'translateY(-100%)';
       } else {
         header.style.transform = 'translateY(0)';
       }
-      lastScroll = currentScroll;
-    }, { passive: true });
 
-    // Мобильное меню
-    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-    const mobileNav = document.getElementById('mobileNav');
+      lastScroll = currentScroll;
+      scrollTicking = false;
+    }
+
+    window.addEventListener('scroll', () => {
+      if (scrollTicking) return;
+      scrollTicking = true;
+      window.requestAnimationFrame(updateHeaderOnScroll);
+    }, { passive: true });
 
     if (mobileMenuBtn && mobileNav) {
       mobileMenuBtn.addEventListener('click', () => {
