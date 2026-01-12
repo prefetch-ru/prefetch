@@ -1,5 +1,5 @@
 /*!
- * prefetch.ru v1.0.9 - Мгновенная загрузка страниц
+ * prefetch.ru v1.0.10 - Мгновенная загрузка страниц
  * © 2026 Сергей Макаров | MIT License
  * https://prefetch.ru | https://github.com/prefetch-ru
  */
@@ -168,13 +168,17 @@
     }
 
     // Viewport observer
+    // v1.0.10: feature-detection — если IntersectionObserver недоступен, отключаем viewport режим
+    if (viewportMode && typeof IntersectionObserver === 'undefined') viewportMode = false
+
     if (viewportMode) {
       var rIC = window.requestIdleCallback || function (cb) { setTimeout(cb, 1) }
       rIC(startViewportObserver, { timeout: 1500 })
     }
 
     // v1.0.9: MutationObserver нужен только для viewport режима (отслеживать новые ссылки)
-    if (observeDom && viewportMode) startMutationObserver()
+    // v1.0.10: feature-detection — если MutationObserver недоступен, не запускаем
+    if (observeDom && viewportMode && typeof MutationObserver !== 'undefined') startMutationObserver()
   }
 
   function detectPlatform() {
@@ -274,6 +278,8 @@
 
   function onMouseDown(e) {
     if (typeof e.button === 'number' && e.button === 2) return
+    // v1.0.10: при модификаторах (Ctrl/Meta/Shift/Alt) открывается новая вкладка — префетч бессмысленен
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
     // v1.0.9: единая шкала времени Date.now()
     if (lastTouchTime && Date.now() - lastTouchTime < 2500) return
 
@@ -470,7 +476,8 @@
 
   function preloadLink(url, key) {
     var head = document.head
-    if (!head) return
+    // v1.0.10: если head недоступен, откатываем ключ
+    if (!head) { preloaded.delete(key); return }
 
     var l = document.createElement('link')
     l.rel = 'prefetch'
@@ -490,7 +497,8 @@
   }
 
   function preloadFetch(url, key) {
-    if (typeof fetch !== 'function') return
+    // v1.0.10: если fetch недоступен, откатываем ключ
+    if (typeof fetch !== 'function') { preloaded.delete(key); return }
 
     var ctrl = null
     var tid = 0
@@ -578,7 +586,7 @@
   // Минимальный публичный API
   window.Prefetch = {
     __prefetchRu: true,
-    version: '1.0.9',
+    version: '1.0.10',
     preload: function (url) { preload(url) }
   }
 })()
