@@ -386,9 +386,13 @@
       font-size: 0.875rem;
       line-height: 1.8;
       overflow-x: auto;
+      overflow-y: hidden;
       max-width: 100%;
-      touch-action: pan-x pan-y;
+      /* Важно: разрешаем только горизонтальный pan, чтобы вертикальный скролл всегда уходил странице */
+      touch-action: pan-x;
       overscroll-behavior-x: contain;
+      overscroll-behavior-y: none;
+      -webkit-overflow-scrolling: touch;
     }
 
     .code-content code {
@@ -717,8 +721,12 @@
       font-size: 0.875rem;
       line-height: 1.8;
       overflow-x: auto;
-      touch-action: pan-x pan-y;
+      overflow-y: hidden;
+      /* Важно: разрешаем только горизонтальный pan, чтобы вертикальный скролл всегда уходил странице */
+      touch-action: pan-x;
       overscroll-behavior-x: contain;
+      overscroll-behavior-y: none;
+      -webkit-overflow-scrolling: touch;
     }
 
     .install-code .code-copy {
