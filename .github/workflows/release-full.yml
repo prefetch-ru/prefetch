@@ -285,13 +285,15 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           
-          # Check if there are changes
-          if git diff --quiet && git diff --cached --quiet; then
+          # Add all files first (including gitignored with -f)
+          # prefetch.js, prefetch.esm.js and dist/ are in .gitignore — use -f to force add
+          git add -f prefetch.js prefetch.esm.js dist/
+          git add package.json package-lock.json README.md www/index.html www/sitemap.xml
+          
+          # Check if there are staged changes
+          if git diff --cached --quiet; then
             echo "ℹ️ No changes to commit"
           else
-            # prefetch.js, prefetch.esm.js and dist/ are in .gitignore — use -f to force add
-            git add -f prefetch.js prefetch.esm.js dist/
-            git add package.json package-lock.json README.md www/index.html www/sitemap.xml
             git commit -m "chore: release v${VERSION} - update version, SRI hash, sitemap [skip ci]"
             git push origin main
             echo "✅ Changes committed and pushed"
