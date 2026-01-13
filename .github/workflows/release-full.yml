@@ -238,22 +238,27 @@ jobs:
           echo "✅ Saved: $SAVED bytes ($PERCENT%)"
       
       # ============================================
-      # 11. Upload www/ to MAIN bucket
+      # 11. Upload changed www/ files to MAIN bucket
       # ============================================
-      - name: Upload www/ to MAIN bucket
+      - name: Upload changed www/ files to MAIN bucket
         env:
           BUCKET: ${{ secrets.YANDEX_STORAGE_BUCKET_MAIN }}
           ENDPOINT: ${{ secrets.YANDEX_STORAGE_ENDPOINT }}
         run: |
-          echo "📤 Uploading www/ to MAIN bucket: $BUCKET"
+          echo "📤 Uploading changed www/ files to MAIN bucket: $BUCKET"
           
-          aws s3 sync ./www/ s3://${BUCKET}/ \
-            --endpoint-url ${ENDPOINT} \
-            --delete \
-            --exclude ".git*" \
-            --exclude ".github*"
+          # During release, only index.html and sitemap.xml are modified
+          # Upload them directly instead of full sync
+          for file in www/index.html www/sitemap.xml; do
+            if [ -f "$file" ]; then
+              S3_PATH="${file#www/}"
+              echo "  📄 Uploading: $file → $S3_PATH"
+              aws s3 cp "$file" "s3://${BUCKET}/${S3_PATH}" \
+                --endpoint-url ${ENDPOINT}
+            fi
+          done
           
-          echo "✅ www/ uploaded to MAIN bucket"
+          echo "✅ Changed files uploaded to MAIN bucket"
       
       - name: Verify MAIN bucket contents
         env:

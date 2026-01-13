@@ -20,6 +20,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
       
       - name: Install AWS CLI
         run: pip install awscli
@@ -70,18 +72,65 @@ jobs:
           # ВАЖНО: deploy-www.yml НЕ коммитит изменения,
           # поэтому минифицированная версия НЕ попадёт в репо
       
-      - name: Deploy www/ to MAIN bucket
+      - name: Find changed files in www/
+        id: changes
+        run: |
+          echo "🔍 Finding changed files in www/..."
+          
+          # Get changed files (added, modified)
+          CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- www/ 2>/dev/null | grep -v '^$' || true)
+          
+          # Get deleted files
+          DELETED=$(git diff --name-only --diff-filter=D ${{ github.event.before }} ${{ github.sha }} -- www/ 2>/dev/null | grep -v '^$' || true)
+          
+          # Fallback: if before is empty (first push), compare with HEAD~1
+          if [ -z "$CHANGED" ] && [ -z "$DELETED" ]; then
+            CHANGED=$(git diff --name-only HEAD~1 HEAD -- www/ 2>/dev/null | grep -v '^$' || true)
+            DELETED=$(git diff --name-only --diff-filter=D HEAD~1 HEAD -- www/ 2>/dev/null | grep -v '^$' || true)
+          fi
+          
+          # Save to files for next step
+          echo "$CHANGED" > /tmp/changed_files.txt
+          echo "$DELETED" > /tmp/deleted_files.txt
+          
+          echo "📝 Changed files:"
+          cat /tmp/changed_files.txt
+          echo ""
+          echo "🗑️ Deleted files:"
+          cat /tmp/deleted_files.txt
+          
+          # Count files
+          CHANGED_COUNT=$(echo "$CHANGED" | grep -c . || echo "0")
+          DELETED_COUNT=$(echo "$DELETED" | grep -c . || echo "0")
+          echo "changed_count=$CHANGED_COUNT" >> $GITHUB_OUTPUT
+          echo "deleted_count=$DELETED_COUNT" >> $GITHUB_OUTPUT
+      
+      - name: Deploy changed files to MAIN bucket
         env:
           BUCKET: ${{ secrets.YANDEX_STORAGE_BUCKET_MAIN }}
           ENDPOINT: ${{ secrets.YANDEX_STORAGE_ENDPOINT }}
         run: |
-          echo "📤 Deploying www/ to MAIN bucket: $BUCKET"
+          echo "📤 Deploying changed files to MAIN bucket: $BUCKET"
           
-          aws s3 sync ./www/ s3://${BUCKET}/ \
-            --endpoint-url ${ENDPOINT} \
-            --delete \
-            --exclude ".git*" \
-            --exclude ".github*"
+          # Upload changed/added files
+          while IFS= read -r file; do
+            [ -z "$file" ] && continue
+            if [ -f "$file" ]; then
+              S3_PATH="${file#www/}"
+              echo "  📄 Uploading: $file → $S3_PATH"
+              aws s3 cp "$file" "s3://${BUCKET}/${S3_PATH}" \
+                --endpoint-url ${ENDPOINT}
+            fi
+          done < /tmp/changed_files.txt
+          
+          # Delete removed files
+          while IFS= read -r file; do
+            [ -z "$file" ] && continue
+            S3_PATH="${file#www/}"
+            echo "  🗑️ Deleting: $S3_PATH"
+            aws s3 rm "s3://${BUCKET}/${S3_PATH}" \
+              --endpoint-url ${ENDPOINT} || true
+          done < /tmp/deleted_files.txt
           
           echo "✅ Deployment complete"
       
@@ -90,6 +139,10 @@ jobs:
           BUCKET: ${{ secrets.YANDEX_STORAGE_BUCKET_MAIN }}
           ENDPOINT: ${{ secrets.YANDEX_STORAGE_ENDPOINT }}
         run: |
+          echo "📊 Deployment summary:"
+          echo "  - Changed files uploaded: ${{ steps.changes.outputs.changed_count }}"
+          echo "  - Deleted files removed: ${{ steps.changes.outputs.deleted_count }}"
+          echo ""
           echo "📁 Contents of MAIN bucket:"
           aws s3 ls s3://${BUCKET}/ \
             --endpoint-url ${ENDPOINT} \
