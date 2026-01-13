@@ -1,5 +1,5 @@
 ﻿/*!
- * prefetch.ru v1.1.1 - Мгновенная загрузка страниц
+ * prefetch.ru v1.1.2 - Мгновенная загрузка страниц
  * © 2026 Сергей Макаров | MIT License
  * https://prefetch.ru | https://github.com/prefetch-ru
  */
@@ -22,7 +22,7 @@
     if (!isBrowser || typeof window === 'undefined' || typeof document === 'undefined') {
       return {
         __prefetchRu: true,
-        version: '1.1.1',
+        version: '1.1.2',
         preload: function () {},
         destroy: function () {},
         refresh: function () {}
@@ -921,7 +921,7 @@
     // Публичный API
     var api = {
       __prefetchRu: true,
-      version: '1.1.1',
+      version: '1.1.2',
       preload: function (url) {
         // v1.0.11: валидация URL + прогон через canPreload() (консистентность с авто-режимом)
         if (!isValidPrefetchUrl(url)) return
