@@ -73,6 +73,36 @@ jobs:
           # ВАЖНО: deploy-www.yml НЕ коммитит изменения,
           # поэтому минифицированная версия НЕ попадёт в репо
       
+      - name: Update sitemap.xml dates for changed files
+        run: |
+          echo "📝 Updating sitemap.xml for changed files..."
+          
+          TODAY=$(date -u +"%Y-%m-%d")
+          
+          # Get changed files
+          CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- www/ 2>/dev/null || git diff --name-only HEAD~1 HEAD -- www/ 2>/dev/null || true)
+          
+          for file in $CHANGED; do
+            # Skip sitemap.xml itself
+            [ "$file" = "www/sitemap.xml" ] && continue
+            
+            # Get URL path (e.g., www/llm-prompt.md -> llm-prompt.md, www/index.html -> /)
+            URL_PATH="${file#www/}"
+            if [ "$URL_PATH" = "index.html" ]; then
+              URL_PATH=""
+            fi
+            
+            # Update lastmod for this URL in sitemap if exists
+            if grep -q "https://prefetch.ru/${URL_PATH}" www/sitemap.xml 2>/dev/null; then
+              echo "  📅 Updating date for: ${URL_PATH:-/}"
+              # Update the lastmod after the matching loc
+              sed -i "/<loc>https:\/\/prefetch\.ru\/${URL_PATH//\//\\/}<\/loc>/,/<\/url>/ s|<lastmod>[0-9-]*</lastmod>|<lastmod>${TODAY}</lastmod>|" www/sitemap.xml
+            fi
+          done
+          
+          echo "✅ Sitemap updated"
+          cat www/sitemap.xml
+      
       - name: Find changed files in www/
         id: changes
         run: |
@@ -144,6 +174,16 @@ jobs:
           done < /tmp/deleted_files.txt
           
           echo "✅ Deployment complete"
+      
+      - name: Upload updated sitemap.xml
+        env:
+          BUCKET: ${{ secrets.YANDEX_STORAGE_BUCKET_MAIN }}
+          ENDPOINT: ${{ secrets.YANDEX_STORAGE_ENDPOINT }}
+        run: |
+          echo "📤 Uploading updated sitemap.xml..."
+          aws s3 cp www/sitemap.xml "s3://${BUCKET}/sitemap.xml" \
+            --endpoint-url ${ENDPOINT}
+          echo "✅ Sitemap uploaded"
       
       - name: Verify deployment
         env:
