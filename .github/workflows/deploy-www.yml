@@ -51,6 +51,7 @@ jobs:
           # Минификация HTML (только для загрузки, не коммитим)
           npx --yes html-minifier-terser \
             --collapse-whitespace \
+            --preserve-line-breaks \
             --remove-comments \
             --remove-redundant-attributes \
             --remove-script-type-attributes \

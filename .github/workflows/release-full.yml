@@ -219,6 +219,7 @@ jobs:
           # Минификация HTML
           npx --yes html-minifier-terser \
             --collapse-whitespace \
+            --preserve-line-breaks \
             --remove-comments \
             --remove-redundant-attributes \
             --remove-script-type-attributes \
