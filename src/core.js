@@ -412,7 +412,7 @@ export function createPrefetchCore(options) {
     // Внешние ссылки
     if (a.origin !== location.origin) {
       if (!allowExternal && !('prefetch' in a.dataset) && !('instant' in a.dataset)) return false
-      if (!chromiumVer) return false
+      // v1.1.1: убрано ограничение chromiumVer — Firefox и Safari тоже поддерживают cross-origin prefetch
     }
 
     // Query string
@@ -739,15 +739,16 @@ export function createPrefetchCore(options) {
       cache: 'force-cache',
       // v1.0.13: для cross-origin: omit credentials, no-referrer (избегаем CORS preflight и утечки referrer)
       credentials: isCrossOrigin ? 'omit' : 'same-origin',
-      // v1.0.11: Accept header для корректного content negotiation
-      headers: {
-        Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
-      }
+      // v1.1.1: для cross-origin используем no-cors mode (opaque response, но кэш прогревается)
+      mode: isCrossOrigin ? 'no-cors' : 'cors'
     }
 
-    // v1.0.13: Purpose header только для same-origin (избегаем CORS preflight на cross-origin)
+    // v1.1.1: headers только для same-origin (no-cors не позволяет кастомные headers)
     if (!isCrossOrigin) {
-      opts.headers.Purpose = 'prefetch'
+      opts.headers = {
+        Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        Purpose: 'prefetch'
+      }
     }
 
     // v1.0.13: referrerPolicy для cross-origin (приватность)
@@ -760,8 +761,9 @@ export function createPrefetchCore(options) {
     try {
       fetch(url, opts)
         .then(function (r) {
-          // v1.0.12: 304 Not Modified тоже считаем успехом (кэш прогрет)
-          done(r && (r.ok || r.status === 304))
+          // v1.1.1: для no-cors mode response.type === 'opaque', r.ok === false, но кэш прогрет
+          // v1.0.12: 304 Not Modified тоже считаем успехом
+          done(r && (r.ok || r.status === 304 || r.type === 'opaque'))
         })
         .catch(function () {
           done(false)
