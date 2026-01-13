@@ -1,5 +1,5 @@
 ﻿/*!
- * prefetch.ru v1.1.0 - Мгновенная загрузка страниц
+ * prefetch.ru v1.1.1 - Мгновенная загрузка страниц
  * © 2026 Сергей Макаров | MIT License
  * https://prefetch.ru | https://github.com/prefetch-ru
  */
@@ -22,7 +22,7 @@
     if (!isBrowser || typeof window === 'undefined' || typeof document === 'undefined') {
       return {
         __prefetchRu: true,
-        version: '1.1.0',
+        version: '1.1.1',
         preload: function () {},
         destroy: function () {},
         refresh: function () {}
@@ -56,7 +56,6 @@
 
     var isMobile = false;
     var isIOS = false;
-    var chromiumVer = null;
     var platform = null;
     var saveData = false;
     var connType = null;
@@ -118,7 +117,7 @@
         for (var i = 0; i < brands.length; i++) {
           var b = brands[i];
           if (b.brand === 'Chromium' || b.brand === 'Google Chrome') {
-            chromiumVer = parseInt(b.version, 10);
+            parseInt(b.version, 10);
             break
           }
         }
@@ -131,7 +130,7 @@
         isMobile = (isIOS || isAndroid) && Math.min(screen.width, screen.height) < 768;
         // Chromium версия из UA
         var cm = ua.match(/Chrome\/(\d+)/);
-        if (cm) chromiumVer = parseInt(cm[1], 10);
+        if (cm) parseInt(cm[1], 10);
       }
       if (isMobile) maxPreloads = 20;
 
@@ -419,7 +418,7 @@
       // Внешние ссылки
       if (a.origin !== location.origin) {
         if (!allowExternal && !('prefetch' in a.dataset) && !('instant' in a.dataset)) return false
-        if (!chromiumVer) return false
+        // v1.1.1: убрано ограничение chromiumVer — Firefox и Safari тоже поддерживают cross-origin prefetch
       }
 
       // Query string
@@ -746,15 +745,16 @@
         cache: 'force-cache',
         // v1.0.13: для cross-origin: omit credentials, no-referrer (избегаем CORS preflight и утечки referrer)
         credentials: isCrossOrigin ? 'omit' : 'same-origin',
-        // v1.0.11: Accept header для корректного content negotiation
-        headers: {
-          Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
-        }
+        // v1.1.1: для cross-origin используем no-cors mode (opaque response, но кэш прогревается)
+        mode: isCrossOrigin ? 'no-cors' : 'cors'
       };
 
-      // v1.0.13: Purpose header только для same-origin (избегаем CORS preflight на cross-origin)
+      // v1.1.1: headers только для same-origin (no-cors не позволяет кастомные headers)
       if (!isCrossOrigin) {
-        opts.headers.Purpose = 'prefetch';
+        opts.headers = {
+          Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+          Purpose: 'prefetch'
+        };
       }
 
       // v1.0.13: referrerPolicy для cross-origin (приватность)
@@ -767,8 +767,9 @@
       try {
         fetch(url, opts)
           .then(function (r) {
-            // v1.0.12: 304 Not Modified тоже считаем успехом (кэш прогрет)
-            done(r && (r.ok || r.status === 304));
+            // v1.1.1: для no-cors mode response.type === 'opaque', r.ok === false, но кэш прогрет
+            // v1.0.12: 304 Not Modified тоже считаем успехом
+            done(r && (r.ok || r.status === 304 || r.type === 'opaque'));
           })
           .catch(function () {
             done(false);
@@ -911,7 +912,7 @@
     // Публичный API
     var api = {
       __prefetchRu: true,
-      version: '1.1.0',
+      version: '1.1.1',
       preload: function (url) {
         // v1.0.11: валидация URL + прогон через canPreload() (консистентность с авто-режимом)
         if (!isValidPrefetchUrl(url)) return
