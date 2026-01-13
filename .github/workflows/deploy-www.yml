@@ -100,8 +100,18 @@ jobs:
           cat /tmp/deleted_files.txt
           
           # Count files
-          CHANGED_COUNT=$(echo "$CHANGED" | grep -c . || echo "0")
-          DELETED_COUNT=$(echo "$DELETED" | grep -c . || echo "0")
+          if [ -n "$CHANGED" ]; then
+            CHANGED_COUNT=$(echo "$CHANGED" | wc -l | tr -d ' ')
+          else
+            CHANGED_COUNT=0
+          fi
+          
+          if [ -n "$DELETED" ]; then
+            DELETED_COUNT=$(echo "$DELETED" | wc -l | tr -d ' ')
+          else
+            DELETED_COUNT=0
+          fi
+          
           echo "changed_count=$CHANGED_COUNT" >> $GITHUB_OUTPUT
           echo "deleted_count=$DELETED_COUNT" >> $GITHUB_OUTPUT
       
