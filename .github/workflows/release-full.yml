@@ -171,6 +171,9 @@ jobs:
           # Replace all version paths: /v1.0.X/ -> /vNEW/
           sed -i "s|/v[0-9]*\.[0-9]*\.[0-9]*/|/${VERSION_FOLDER}/|g" www/index.html
           
+          # Replace jsDelivr version: @prefetchru/prefetch@X.X.X -> @prefetchru/prefetch@NEW
+          sed -i "s|@prefetchru/prefetch@[0-9]*\.[0-9]*\.[0-9]*|@prefetchru/prefetch@${VERSION}|g" www/index.html
+          
           # Replace all SRI hashes (handles both plain HTML and syntax-highlighted code)
           # Pattern 1: integrity="sha384-..."
           sed -i "s|integrity=\"sha384-[^\"]*\"|integrity=\"${SRI_HASH}\"|g" www/index.html

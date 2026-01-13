@@ -793,6 +793,17 @@
       margin-top: 60px;
     }
 
+    .install-options-npm {
+      display: flex;
+      justify-content: center;
+      margin-top: 32px;
+    }
+
+    .install-options-npm .install-card {
+      max-width: 560px;
+      width: 100%;
+    }
+
     .install-card {
       background: var(--bg-secondary);
       border: 1px solid var(--border);
@@ -3341,6 +3352,30 @@
         </div>
         <div class="install-card">
           <div class="install-card-header">
+            <h3>CDN jsDelivr <span style="font-size: 0.85em; font-weight: 500;">(для проектов вне РФ)</span></h3>
+            <span class="install-tag">global</span>
+          </div>
+          <div class="install-code">
+            <div class="code-window code-window-small" style="margin: 0;">
+              <div class="code-content">
+<code id="install-jsdelivr-code"><span class="code-comment">&lt;!-- На body для максимальной скорости --&gt;</span>
+<span class="code-tag">&lt;body</span> <span class="code-attr">data-prefetch-specrules</span>
+      <span class="code-attr">data-prefetch-specrules-fallback</span><span class="code-tag">&gt;</span>
+
+<span class="code-comment">&lt;!-- Перед &lt;/body&gt; --&gt;</span>
+<span class="code-tag">&lt;script</span> <span class="code-attr">src</span>=<span class="code-string">"//cdn.jsdelivr.net/npm/@prefetchru/prefetch@1.1.0/dist/prefetch.min.js"</span>
+        <span class="code-attr">crossorigin</span>=<span class="code-string">"anonymous"</span>
+        <span class="code-attr">type</span>=<span class="code-string">"module"</span>
+        <span class="code-attr">defer</span><span class="code-tag">&gt;&lt;/script&gt;</span></code>
+              </div>
+            </div>
+            <button class="copy-btn" style="margin-top: 12px;" onclick="copyJsDelivrCode(this)">Копировать</button>
+          </div>
+        </div>
+      </div>
+      <div class="install-options-npm reveal">
+        <div class="install-card">
+          <div class="install-card-header">
             <h3>npm <span style="font-size: 0.85em; font-weight: 500;">(для проектов с большой посещаемостью)</span></h3>
             <span class="install-tag">package</span>
           </div>
@@ -4207,6 +4242,20 @@ PrefetchRu.<span class="code-attr">destroy</span>()</code>
     // Копирование кода из блока установки CDN
     function copyInstallCode(btn) {
       const codeEl = document.getElementById('install-cdn-code');
+      const code = codeEl.textContent.trim();
+      copyToClipboard(code).then(() => {
+        btn.textContent = 'Скопировано!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Копировать';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+
+    // Копирование кода из блока установки jsDelivr
+    function copyJsDelivrCode(btn) {
+      const codeEl = document.getElementById('install-jsdelivr-code');
       const code = codeEl.textContent.trim();
       copyToClipboard(code).then(() => {
         btn.textContent = 'Скопировано!';
