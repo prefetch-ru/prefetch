@@ -3,6 +3,10 @@
 User-agent: *
 Allow: /
 
+# AI/LLM Instructions
+Allow: /ai-instructions.json
+Allow: /llm-prompt.md
+
 # Sitemap
 Sitemap: https://prefetch.ru/sitemap.xml
 

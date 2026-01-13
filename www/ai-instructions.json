@@ -1,0 +1,204 @@
+{
+  "version": "1.0",
+  "lastUpdated": "2026-01",
+  "project": {
+    "name": "prefetch.ru",
+    "type": "JavaScript library",
+    "purpose": "Предзагрузка страниц за 65мс до клика при наведении курсора",
+    "size": "~4KB gzip",
+    "license": "MIT",
+    "author": "Sergey Makarov"
+  },
+  "links": {
+    "website": "https://prefetch.ru",
+    "github": "https://github.com/prefetch-ru/prefetch",
+    "npm": "https://www.npmjs.com/package/@prefetchru/prefetch",
+    "documentation": "https://github.com/prefetch-ru/prefetch#readme",
+    "llmPrompt": "https://prefetch.ru/llm-prompt.md",
+    "issues": "https://github.com/prefetch-ru/prefetch/issues",
+    "email": "feedback@prefetch.ru"
+  },
+  "aiInstructions": {
+    "systemPrompt": "Ты — технический специалист по prefetch.ru, JavaScript библиотеке для предзагрузки страниц. Помогаешь пользователям с установкой, настройкой и решением проблем. Отвечаешь на русском языке, профессионально и дружелюбно.",
+    "tone": "профессиональный, дружелюбный, технически точный",
+    "language": "Russian"
+  },
+  "technicalOverview": {
+    "principle": "Предзагрузка начинается за 65мс до клика при наведении курсора. Мозг воспринимает <100мс как мгновенно.",
+    "timeline": {
+      "0ms": "Наведение курсора / touchstart",
+      "65ms": "Начало предзагрузки (hoverDelay)",
+      "200ms": "Клик пользователя (среднее)",
+      "~0ms": "Страница из кэша браузера"
+    },
+    "architecture": {
+      "sourceFile": "src/core.js (~900 строк)",
+      "builds": ["IIFE (prefetch.js)", "ESM (prefetch.esm.js)"],
+      "bundler": "Rollup + Terser",
+      "ssrSafe": true
+    }
+  },
+  "installation": {
+    "npm": {
+      "command": "npm install @prefetchru/prefetch",
+      "esm": "import '@prefetchru/prefetch'",
+      "commonjs": "require('@prefetchru/prefetch')"
+    },
+    "cdn": {
+      "note": "Актуальный код с SRI-хешем на https://prefetch.ru#install",
+      "placement": "Перед закрывающим </body>"
+    }
+  },
+  "prefetchMethods": [
+    {
+      "name": "Speculation Rules API",
+      "browsers": ["Chrome 109+", "Edge 109+", "Яндекс.Браузер", "Atom"],
+      "activation": "data-prefetch-specrules",
+      "modes": ["prefetch (только HTML)", "prerender (полный рендер в фоне)"]
+    },
+    {
+      "name": "Link Prefetch",
+      "browsers": ["Firefox"],
+      "activation": "Автоматически",
+      "implementation": "<link rel=\"prefetch\" as=\"document\">"
+    },
+    {
+      "name": "Fetch Fallback",
+      "browsers": ["iOS (все браузеры)", "Safari"],
+      "activation": "Автоматически",
+      "implementation": "fetch() с cache: 'force-cache'"
+    }
+  ],
+  "browserSupport": {
+    "full": ["Chrome 109+", "Яндекс.Браузер", "Atom (VK)", "Edge 109+"],
+    "fallback": ["Safari", "iOS (все браузеры)", "Firefox"],
+    "iosNote": "ВСЕ браузеры на iOS используют WebKit, который не поддерживает prefetch. Библиотека автоматически использует fetch fallback."
+  },
+  "configuration": {
+    "bodyAttributes": {
+      "data-prefetch-intensity": {
+        "values": ["65 (default)", "mousedown", "viewport", "viewport-all", "число в мс"],
+        "description": "Режим/задержка предзагрузки"
+      },
+      "data-prefetch-specrules": {
+        "values": ["(пусто)", "prerender", "no"],
+        "description": "Включить Speculation Rules API"
+      },
+      "data-prefetch-whitelist": {
+        "description": "Режим белого списка — только ссылки с data-prefetch"
+      },
+      "data-prefetch-allow-query-string": {
+        "description": "Разрешить ссылки с ?param=value"
+      },
+      "data-prefetch-allow-external-links": {
+        "description": "Разрешить внешние домены (только Chromium)"
+      },
+      "data-prefetch-observe-dom": {
+        "description": "Отслеживать новые ссылки (для SPA)"
+      },
+      "data-prefetch-nonce": {
+        "description": "Nonce для Content Security Policy"
+      },
+      "data-prefetch-specrules-fallback": {
+        "description": "Включить fallback при Speculation Rules"
+      },
+      "data-prefetch-prerender-all": {
+        "description": "Разрешить prerender для всех ссылок"
+      }
+    },
+    "linkAttributes": {
+      "data-prefetch": "Разрешить предзагрузку",
+      "data-no-prefetch": "Запретить предзагрузку",
+      "data-prefetch-prerender": "Prerender для этой ссылки"
+    }
+  },
+  "javascriptApi": {
+    "namespace": "window.PrefetchRu (или window.Prefetch если не занят)",
+    "methods": {
+      "version": "Строка версии библиотеки",
+      "preload(url)": "Программная предзагрузка URL (проходит те же проверки)",
+      "refresh()": "Обновить состояние при навигации в SPA",
+      "destroy()": "Отключить библиотеку, снять обработчики"
+    }
+  },
+  "autoExclusions": {
+    "paths": ["/login", "/logout", "/auth", "/register", "/cart", "/basket", "/add", "/delete", "/remove"],
+    "files": [".pdf", ".doc", ".docx", ".xls", ".xlsx", ".zip", ".rar", ".exe"],
+    "other": ["Внешние ссылки (по умолчанию)", "Якоря на той же странице", "Текущая страница", "Ссылки с target != _self"]
+  },
+  "platformSupport": {
+    "1c-bitrix": {
+      "detection": "window.BX, window.B24, window.BX24",
+      "exclusions": ["/bitrix/", "sessid=", "класс bx-ajax"],
+      "auto": "Включается observeDom"
+    },
+    "tilda": {
+      "detection": ".t-records, window.Tilda",
+      "exclusions": ["#popup:", "#rec"],
+      "auto": "Включается observeDom, задержка 100мс"
+    }
+  },
+  "analyticsCompatibility": {
+    "compatible": ["Яндекс.Метрика", "Google Analytics", "GTM", "Matomo"],
+    "excludedClasses": ["ym-*", "ga-*", "gtm-*", "piwik", "matomo"],
+    "excludedDomains": ["mc.yandex.ru", "google-analytics.com", "googletagmanager.com"],
+    "why": "Используется passive: true, не вызывается preventDefault(), UTM-метки работают"
+  },
+  "limits": {
+    "desktop": "max 50 предзагрузок",
+    "mobile": "max 20 предзагрузок",
+    "inFlight": "max 4 параллельных запроса",
+    "queue": "до 50 в очереди",
+    "touchDelay": "80мс (отменяется при scroll/touchmove)"
+  },
+  "networkConditions": {
+    "blocked": ["2G", "slow-2g", "3G", "saveData === true"],
+    "api": "Network Information API (navigator.connection)"
+  },
+  "edgeCases": {
+    "cspBlocking": {
+      "problem": "Speculation Rules блокируются строгим CSP",
+      "solutions": ["data-prefetch-nonce=\"{{NONCE}}\"", "data-prefetch-specrules-fallback"]
+    },
+    "wafBlocking": {
+      "problem": "WAF блокирует заголовок Purpose: prefetch",
+      "solution": "Проверить правила WAF"
+    },
+    "spaNavigation": {
+      "problem": "Новые ссылки не отслеживаются",
+      "solutions": ["data-prefetch-observe-dom", "PrefetchRu.refresh()"]
+    },
+    "crossOrigin": {
+      "default": "Отключены",
+      "enable": "data-prefetch-allow-external-links",
+      "note": "Работает только в Chromium, используется referrerPolicy: no-referrer"
+    },
+    "doubleTraffic": {
+      "problem": "Двойной трафик при Speculation Rules + fallback",
+      "default": "Fallback отключён при Speculation Rules",
+      "enable": "data-prefetch-specrules-fallback"
+    }
+  },
+  "guidelines": [
+    "Всегда рекомендуй актуальный CDN-код с сайта prefetch.ru#install (там SRI-хеш)",
+    "Для SPA (React, Vue, Next.js) добавляй data-prefetch-observe-dom",
+    "Для сайтов с CSP используй data-prefetch-nonce",
+    "Предупреждай: GET-ссылки НЕ должны выполнять действия (add to cart)",
+    "Prerender выполняет JS целевой страницы — предупреждай об аналитике",
+    "На highload проектах рекомендуй мониторить нагрузку (+10-20% запросов)",
+    "1С-Битрикс и Tilda определяются автоматически — специальная настройка не нужна"
+  ],
+  "commonScenarios": {
+    "simpleWebsite": "Просто подключи скрипт перед </body>",
+    "bitrix": "Автоматическая оптимизация, observeDom включён",
+    "tilda": "Автоматическая оптимизация, задержка 100мс",
+    "spa": "Добавь data-prefetch-observe-dom на <body>",
+    "strictCsp": "Добавь data-prefetch-nonce=\"{{NONCE}}\" на <body>",
+    "maxSpeed": "data-prefetch-specrules=\"prerender\" (осторожно с аналитикой)"
+  },
+  "limitations": [
+    "GET-ссылки не должны выполнять действия",
+    "Prerender выполняет JS — может влиять на аналитику",
+    "Дополнительный трафик: +10-20% HTTP-запросов, +5-15% нагрузки на сервер"
+  ]
+}
