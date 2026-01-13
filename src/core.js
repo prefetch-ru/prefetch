@@ -542,6 +542,13 @@ export function createPrefetchCore(options) {
   }
 
   function doPreload(requestUrl, key, mode) {
+    // v1.1.1: определяем cross-origin для выбора метода
+    var isCrossOrigin = false
+    try {
+      var u = new URL(requestUrl, location.href)
+      isCrossOrigin = u.origin !== location.origin
+    } catch (e) {}
+
     if (mode !== 'none') {
       // v1.0.11: try/catch для preloadSpec — при строгом CSP/Trusted Types может выбросить исключение
       var specOk = false
@@ -555,13 +562,15 @@ export function createPrefetchCore(options) {
       // v1.0.11: fallback только если явно включён ИЛИ если SpecRules не удался
       // По умолчанию fallback отключён для избежания двойного трафика
       if (specRulesFallback || !specOk) {
-        if (isIOS || !supportsLinkPrefetch) preloadFetch(requestUrl, key)
+        // v1.1.1: cross-origin всегда через fetch (no-cors), <link> требует CORS headers
+        if (isIOS || !supportsLinkPrefetch || isCrossOrigin) preloadFetch(requestUrl, key)
         else preloadLink(requestUrl, key)
       }
       return
     }
 
-    if (isIOS || !supportsLinkPrefetch) preloadFetch(requestUrl, key)
+    // v1.1.1: cross-origin всегда через fetch (no-cors), <link crossorigin=anonymous> требует CORS
+    if (isIOS || !supportsLinkPrefetch || isCrossOrigin) preloadFetch(requestUrl, key)
     else preloadLink(requestUrl, key)
   }
 
