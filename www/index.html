@@ -4148,19 +4148,48 @@ PrefetchRu.<span class="code-attr">destroy</span>()</code>
     }
 
     // Копирование AI промта из llm-prompt.md
+    // Кэшируем промт при загрузке (для мобильных — clipboard требует синхронный user gesture)
+    var cachedAIPrompt = null;
+    fetch('/llm-prompt.md')
+      .then(r => r.text())
+      .then(md => {
+        const match = md.match(/^```\n([\s\S]*?)\n```$/m);
+        cachedAIPrompt = match ? match[1].trim() : md.trim();
+      })
+      .catch(() => {});
+
     function copyAIPrompt(btn) {
       const spanEl = btn.querySelector('span');
       const originalText = spanEl.textContent;
-      spanEl.textContent = 'Загрузка...';
       
-      fetch('/llm-prompt.md')
-        .then(r => r.text())
-        .then(md => {
-          // Извлекаем содержимое между ``` и ```
-          const match = md.match(/^```\n([\s\S]*?)\n```$/m);
-          const prompt = match ? match[1].trim() : md.trim();
-          return copyToClipboard(prompt);
-        })
+      if (!cachedAIPrompt) {
+        // Fallback: если кэш не готов, пробуем загрузить
+        spanEl.textContent = 'Загрузка...';
+        fetch('/llm-prompt.md')
+          .then(r => r.text())
+          .then(md => {
+            const match = md.match(/^```\n([\s\S]*?)\n```$/m);
+            cachedAIPrompt = match ? match[1].trim() : md.trim();
+            // На мобильных это не сработает из-за async, но попробуем
+            return copyToClipboard(cachedAIPrompt);
+          })
+          .then(() => {
+            spanEl.textContent = 'Скопировано!';
+            btn.classList.add('copied');
+            setTimeout(() => {
+              spanEl.textContent = originalText;
+              btn.classList.remove('copied');
+            }, 2500);
+          })
+          .catch(() => {
+            spanEl.textContent = 'Ошибка';
+            setTimeout(() => { spanEl.textContent = originalText; }, 2000);
+          });
+        return;
+      }
+      
+      // Синхронное копирование из кэша (работает на мобильных)
+      copyToClipboard(cachedAIPrompt)
         .then(() => {
           spanEl.textContent = 'Скопировано!';
           btn.classList.add('copied');
