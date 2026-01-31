@@ -1,0 +1,171 @@
+# prefetch.ru — Instant Page Loading for Russian Web
+
+Prefetch pages 65ms before user clicks. Pre-loads links on hover with smart fallbacks for iOS/Safari, optimized for Russian browsers (Yandex.Browser, Atom), CMS platforms (1C-Bitrix, Tilda), and e-commerce. Works everywhere with zero configuration.
+
+## What It Does
+
+- Pre-loads pages on mouse hover (65ms before click)
+- Speeds up perceived page navigation to near-instant
+- Improves Core Web Vitals (LCP, INP, CLS)
+- Works across all modern browsers with automatic fallbacks
+- Respects user privacy and network conditions
+
+## Quick Start
+
+### CDN (Recommended)
+
+```html
+<script src="//cdn.prefetch.ru/v1.1.2/prefetch.min.js" 
+        integrity="sha384-BDLxwRTwyIWnAEmc+2Rkw41jVvctV3HxxTu1ryrmagtHh18GekSP+bfqy5/YswEW" 
+        crossorigin="anonymous" 
+        type="module" 
+        defer></script>
+```
+
+### npm
+
+```bash
+npm install @prefetchru/prefetch
+```
+
+```javascript
+// ESM
+import '@prefetchru/prefetch'
+
+// CommonJS
+require('@prefetchru/prefetch')
+```
+
+## Configuration
+
+Configure via data attributes on `<body>`:
+
+```html
+<body data-prefetch-specrules
+      data-prefetch-allow-query-string
+      data-prefetch-allow-external-links>
+```
+
+### Available Options
+
+| Attribute | Values | Description |
+|-----------|--------|-------------|
+| `data-prefetch-intensity` | `65` (default), `mousedown`, `viewport`, `viewport-all` | Hover delay in ms or trigger mode |
+| `data-prefetch-specrules` | empty, `prerender`, `no` | Enable Speculation Rules API |
+| `data-prefetch-specrules-fallback` | — | Enable fallback when using Speculation Rules |
+| `data-prefetch-whitelist` | — | Whitelist mode (only links with `data-prefetch`) |
+| `data-prefetch-allow-query-string` | — | Allow links with query parameters |
+| `data-prefetch-allow-external-links` | — | Allow external domains |
+| `data-prefetch-observe-dom` | — | Watch for new links (SPA support) |
+| `data-prefetch-nonce` | `"abc123"` | CSP nonce value |
+
+### Link-Level Control
+
+```html
+<!-- Force prefetch for specific link -->
+<a href="/catalog" data-prefetch>Catalog</a>
+
+<!-- Disable prefetch for specific link -->
+<a href="/logout" data-no-prefetch>Logout</a>
+
+<!-- Enable prerender for specific link -->
+<a href="/pricing" data-prefetch-prerender>Pricing</a>
+```
+
+## JavaScript API
+
+```javascript
+// Check version
+console.log(PrefetchRu.version)  // "1.1.2"
+
+// Manually prefetch a URL
+PrefetchRu.preload('/catalog/product-123')
+
+// Update state after SPA navigation
+PrefetchRu.refresh()
+
+// Disable the library
+PrefetchRu.destroy()
+```
+
+## How It Works
+
+### Timeline
+
+```
+  0ms  → Mouse hover starts
+ 65ms  → Prefetch begins
+200ms  → User clicks
+ ~0ms  → Page loads from cache
+```
+
+### Prefetch Methods (Auto-Selected)
+
+1. **Speculation Rules API** (Chromium 109+) — Modern API for prefetch/prerender
+2. **Link Prefetch** (`<link rel="prefetch">`) — Standard method for Firefox
+3. **Fetch Fallback** — For iOS/Safari via `fetch()` with caching
+
+## Automatic Exclusions
+
+The library automatically excludes:
+
+- Dangerous paths: `/login`, `/logout`, `/auth`, `/register`, `/cart`, `/basket`, `/add`, `/delete`, `/remove`
+- File downloads: `.pdf`, `.doc`, `.docx`, `.xls`, `.xlsx`, `.zip`, `.rar`, `.exe`
+- Analytics links: Yandex.Metrika, Google Analytics, Matomo classes
+- Same-page anchors
+- Links with `target="_blank"` or `download` attribute
+
+## Platform Support
+
+### 1C-Bitrix
+- Excludes `/bitrix/` URLs and `sessid=` parameters
+- Skips `bx-ajax` class links
+- Auto-enables DOM observation
+
+### Tilda
+- Excludes `#popup:` and `#rec` anchors
+- Auto-enables DOM observation
+- Increased hover delay (100ms)
+
+## Browser Support
+
+| Browser | Method | Status |
+|---------|--------|--------|
+| Chrome 109+ | Speculation Rules API | Full support |
+| Yandex.Browser | Speculation Rules API | Full support |
+| Atom (VK) | Speculation Rules API | Full support |
+| Safari / iOS | fetch fallback | Works |
+| Firefox | `rel="prefetch"` | Works |
+| Edge | Speculation Rules API | Full support |
+
+## Network Awareness
+
+- Disables on slow connections (2G/3G)
+- Respects Save-Data header
+- Limits concurrent requests (max 4)
+- Queue management (max 50 pending)
+
+## Privacy & Security
+
+- No analytics or tracking
+- Works entirely client-side
+- SRI hash verification
+- Cross-origin requests use `no-referrer` policy
+- External requests omit credentials
+
+## Size & Performance
+
+- ~4KB gzipped
+- Zero dependencies
+- Non-blocking (defer/module)
+- Removes Speculation Rules scripts after insertion (keeps DOM clean)
+
+## Links
+
+- Website: https://prefetch.ru
+- GitHub: https://github.com/prefetch-ru/prefetch
+- npm: https://www.npmjs.com/package/@prefetchru/prefetch
+
+## License
+
+MIT License © 2026 Sergey Makarov
