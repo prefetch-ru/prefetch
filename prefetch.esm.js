@@ -1,5 +1,5 @@
 ﻿/*!
- * prefetch.ru v1.1.2 (ESM) - Мгновенная загрузка страниц
+ * prefetch.ru v1.1.3 (ESM) - Мгновенная загрузка страниц
  * © 2026 Сергей Макаров | MIT License
  * https://prefetch.ru | https://github.com/prefetch-ru
  */
@@ -19,7 +19,7 @@ function createPrefetchCore(options) {
   if (!isBrowser || typeof window === 'undefined' || typeof document === 'undefined') {
     return {
       __prefetchRu: true,
-      version: '1.1.2',
+      version: '1.1.3',
       preload: function () {},
       destroy: function () {},
       refresh: function () {}
@@ -56,6 +56,9 @@ function createPrefetchCore(options) {
   var platform = null;
   var saveData = false;
   var connType = null;
+
+  // v1.1.3: ссылка на navigator.connection для снятия listener в destroy()
+  var conn = null;
 
   // CSP / поддержка
   var scriptNonce = null;
@@ -102,40 +105,29 @@ function createPrefetchCore(options) {
     var ua = navigator.userAgent;
     var uaData = navigator.userAgentData; // v1.0.12: UA-CH API (более надёжно в долгосрочной перспективе)
 
-    // Определяем устройство
-    // v1.0.12: используем userAgentData если доступен, иначе fallback на UA
+    // v1.1.3: UA-CH API если доступен, иначе fallback на UA
     if (uaData) {
       // UA-CH API: https://developer.mozilla.org/en-US/docs/Web/API/NavigatorUAData
       isIOS = false; // UA-CH пока не поддерживается на iOS
-      var isAndroid = uaData.platform === 'Android';
       isMobile = uaData.mobile || false;
-      // Chromium версия через brands
-      var brands = uaData.brands || [];
-      for (var i = 0; i < brands.length; i++) {
-        var b = brands[i];
-        if (b.brand === 'Chromium' || b.brand === 'Google Chrome') {
-          parseInt(b.version, 10);
-          break
-        }
-      }
     } else {
       // Fallback на традиционный UA sniffing
       isIOS =
         /iPad|iPhone/.test(ua) ||
         (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-      var isAndroid = /Android/.test(ua);
-      isMobile = (isIOS || isAndroid) && Math.min(screen.width, screen.height) < 768;
-      // Chromium версия из UA
-      var cm = ua.match(/Chrome\/(\d+)/);
-      if (cm) parseInt(cm[1], 10);
+      isMobile = (isIOS || /Android/.test(ua)) && Math.min(screen.width, screen.height) < 768;
     }
     if (isMobile) maxPreloads = 20;
 
     // Сеть
-    var conn = navigator.connection;
+    conn = navigator.connection;
     if (conn) {
       connType = conn.effectiveType;
       saveData = conn.saveData || false;
+      // v1.1.3: реактивное обновление при смене типа соединения
+      if (typeof conn.addEventListener === 'function') {
+        conn.addEventListener('change', onConnectionChange);
+      }
     }
 
     // Ждём DOM
@@ -266,6 +258,14 @@ function createPrefetchCore(options) {
     if (saveData) return false
     if (connType === 'slow-2g' || connType === '2g' || connType === '3g') return false
     return true
+  }
+
+  // v1.1.3: реактивное обновление состояния сети
+  function onConnectionChange() {
+    if (conn) {
+      connType = conn.effectiveType;
+      saveData = conn.saveData || false;
+    }
   }
 
   // v1.0.11: обновление currentKey при навигации (SPA-гибриды, pushState)
@@ -438,14 +438,13 @@ function createPrefetchCore(options) {
   }
 
   function checkPlatform(a) {
-    var href = a.href;
-
     // v1.0.11: используем свойства <a> напрямую вместо new URL() (perf)
     var pathname = a.pathname || '';
     var hash = a.hash || '';
 
     if (platform === 'bitrix' || platform === 'bitrix24') {
-      if (href.indexOf('/bitrix/') !== -1 || href.indexOf('sessid=') !== -1) return false
+      // v1.1.3: проверяем pathname и search вместо href (точнее, без ложных срабатываний на домене)
+      if (pathname.indexOf('/bitrix/') !== -1 || (a.search && a.search.indexOf('sessid=') !== -1)) return false
       if (a.classList.contains('bx-ajax')) return false
     }
 
@@ -519,10 +518,20 @@ function createPrefetchCore(options) {
     if (disabled) return
     if (!isNetworkOk()) return
 
-    // v1.0.12: парсим URL один раз вместо двух
-    var parsed = parseUrl(url);
-    var requestUrl = parsed.requestUrl;
-    var key = parsed.key;
+    // v1.1.3: если a — реальный DOM-элемент, берём key и crossOrigin из его свойств
+    // без лишнего new URL() (parseUrl нужен только для публичного API с произвольным url)
+    var requestUrl, key, isCrossOrigin;
+    if (a && a.origin) {
+      key = a.origin + a.pathname + a.search;
+      requestUrl = a.href.split('#')[0]; // убираем hash для запроса
+      isCrossOrigin = a.origin !== location.origin;
+    } else {
+      var parsed = parseUrl(url);
+      requestUrl = parsed.requestUrl;
+      key = parsed.key;
+      isCrossOrigin = false;
+      try { isCrossOrigin = new URL(requestUrl, location.href).origin !== location.origin; } catch (e) {}
+    }
 
     if (preloaded.has(key)) return
     if (preloaded.size >= maxPreloads) {
@@ -537,26 +546,20 @@ function createPrefetchCore(options) {
       // v1.0.11: лимит очереди — отбрасываем новые при переполнении
       // v1.0.11: при drop удаляем ключ (иначе URL "навсегда" считается прогретым)
       if (queue.length >= maxQueue) { preloaded.delete(key); return }
-      queue.push({ url: requestUrl, key: key, mode: mode });
+      queue.push({ url: requestUrl, key: key, mode: mode, crossOrigin: isCrossOrigin });
       return
     }
 
-    doPreload(requestUrl, key, mode);
+    doPreload(requestUrl, key, mode, isCrossOrigin);
   }
 
-  function doPreload(requestUrl, key, mode) {
-    // v1.1.1: определяем cross-origin для выбора метода
-    var isCrossOrigin = false;
-    try {
-      var u = new URL(requestUrl, location.href);
-      isCrossOrigin = u.origin !== location.origin;
-    } catch (e) {}
-
+  // v1.1.3: isCrossOrigin передаётся через цепочку вызовов (без повторного new URL())
+  function doPreload(requestUrl, key, mode, isCrossOrigin) {
     if (mode !== 'none') {
       // v1.0.11: try/catch для preloadSpec — при строгом CSP/Trusted Types может выбросить исключение
       var specOk = false;
       try {
-        preloadSpec(requestUrl, mode);
+        preloadSpec(requestUrl, mode, isCrossOrigin);
         specOk = true;
       } catch (e) {
         // Ошибка в Speculation Rules — fallback обязателен
@@ -566,32 +569,25 @@ function createPrefetchCore(options) {
       // По умолчанию fallback отключён для избежания двойного трафика
       if (specRulesFallback || !specOk) {
         // v1.1.1: cross-origin всегда через fetch (no-cors), <link> требует CORS headers
-        if (isIOS || !supportsLinkPrefetch || isCrossOrigin) preloadFetch(requestUrl, key);
-        else preloadLink(requestUrl, key);
+        if (isIOS || !supportsLinkPrefetch || isCrossOrigin) preloadFetch(requestUrl, key, isCrossOrigin);
+        else preloadLink(requestUrl, key, isCrossOrigin);
       }
       return
     }
 
     // v1.1.1: cross-origin всегда через fetch (no-cors), <link crossorigin=anonymous> требует CORS
-    if (isIOS || !supportsLinkPrefetch || isCrossOrigin) preloadFetch(requestUrl, key);
-    else preloadLink(requestUrl, key);
+    if (isIOS || !supportsLinkPrefetch || isCrossOrigin) preloadFetch(requestUrl, key, isCrossOrigin);
+    else preloadLink(requestUrl, key, isCrossOrigin);
   }
 
   function processQueue() {
     while (queue.length > 0 && inFlight < maxInFlight) {
       var item = queue.shift();
-      doPreload(item.url, item.key, item.mode);
+      doPreload(item.url, item.key, item.mode, item.crossOrigin);
     }
   }
 
-  function preloadSpec(url, mode) {
-    // v1.0.13: для cross-origin проверяем и модифицируем правила
-    var isCrossOrigin = false;
-    try {
-      var u = new URL(url, location.href);
-      isCrossOrigin = u.origin !== location.origin;
-    } catch (e) {}
-
+  function preloadSpec(url, mode, isCrossOrigin) {
     // v1.0.13: для cross-origin никогда не делаем prerender (только prefetch)
     if (isCrossOrigin && mode === 'prerender') {
       mode = 'prefetch';
@@ -625,18 +621,19 @@ function createPrefetchCore(options) {
 
     var rules = {};
 
+    // v1.1.3: передаём массив напрямую и создаём новый (без лишнего .slice())
     // Same-origin prefetch
     if (specBuffer.prefetch.length > 0) {
       rules.prefetch = rules.prefetch || [];
-      rules.prefetch.push({ source: 'list', urls: specBuffer.prefetch.slice() });
-      specBuffer.prefetch.length = 0;
+      rules.prefetch.push({ source: 'list', urls: specBuffer.prefetch });
+      specBuffer.prefetch = [];
     }
 
     // Same-origin prerender
     if (specBuffer.prerender.length > 0) {
       rules.prerender = rules.prerender || [];
-      rules.prerender.push({ source: 'list', urls: specBuffer.prerender.slice() });
-      specBuffer.prerender.length = 0;
+      rules.prerender.push({ source: 'list', urls: specBuffer.prerender });
+      specBuffer.prerender = [];
     }
 
     // Cross-origin (только prefetch, с privacy requirements)
@@ -644,11 +641,11 @@ function createPrefetchCore(options) {
       rules.prefetch = rules.prefetch || [];
       rules.prefetch.push({
         source: 'list',
-        urls: specBuffer.crossOrigin.slice(),
+        urls: specBuffer.crossOrigin,
         referrer_policy: 'no-referrer',
         requires: ['anonymous-client-ip-when-cross-origin']
       });
-      specBuffer.crossOrigin.length = 0;
+      specBuffer.crossOrigin = [];
     }
 
     // Если нет правил — выходим
@@ -663,7 +660,7 @@ function createPrefetchCore(options) {
     head.removeChild(s);
   }
 
-  function preloadLink(url, key) {
+  function preloadLink(url, key, isCrossOrigin) {
     var head = document.head;
     // v1.0.10: если head недоступен, откатываем ключ
     if (!head) { preloaded.delete(key); return }
@@ -677,13 +674,10 @@ function createPrefetchCore(options) {
     try { l.fetchPriority = 'low'; } catch (e) {}
 
     // v1.0.11: для cross-origin: referrerPolicy + crossOrigin
-    try {
-      var u = new URL(url, location.href);
-      if (u.origin !== location.origin) {
-        l.referrerPolicy = 'no-referrer';
-        l.crossOrigin = 'anonymous'; // не отправлять cookies на внешние домены
-      }
-    } catch (e) {}
+    if (isCrossOrigin) {
+      l.referrerPolicy = 'no-referrer';
+      l.crossOrigin = 'anonymous'; // не отправлять cookies на внешние домены
+    }
 
     // v1.0.13: safety timeout — предохранитель если onload/onerror не сработают
     // (экзотические браузеры, сетевые ошибки без событий)
@@ -707,7 +701,7 @@ function createPrefetchCore(options) {
     head.appendChild(l);
   }
 
-  function preloadFetch(url, key) {
+  function preloadFetch(url, key, isCrossOrigin) {
     // v1.0.10: если fetch недоступен, откатываем ключ
     if (typeof fetch !== 'function') { preloaded.delete(key); return }
 
@@ -739,12 +733,6 @@ function createPrefetchCore(options) {
         done(false);
       }, 5000);
     }
-
-    // v1.0.13: определяем cross-origin для корректных настроек fetch
-    var isCrossOrigin = false;
-    try {
-      isCrossOrigin = new URL(url, location.href).origin !== location.origin;
-    } catch (e) {}
 
     var opts = {
       method: 'GET',
@@ -815,30 +803,36 @@ function createPrefetchCore(options) {
 
   // Mutation Observer
   var mutObserver = null;
-  var mutTimer = null;
 
   function startMutationObserver() {
     // v1.0.11: защита от вызова после destroy()
     if (disabled) return
     if (mutObserver) return
     mutObserver = new MutationObserver(function (muts) {
-      // v1.0.13: оптимизация — обычный цикл вместо Array.from + querySelector вместо querySelectorAll
-      var hasLinks = false;
-      outer: for (var i = 0; i < muts.length; i++) {
+      if (!vpObserver) return
+      // v1.1.3: собираем только новые ссылки из addedNodes (не пересканируем весь DOM)
+      var pending = [];
+      for (var i = 0; i < muts.length; i++) {
         var nodes = muts[i].addedNodes;
         for (var j = 0; j < nodes.length; j++) {
           var n = nodes[j];
-          if (n.nodeType === 1) {
-            if (n.tagName === 'A' || (n.querySelector && n.querySelector('a'))) {
-              hasLinks = true;
-              break outer
-            }
+          if (n.nodeType !== 1) continue
+          if (n.tagName === 'A') {
+            pending.push(n);
+          } else if (n.querySelectorAll) {
+            var links = n.querySelectorAll('a');
+            for (var k = 0; k < links.length; k++) pending.push(links[k]);
           }
         }
       }
-      if (hasLinks && vpObserver) {
-        clearTimeout(mutTimer);
-        mutTimer = setTimeout(observeLinks, 100);
+      // v1.1.3: обрабатываем через rIC чтобы не блокировать UI при массовых вставках DOM
+      if (pending.length > 0) {
+        var rIC = window.requestIdleCallback || function (cb) { setTimeout(cb, 1); };
+        rIC(function () {
+          for (var i = 0; i < pending.length; i++) {
+            if (vpObserver && canPreload(pending[i])) vpObserver.observe(pending[i]);
+          }
+        });
       }
     });
     mutObserver.observe(document.body, { childList: true, subtree: true });
@@ -899,6 +893,11 @@ function createPrefetchCore(options) {
     document.removeEventListener('mouseover', onMouseOver, opts);
     document.removeEventListener('mousedown', onMouseDown, opts);
 
+    // v1.1.3: снимаем listener сети
+    if (conn && typeof conn.removeEventListener === 'function') {
+      conn.removeEventListener('change', onConnectionChange);
+    }
+
     // v1.0.11: снимаем слушатели навигации
     window.removeEventListener('popstate', updateCurrentKey);
     window.removeEventListener('hashchange', updateCurrentKey);
@@ -918,7 +917,7 @@ function createPrefetchCore(options) {
   // Публичный API
   var api = {
     __prefetchRu: true,
-    version: '1.1.2',
+    version: '1.1.3',
     preload: function (url) {
       // v1.0.11: валидация URL + прогон через canPreload() (консистентность с авто-режимом)
       if (!isValidPrefetchUrl(url)) return
