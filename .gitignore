@@ -17,6 +17,7 @@ dist/
 .DS_Store
 .cursor/
 .cline/
+CLAUDE.md
 
 # Logs
 *.log
