@@ -15,8 +15,8 @@ Prefetch pages 65ms before user clicks. Pre-loads links on hover with smart fall
 ### CDN (Recommended)
 
 ```html
-<script src="//cdn.prefetch.ru/v1.1.3/prefetch.min.js"
-        integrity="sha384-GLzh62lOA1yEK5qmVJ40WMBv1E/5o4Y4dyMMbTH17EVJn7LWWhNiZQZqvMqJpI/9"
+<script src="//cdn.prefetch.ru/v1.1.4/prefetch.min.js"
+        integrity="sha384-Yc4l47f/7DSKIzzds7AvmLpfut7AQhDqg6s+reVbXfGCr0p7rhzHj96AaOxVp04B"
         crossorigin="anonymous"
         type="module"
         defer></script>
@@ -77,7 +77,7 @@ Configure via data attributes on `<body>`:
 
 ```javascript
 // Check version
-console.log(PrefetchRu.version)  // "1.1.3"
+console.log(PrefetchRu.version)  // "1.1.4"
 
 // Manually prefetch a URL
 PrefetchRu.preload('/catalog/product-123')
