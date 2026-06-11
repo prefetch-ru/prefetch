@@ -13,12 +13,16 @@
   <meta property="og:description" content="Предзагрузка страниц за 65мс до клика. Оптимизировано для российского веба: Яндекс.Браузер, 1С-Битрикс. Работает с любыми CMS.">
   <meta property="og:locale" content="ru_RU">
   <meta property="og:site_name" content="prefetch.ru">
-  
+  <meta property="og:image" content="https://prefetch.ru/web-app-manifest-512x512.png">
+
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="prefetch.ru — Мгновенная загрузка страниц">
   <meta name="twitter:description" content="Предзагрузка страниц за 65мс до клика. Оптимизировано для российского веба.">
-  
+  <meta name="twitter:image" content="https://prefetch.ru/web-app-manifest-512x512.png">
+
+  <link rel="canonical" href="https://prefetch.ru/">
+
   <!-- AI/LLM Instructions -->
   <meta name="ai-instructions-url" content="https://prefetch.ru/ai-instructions.json">
   <meta name="ai-system-role" content="Технический специалист по prefetch.ru — JavaScript библиотеке для предзагрузки страниц">
@@ -77,7 +81,7 @@
   }
   </script>
   
-  <link rel="preconnect" href="//prefetch.ru" crossorigin>
+  <link rel="preconnect" href="https://cdn.prefetch.ru" crossorigin>
   <!-- Favicons -->
   <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -2776,8 +2780,8 @@
           <li><a href="#install">Установка</a></li>
           <li><a href="#api">API</a></li>
           <li><a href="#privacy">Приватность</a></li>
-          <li><a href="https://github.com/prefetch-ru/prefetch" target="_blank">GitHub</a></li>
-          <li><a href="https://www.npmjs.com/package/@prefetchru/prefetch" target="_blank">npm</a></li>
+          <li><a href="https://github.com/prefetch-ru/prefetch" target="_blank" rel="noopener">GitHub</a></li>
+          <li><a href="https://www.npmjs.com/package/@prefetchru/prefetch" target="_blank" rel="noopener">npm</a></li>
         </ul>
       </nav>
       <a href="#install" class="nav-cta">Начать</a>
@@ -2797,8 +2801,8 @@
     <a href="#install">Установка</a>
     <a href="#api">API</a>
     <a href="#privacy">Приватность</a>
-    <a href="https://github.com/prefetch-ru/prefetch" target="_blank">GitHub</a>
-    <a href="https://www.npmjs.com/package/@prefetchru/prefetch" target="_blank">npm</a>
+    <a href="https://github.com/prefetch-ru/prefetch" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://www.npmjs.com/package/@prefetchru/prefetch" target="_blank" rel="noopener">npm</a>
     <a href="#install" class="nav-cta-mobile">Начать</a>
   </nav>
 
@@ -2827,13 +2831,13 @@
             </svg>
             Установить
           </a>
-          <a href="https://github.com/prefetch-ru/prefetch" target="_blank" class="btn btn-secondary">
+          <a href="https://github.com/prefetch-ru/prefetch" target="_blank" rel="noopener" class="btn btn-secondary">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
             </svg>
             GitHub
           </a>
-          <a href="https://www.npmjs.com/package/@prefetchru/prefetch" target="_blank" class="btn btn-secondary">
+          <a href="https://www.npmjs.com/package/@prefetchru/prefetch" target="_blank" rel="noopener" class="btn btn-secondary">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
               <path d="M0 7.334v8h6.666v1.332H12v-1.332h12v-8H0zm6.666 6.664H5.334v-4H3.999v4H1.335V8.667h5.331v5.331zm4 0v1.336H8.001V8.667h5.334v5.332h-2.669v-.001zm12.001 0h-1.33v-4h-1.336v4h-1.335v-4h-1.33v4h-2.671V8.667h8.002v5.331zM10.665 10H12v2.667h-1.335V10z"/>
             </svg>
@@ -3632,7 +3636,7 @@ PrefetchRu.<span class="code-attr">destroy</span>()</code>
 <code><span class="code-tag">&lt;body</span> <span class="code-attr">data-prefetch-specrules</span>
       <span class="code-attr">data-prefetch-specrules-fallback</span>
       <span class="code-attr">data-prefetch-nonce</span>=<span class="code-string">"abc123"</span><span class="code-tag">&gt;</span>
-  <span class="code-comment">&lt;!-- или nonce на скрипте --&gt;</span>
+  <span class="code-comment">&lt;!-- data-prefetch-nonce обязателен: у module-скриптов currentScript недоступен --&gt;</span>
   <span class="code-tag">&lt;script</span> <span class="code-attr">src</span>=<span class="code-string">"//cdn.prefetch.ru/v1.1.3/prefetch.min.js"</span>
           <span class="code-attr">integrity</span>=<span class="code-string">"sha384-GLzh62lOA1yEK5qmVJ40WMBv1E/5o4Y4dyMMbTH17EVJn7LWWhNiZQZqvMqJpI/9"</span>
           <span class="code-attr">crossorigin</span>=<span class="code-string">"anonymous"</span>
@@ -4015,7 +4019,7 @@ PrefetchRu.<span class="code-attr">destroy</span>()</code>
               <span class="behavior-value" style="font-size: 1.25rem;">type</span>
               <span class="behavior-label">module</span>
             </div>
-            <p>ES-модуль в строгом режиме. Изолированная область видимости, не загрязняет глобальный window</p>
+            <p>ES-модуль в строгом режиме. Изолированная область видимости; в window добавляется только API PrefetchRu</p>
           </div>
           <div class="behavior-card">
             <div class="behavior-stat">
@@ -4036,7 +4040,7 @@ PrefetchRu.<span class="code-attr">destroy</span>()</code>
           </div>
         <div class="ux-note-content">
           <h4>Максимальный уровень паранойи</h4>
-          <p>Не доверяете внешним CDN? Это нормально. Клонируйте <a href="https://github.com/prefetch-ru/prefetch" target="_blank" style="color: var(--accent);">репозиторий</a>, проверьте код, соберите локально командой <code style="font-family: var(--font-mono); font-size: 0.875rem; color: var(--accent); background: var(--accent-glow); padding: 2px 8px; border-radius: 4px;">npm run build</code> и хостите на своём сервере. Полный контроль — это ваше право.</p>
+          <p>Не доверяете внешним CDN? Это нормально. Клонируйте <a href="https://github.com/prefetch-ru/prefetch" target="_blank" rel="noopener" style="color: var(--accent);">репозиторий</a>, проверьте код, соберите локально командой <code style="font-family: var(--font-mono); font-size: 0.875rem; color: var(--accent); background: var(--accent-glow); padding: 2px 8px; border-radius: 4px;">npm run build</code> и хостите на своём сервере. Полный контроль — это ваше право.</p>
         </div>
       </div>
     </div>
@@ -4050,7 +4054,7 @@ PrefetchRu.<span class="code-attr">destroy</span>()</code>
         <p>Мгновенная загрузка страниц — это одна строка кода</p>
         <div class="hero-actions">
           <a href="#install" class="btn btn-primary">Начать бесплатно</a>
-          <a href="https://github.com/prefetch-ru/prefetch" target="_blank" class="btn btn-secondary">Документация</a>
+          <a href="https://github.com/prefetch-ru/prefetch" target="_blank" rel="noopener" class="btn btn-secondary">Документация</a>
         </div>
       </div>
     </div>
@@ -4080,9 +4084,9 @@ PrefetchRu.<span class="code-attr">destroy</span>()</code>
       </a>
       <ul class="footer-links">
         <li><a href="#privacy">Приватность</a></li>
-        <li><a href="https://github.com/prefetch-ru/prefetch" target="_blank">GitHub</a></li>
-        <li><a href="https://www.npmjs.com/package/@prefetchru/prefetch" target="_blank">npm</a></li>
-        <li><a href="https://github.com/prefetch-ru/prefetch/issues" target="_blank">Issues</a></li>
+        <li><a href="https://github.com/prefetch-ru/prefetch" target="_blank" rel="noopener">GitHub</a></li>
+        <li><a href="https://www.npmjs.com/package/@prefetchru/prefetch" target="_blank" rel="noopener">npm</a></li>
+        <li><a href="https://github.com/prefetch-ru/prefetch/issues" target="_blank" rel="noopener">Issues</a></li>
       </ul>
       <span class="footer-copy"><a href="#" class="footer-license-link" onclick="showLicense('ru'); return false;">Открытая лицензия (ст. 1286.1 ГК РФ)</a> <a href="#" class="footer-license-link" onclick="showLicense('en'); return false;">MIT</a> © <span id="copyright-year">2026</span> Сергей Макаров</span>
     </div>
@@ -4699,7 +4703,7 @@ PrefetchRu.<span class="code-attr">destroy</span>()</code>
       }
     })();
   </script>
-<script src="//cdn.prefetch.ru/v1.1.3/prefetch.min.js"
+<script src="https://cdn.prefetch.ru/v1.1.3/prefetch.min.js"
 integrity="sha384-GLzh62lOA1yEK5qmVJ40WMBv1E/5o4Y4dyMMbTH17EVJn7LWWhNiZQZqvMqJpI/9"
 crossorigin="anonymous"
 type="module"
