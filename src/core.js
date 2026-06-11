@@ -37,8 +37,13 @@ export function createPrefetchCore(options) {
   var activeControllers = new Set()
 
   // v1.0.13: буфер для Speculation Rules (группируем URL и вставляем одним JSON)
-  var specBuffer = { prefetch: [], prerender: [], crossOrigin: [] }
+  // v1.1.4: элементы {url, key} вместо строк (нужны для fallback при ошибке вставки);
+  // crossOrigin убран - cross-origin идёт мимо Speculation Rules (см. doPreload)
+  var specBuffer = { prefetch: [], prerender: [] }
   var specFlushTimer = 0
+  // v1.1.4: вставленные speculationrules-скрипты; удаление элемента из DOM отменяет
+  // его правила, поэтому убираем их только в destroy()
+  var specScripts = []
 
   // v1.0.11: кэш ключа текущей страницы (избегаем new URL() в горячих местах)
   var currentKey = ''
@@ -68,7 +73,7 @@ export function createPrefetchCore(options) {
   var allowExternal = false
   var whitelist = false
 
-  var useSpecRules = false
+  // v1.1.4: переменная useSpecRules удалена - дублировала specMode !== 'none'
   var specMode = 'none' // 'none' | 'prefetch' | 'prerender'
   var specRulesFallback = false // v1.0.11: fallback при SpecRules (по умолчанию отключён)
   var prerenderAll = false
@@ -152,10 +157,14 @@ export function createPrefetchCore(options) {
     allowExternal = 'prefetchAllowExternalLinks' in ds || 'instantAllowExternalLinks' in ds
     whitelist = 'prefetchWhitelist' in ds || 'instantWhitelist' in ds
 
-    // CSP nonce override через data-*
+    // CSP nonce через data-* - fallback при отсутствии nonce у самого скрипта
     // <body data-prefetch-nonce="...">
-    if (ds.prefetchNonce) scriptNonce = ds.prefetchNonce
+    // v1.1.4: после чтения атрибут удаляется: копия nonce в видимом DOM обходит браузерный
+    // nonce hiding и доступна для эксфильтрации CSS-селекторами по атрибуту
+    if (!scriptNonce && ds.prefetchNonce) scriptNonce = ds.prefetchNonce
     if (!scriptNonce && ds.instantNonce) scriptNonce = ds.instantNonce
+    if (ds.prefetchNonce) body.removeAttribute('data-prefetch-nonce')
+    if (ds.instantNonce) body.removeAttribute('data-instant-nonce')
 
     // Speculation Rules — opt-in по наличию атрибута:
     // <body data-prefetch-specrules> (prefetch)
@@ -171,10 +180,8 @@ export function createPrefetchCore(options) {
       var sr = ds.prefetchSpecrules || ds.instantSpecrules
       if (sr === 'prerender') {
         specMode = 'prerender'
-        useSpecRules = true
       } else if (sr !== 'no') {
         specMode = 'prefetch'
-        useSpecRules = true
       }
     }
 
@@ -234,13 +241,25 @@ export function createPrefetchCore(options) {
     if (viewportMode && typeof IntersectionObserver === 'undefined') viewportMode = false
 
     if (viewportMode) {
-      var rIC = window.requestIdleCallback || function (cb) { setTimeout(cb, 1) }
-      rIC(startViewportObserver, { timeout: 1500 })
+      scheduleIdle(startViewportObserver, 1500)
     }
 
     // v1.0.9: MutationObserver нужен только для viewport режима (отслеживать новые ссылки)
     // v1.0.10: feature-detection — если MutationObserver недоступен, не запускаем
     if (observeDom && viewportMode && typeof MutationObserver !== 'undefined') startMutationObserver()
+  }
+
+  // v1.1.4: единый шим requestIdleCallback (раньше дублировался в трёх местах)
+  function scheduleIdle(cb, timeout) {
+    if (typeof window.requestIdleCallback === 'function') {
+      return window.requestIdleCallback(cb, { timeout: timeout })
+    }
+    return setTimeout(cb, 1)
+  }
+
+  function cancelIdle(id) {
+    if (typeof window.cancelIdleCallback === 'function') window.cancelIdleCallback(id)
+    else clearTimeout(id)
   }
 
   function detectPlatform() {
@@ -277,11 +296,32 @@ export function createPrefetchCore(options) {
     }
   }
 
-  function getAnchorFromEventTarget(t) {
+  // v1.1.4: принимает событие; через composedPath() достаёт настоящий target внутри shadow DOM
+  // (ретаргетинг подменяет e.target на хост-элемент, и ссылки в shadow-дереве терялись)
+  function getAnchorFromEvent(e) {
+    if (!e) return null
+    var t = e.target
+    if (t && t.shadowRoot && typeof e.composedPath === 'function') {
+      var path = e.composedPath()
+      if (path && path.length) t = path[0]
+    }
     if (!t) return null
     if (t.nodeType && t.nodeType !== 1) t = t.parentElement
     if (!t || typeof t.closest !== 'function') return null
     return t.closest('a')
+  }
+
+  // v1.1.4: единая очистка touch-таймера и слушателей отмены (дублировалась в четырёх местах)
+  function resetTouch() {
+    if (touchTimer) {
+      clearTimeout(touchTimer)
+      touchTimer = 0
+    }
+    if (touchCancel) {
+      document.removeEventListener('touchmove', touchCancel, true)
+      document.removeEventListener('scroll', touchCancel, true)
+      touchCancel = null
+    }
   }
 
   function onTouchStart(e) {
@@ -292,43 +332,24 @@ export function createPrefetchCore(options) {
     // v1.0.9: используем Date.now() для единой шкалы времени
     lastTouchTime = Date.now()
 
-    var a = getAnchorFromEventTarget(e.target)
+    var a = getAnchorFromEvent(e)
     if (!canPreload(a)) return
 
     // задержка + отмена на scroll/touchmove
-    if (touchTimer) {
-      clearTimeout(touchTimer)
-      touchTimer = 0
-    }
-    if (touchCancel) {
-      document.removeEventListener('touchmove', touchCancel, true)
-      document.removeEventListener('scroll', touchCancel, true)
-      touchCancel = null
-    }
+    resetTouch()
 
     var cancelled = false
     touchCancel = function () {
       cancelled = true
-      if (touchTimer) {
-        clearTimeout(touchTimer)
-        touchTimer = 0
-      }
-      document.removeEventListener('touchmove', touchCancel, true)
-      document.removeEventListener('scroll', touchCancel, true)
-      touchCancel = null
+      resetTouch()
     }
 
     document.addEventListener('touchmove', touchCancel, { capture: true, passive: true, once: true })
     document.addEventListener('scroll', touchCancel, { capture: true, passive: true, once: true })
 
     touchTimer = setTimeout(function () {
-      if (touchCancel) {
-        document.removeEventListener('touchmove', touchCancel, true)
-        document.removeEventListener('scroll', touchCancel, true)
-        touchCancel = null
-      }
-      touchTimer = 0
-      if (!cancelled) preload(a.href, a)
+      resetTouch()
+      if (!cancelled) preload(a)
     }, touchDelay)
   }
 
@@ -340,7 +361,7 @@ export function createPrefetchCore(options) {
     // v1.0.9: единая шкала времени Date.now()
     if (lastTouchTime && Date.now() - lastTouchTime < 2500) return
 
-    var a = getAnchorFromEventTarget(e.target)
+    var a = getAnchorFromEvent(e)
     if (!a) return
 
     // v1.0.11: проверяем таймер ДО canPreload (perf — mouseover очень шумный)
@@ -352,7 +373,7 @@ export function createPrefetchCore(options) {
     a.addEventListener('mouseleave', onMouseLeave, { passive: true, once: true })
 
     var t = setTimeout(function () {
-      preload(a.href, a)
+      preload(a)
       hoverTimers.delete(a)
     }, hoverDelay)
     hoverTimers.set(a, t)
@@ -381,8 +402,8 @@ export function createPrefetchCore(options) {
     // v1.0.9: единая шкала времени Date.now()
     if (lastTouchTime && Date.now() - lastTouchTime < 2500) return
 
-    var a = getAnchorFromEventTarget(e.target)
-    if (canPreload(a)) preload(a.href, a)
+    var a = getAnchorFromEvent(e)
+    if (canPreload(a)) preload(a)
   }
 
   function canPreload(a) {
@@ -399,7 +420,8 @@ export function createPrefetchCore(options) {
     if (a.hasAttribute('download')) return false
 
     // Явный запрет
-    if ('noPrefetch' in a.dataset || 'prefetchNo' in a.dataset) return false
+    // v1.1.4: + legacy data-no-instant (instant.page) для мигрировавших сайтов
+    if ('noPrefetch' in a.dataset || 'prefetchNo' in a.dataset || 'noInstant' in a.dataset) return false
 
     // Белый список
     if (whitelist && !('prefetch' in a.dataset) && !('instant' in a.dataset)) return false
@@ -418,7 +440,8 @@ export function createPrefetchCore(options) {
     if (a.search && !allowQuery && !('prefetch' in a.dataset) && !('instant' in a.dataset)) return false
 
     // Якорь на той же странице
-    if (a.hash && a.pathname + a.search === location.pathname + location.search) return false
+    // v1.1.4: + проверка origin - внешняя ссылка с совпадающим path+search не якорь этой страницы
+    if (a.hash && a.origin === location.origin && a.pathname + a.search === location.pathname + location.search) return false
 
     // v1.0.11: используем свойства <a> напрямую вместо new URL() (perf)
     var key = a.origin + a.pathname + a.search
@@ -482,21 +505,8 @@ export function createPrefetchCore(options) {
     return true
   }
 
-  // v1.0.12: объединённая функция — парсим URL один раз вместо двух
-  // Возвращает { requestUrl, key } для preload()
-  function parseUrl(url) {
-    try {
-      var u = new URL(url, location.href)
-      var key = u.origin + u.pathname + u.search
-      u.hash = ''
-      return { requestUrl: u.href, key: key }
-    } catch (e) {
-      return { requestUrl: url, key: url }
-    }
-  }
-
   function resolveSpecMode(a) {
-    if (!useSpecRules || specMode === 'none') return 'none'
+    if (specMode === 'none') return 'none'
     if (specMode !== 'prerender') return specMode
 
     // specMode === 'prerender'
@@ -510,24 +520,16 @@ export function createPrefetchCore(options) {
     return 'prefetch'
   }
 
-  function preload(url, a) {
+  // v1.1.4: принимает только <a> - все вызовы (включая публичный API, который создаёт
+  // временный якорь) передают элемент; parseUrl и ветка произвольных строк удалены как недостижимые
+  function preload(a) {
     if (disabled) return
     if (!isNetworkOk()) return
+    if (!a || !a.origin) return
 
-    // v1.1.3: если a — реальный DOM-элемент, берём key и crossOrigin из его свойств
-    // без лишнего new URL() (parseUrl нужен только для публичного API с произвольным url)
-    var requestUrl, key, isCrossOrigin
-    if (a && a.origin) {
-      key = a.origin + a.pathname + a.search
-      requestUrl = a.href.split('#')[0] // убираем hash для запроса
-      isCrossOrigin = a.origin !== location.origin
-    } else {
-      var parsed = parseUrl(url)
-      requestUrl = parsed.requestUrl
-      key = parsed.key
-      isCrossOrigin = false
-      try { isCrossOrigin = new URL(requestUrl, location.href).origin !== location.origin } catch (e) {}
-    }
+    var key = a.origin + a.pathname + a.search
+    var requestUrl = a.href.split('#')[0] // убираем hash для запроса
+    var isCrossOrigin = a.origin !== location.origin
 
     if (preloaded.has(key)) return
     if (preloaded.size >= maxPreloads) {
@@ -538,7 +540,9 @@ export function createPrefetchCore(options) {
     var mode = resolveSpecMode(a)
 
     // v1.0.11: in-flight лимит — ставим в очередь если превышен
-    if (inFlight >= maxInFlight) {
+    // v1.1.4: чистый spec-путь не занимает сетевой слот - очередь только для fetch/link
+    var usesNetwork = mode === 'none' || isCrossOrigin || specRulesFallback
+    if (usesNetwork && inFlight >= maxInFlight) {
       // v1.0.11: лимит очереди — отбрасываем новые при переполнении
       // v1.0.11: при drop удаляем ключ (иначе URL "навсегда" считается прогретым)
       if (queue.length >= maxQueue) { preloaded.delete(key); return }
@@ -551,24 +555,14 @@ export function createPrefetchCore(options) {
 
   // v1.1.3: isCrossOrigin передаётся через цепочку вызовов (без повторного new URL())
   function doPreload(requestUrl, key, mode, isCrossOrigin) {
-    if (mode !== 'none') {
-      // v1.0.11: try/catch для preloadSpec — при строгом CSP/Trusted Types может выбросить исключение
-      var specOk = false
-      try {
-        preloadSpec(requestUrl, mode, isCrossOrigin)
-        specOk = true
-      } catch (e) {
-        // Ошибка в Speculation Rules — fallback обязателен
-      }
-
-      // v1.0.11: fallback только если явно включён ИЛИ если SpecRules не удался
-      // По умолчанию fallback отключён для избежания двойного трафика
-      if (specRulesFallback || !specOk) {
-        // v1.1.1: cross-origin всегда через fetch (no-cors), <link> требует CORS headers
-        if (isIOS || !supportsLinkPrefetch || isCrossOrigin) preloadFetch(requestUrl, key, isCrossOrigin)
-        else preloadLink(requestUrl, key, isCrossOrigin)
-      }
-      return
+    // v1.1.4: cross-origin всегда мимо Speculation Rules: requires
+    // anonymous-client-ip-when-cross-origin выполним только через private prefetch proxy
+    // (фактически недоступен), и браузер молча игнорирует таких кандидатов
+    if (mode !== 'none' && !isCrossOrigin) {
+      preloadSpec(requestUrl, key, mode)
+      // По умолчанию fallback отключён для избежания двойного трафика;
+      // v1.1.4: ошибки вставки правил обрабатываются внутри flushSpecBuffer, а не здесь
+      if (!specRulesFallback) return
     }
 
     // v1.1.1: cross-origin всегда через fetch (no-cors), <link crossorigin=anonymous> требует CORS
@@ -583,26 +577,25 @@ export function createPrefetchCore(options) {
     }
   }
 
-  function preloadSpec(url, mode, isCrossOrigin) {
-    // v1.0.13: для cross-origin никогда не делаем prerender (только prefetch)
-    if (isCrossOrigin && mode === 'prerender') {
-      mode = 'prefetch'
-    }
-
+  function preloadSpec(url, key, mode) {
     // v1.0.13: буферизуем URL — вставляем одним JSON за idle tick
-    if (isCrossOrigin) {
-      specBuffer.crossOrigin.push(url)
-    } else if (mode === 'prerender') {
-      specBuffer.prerender.push(url)
+    // v1.1.4: храним {url, key} - key нужен для fallback при ошибке вставки правил
+    if (mode === 'prerender') {
+      specBuffer.prerender.push({ url: url, key: key })
     } else {
-      specBuffer.prefetch.push(url)
+      specBuffer.prefetch.push({ url: url, key: key })
     }
 
     // Планируем flush если ещё не запланирован
     if (!specFlushTimer) {
-      var rIC = window.requestIdleCallback || function (cb) { setTimeout(cb, 1) }
-      specFlushTimer = rIC(flushSpecBuffer, { timeout: 50 })
+      specFlushTimer = scheduleIdle(flushSpecBuffer, 50)
     }
+  }
+
+  function pluckUrls(items) {
+    var urls = []
+    for (var i = 0; i < items.length; i++) urls.push(items[i].url)
+    return urls
   }
 
   // v1.0.13: вставляем все накопленные URL одним JSON
@@ -615,45 +608,37 @@ export function createPrefetchCore(options) {
     var head = document.head
     if (!head) return
 
+    var prefetchItems = specBuffer.prefetch
+    var prerenderItems = specBuffer.prerender
+    if (!prefetchItems.length && !prerenderItems.length) return
+    specBuffer.prefetch = []
+    specBuffer.prerender = []
+
     var rules = {}
+    if (prefetchItems.length) rules.prefetch = [{ source: 'list', urls: pluckUrls(prefetchItems) }]
+    if (prerenderItems.length) rules.prerender = [{ source: 'list', urls: pluckUrls(prerenderItems) }]
 
-    // v1.1.3: передаём массив напрямую и создаём новый (без лишнего .slice())
-    // Same-origin prefetch
-    if (specBuffer.prefetch.length > 0) {
-      rules.prefetch = rules.prefetch || []
-      rules.prefetch.push({ source: 'list', urls: specBuffer.prefetch })
-      specBuffer.prefetch = []
+    try {
+      var s = document.createElement('script')
+      s.type = 'speculationrules'
+      if (scriptNonce) s.nonce = scriptNonce
+      s.textContent = JSON.stringify(rules)
+      head.appendChild(s)
+      // v1.1.4: скрипт ОСТАЁТСЯ в DOM: правила привязаны к присутствию элемента, обработка
+      // асинхронна, и немедленное удаление (поведение v1.0.11) отменяло предзагрузку -
+      // режим specrules фактически не работал. Удаляем только в destroy()
+      specScripts.push(s)
+    } catch (e) {
+      // v1.1.4: строгий CSP/Trusted Types заблокировал вставку - переходим на fetch/link.
+      // При включённом specRulesFallback сеть уже задействована в doPreload - не дублируем.
+      // Путь редкий и разовый, поэтому идём мимо inFlight-очереди
+      if (specRulesFallback) return
+      var items = prefetchItems.concat(prerenderItems)
+      for (var i = 0; i < items.length; i++) {
+        if (isIOS || !supportsLinkPrefetch) preloadFetch(items[i].url, items[i].key, false)
+        else preloadLink(items[i].url, items[i].key, false)
+      }
     }
-
-    // Same-origin prerender
-    if (specBuffer.prerender.length > 0) {
-      rules.prerender = rules.prerender || []
-      rules.prerender.push({ source: 'list', urls: specBuffer.prerender })
-      specBuffer.prerender = []
-    }
-
-    // Cross-origin (только prefetch, с privacy requirements)
-    if (specBuffer.crossOrigin.length > 0) {
-      rules.prefetch = rules.prefetch || []
-      rules.prefetch.push({
-        source: 'list',
-        urls: specBuffer.crossOrigin,
-        referrer_policy: 'no-referrer',
-        requires: ['anonymous-client-ip-when-cross-origin']
-      })
-      specBuffer.crossOrigin = []
-    }
-
-    // Если нет правил — выходим
-    if (!rules.prefetch && !rules.prerender) return
-
-    var s = document.createElement('script')
-    s.type = 'speculationrules'
-    if (scriptNonce) s.nonce = scriptNonce
-    s.textContent = JSON.stringify(rules)
-    head.appendChild(s)
-    // v1.0.11: удаляем после вставки — браузер применяет правила на appendChild
-    head.removeChild(s)
   }
 
   function preloadLink(url, key, isCrossOrigin) {
@@ -759,7 +744,26 @@ export function createPrefetchCore(options) {
         .then(function (r) {
           // v1.1.1: для no-cors mode response.type === 'opaque', r.ok === false, но кэш прогрет
           // v1.0.12: 304 Not Modified тоже считаем успехом
-          done(r && (r.ok || r.status === 304 || r.type === 'opaque'))
+          var ok = r && (r.ok || r.status === 304 || r.type === 'opaque')
+          // v1.1.4: same-origin: слот inFlight занят до полной загрузки тела, а не до заголовков
+          // (иначе лимит "4 параллельных" ограничивал только фазу заголовков). Заголовки пришли -
+          // 5s-таймер заменяем на щадящий 30s для тела. Opaque-ответ читать нельзя,
+          // поэтому для cross-origin учёт остаётся по заголовкам
+          if (ok && !isCrossOrigin && typeof r.arrayBuffer === 'function') {
+            if (tid) {
+              clearTimeout(tid)
+              tid = setTimeout(function () {
+                try { if (ctrl) ctrl.abort() } catch (e) {}
+                done(false)
+              }, 30000)
+            }
+            r.arrayBuffer().then(
+              function () { done(true) },
+              function () { done(false) }
+            )
+            return
+          }
+          done(ok)
         })
         .catch(function () {
           done(false)
@@ -781,7 +785,7 @@ export function createPrefetchCore(options) {
         entries.forEach(function (entry) {
           if (entry.isIntersecting) {
             vpObserver.unobserve(entry.target)
-            if (canPreload(entry.target)) preload(entry.target.href, entry.target)
+            if (canPreload(entry.target)) preload(entry.target)
           }
         })
       },
@@ -823,8 +827,7 @@ export function createPrefetchCore(options) {
       }
       // v1.1.3: обрабатываем через rIC чтобы не блокировать UI при массовых вставках DOM
       if (pending.length > 0) {
-        var rIC = window.requestIdleCallback || function (cb) { setTimeout(cb, 1) }
-        rIC(function () {
+        scheduleIdle(function () {
           for (var i = 0; i < pending.length; i++) {
             if (vpObserver && canPreload(pending[i])) vpObserver.observe(pending[i])
           }
@@ -856,18 +859,8 @@ export function createPrefetchCore(options) {
     disabled = true
     queue.length = 0
 
-    // v1.0.13: очищаем touch-таймер
-    if (touchTimer) {
-      clearTimeout(touchTimer)
-      touchTimer = 0
-    }
-
-    // v1.0.13: удаляем touchCancel listener если есть
-    if (touchCancel) {
-      document.removeEventListener('touchmove', touchCancel, true)
-      document.removeEventListener('scroll', touchCancel, true)
-      touchCancel = null
-    }
+    // v1.0.13: очищаем touch-таймер и слушатели отмены
+    resetTouch()
 
     // v1.0.13: прерываем все активные fetch-запросы
     activeControllers.forEach(function (ctrl) {
@@ -877,17 +870,26 @@ export function createPrefetchCore(options) {
 
     // v1.0.13: отменяем отложенный flush Speculation Rules
     if (specFlushTimer) {
-      var cancelIC = window.cancelIdleCallback || clearTimeout
-      cancelIC(specFlushTimer)
+      cancelIdle(specFlushTimer)
       specFlushTimer = 0
     }
     // Очищаем буфер
-    specBuffer.prefetch.length = specBuffer.prerender.length = specBuffer.crossOrigin.length = 0
+    specBuffer.prefetch.length = specBuffer.prerender.length = 0
+
+    // v1.1.4: удаляем вставленные speculationrules-скрипты (это отменяет их правила)
+    for (var i = 0; i < specScripts.length; i++) {
+      if (specScripts[i] && specScripts[i].parentNode) {
+        specScripts[i].parentNode.removeChild(specScripts[i])
+      }
+    }
+    specScripts.length = 0
 
     var opts = { capture: true, passive: true }
     document.removeEventListener('touchstart', onTouchStart, opts)
     document.removeEventListener('mouseover', onMouseOver, opts)
     document.removeEventListener('mousedown', onMouseDown, opts)
+    // v1.1.4: снимаем ожидание DOMContentLoaded, если destroy() вызван до готовности DOM
+    document.removeEventListener('DOMContentLoaded', setup)
 
     // v1.1.3: снимаем listener сети
     if (conn && typeof conn.removeEventListener === 'function') {
@@ -920,8 +922,12 @@ export function createPrefetchCore(options) {
       // v1.0.11: создаём временный <a> для проверки через canPreload()
       var a = document.createElement('a')
       a.setAttribute('href', url.trim())
+      // v1.1.4: явный вызов API выражает намерение - проставляем data-prefetch, иначе на сайтах
+      // с whitelist, для внешних URL и query string вызов был тихим no-op. Опасные пути,
+      // расширения файлов и аналитика по-прежнему фильтруются
+      a.dataset.prefetch = ''
       if (!canPreload(a)) return
-      preload(a.href, a)
+      preload(a)
     },
     destroy: destroy,
     // v1.0.11: публичный метод для ручного обновления currentKey (SPA)
