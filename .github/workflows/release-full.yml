@@ -10,6 +10,12 @@ on:
         required: true
         type: string
 
+# Общая группа с deploy-www.yml: оба workflow пишут index.html в MAIN bucket,
+# параллельный запуск приводил к гонке "кто последний, тот и победил"
+concurrency:
+  group: site-deploy
+  cancel-in-progress: false
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -17,29 +23,32 @@ jobs:
       id-token: write
       contents: write
       packages: write
-    
+
     steps:
       # ============================================
       # 1. Checkout and Setup
       # ============================================
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
         with:
           ref: main
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
-      
+          fetch-tags: true
+
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version: '24'
           registry-url: 'https://registry.npmjs.org'
-      
+
       - name: Install dependencies
         run: npm ci
-      
-      - name: Install AWS CLI
-        run: pip install awscli
+
+      # AWS CLI v2 предустановлен на ubuntu-latest; pip install awscli тянул
+      # непроверенный пакет в job с облачными секретами
+      - name: Verify AWS CLI
+        run: aws --version
       
       - name: Configure AWS CLI for Yandex Cloud
         env:
@@ -55,22 +64,52 @@ jobs:
       # ============================================
       - name: Extract version from tag
         id: version
+        # Имя тега и input - недоверенные строки: передаём только через env,
+        # интерполяция ${{ }} прямо в тело скрипта позволяла выполнить произвольный код
+        env:
+          RAW_TAG: ${{ github.event.release.tag_name }}
+          RAW_INPUT_VERSION: ${{ github.event.inputs.version }}
         run: |
           # Get version from release event or workflow_dispatch input
-          if [ -n "${{ github.event.release.tag_name }}" ]; then
-            TAG="${{ github.event.release.tag_name }}"
+          if [ -n "$RAW_TAG" ]; then
+            TAG="$RAW_TAG"
             VERSION="${TAG#v}"
           else
-            VERSION="${{ github.event.inputs.version }}"
+            VERSION="$RAW_INPUT_VERSION"
             TAG="v${VERSION}"
           fi
-          
+
+          # Строгая валидация: отсекает и payload в имени тега, и нечисловые версии
+          # (v1.2.0-rc1 ломал бы sed-цепочки следующих релизов)
+          if ! printf '%s' "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error::Некорректная версия: '$VERSION' (ожидается X.Y.Z)"
+            exit 1
+          fi
+
           echo "tag=$TAG" >> $GITHUB_OUTPUT
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "version_folder=v${VERSION}" >> $GITHUB_OUTPUT
-          
+
           echo "📦 Release tag: $TAG"
           echo "📦 Version: $VERSION"
+
+      # Релиз собирается из main: убеждаемся, что тег указывает именно на main HEAD,
+      # иначе опубликованные байты разойдутся с тегом (ломается и npm provenance)
+      - name: Verify tag matches main HEAD
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          if ! git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
+            echo "::error::Тег $TAG не найден - создайте GitHub Release с этим тегом"
+            exit 1
+          fi
+          TAG_SHA=$(git rev-list -n 1 "$TAG")
+          HEAD_SHA=$(git rev-parse HEAD)
+          if [ "$TAG_SHA" != "$HEAD_SHA" ]; then
+            echo "::error::Тег $TAG ($TAG_SHA) не совпадает с main HEAD ($HEAD_SHA). Пересоздайте тег на актуальном HEAD."
+            exit 1
+          fi
+          echo "✅ Тег $TAG указывает на main HEAD"
       
       # ============================================
       # 3. Update package.json and package-lock.json
@@ -191,17 +230,38 @@ jobs:
           echo "📄 Updated lines:"
           grep -n "/${VERSION_FOLDER}/" www/index.html | head -5
           grep -n "Версия ${VERSION}" www/index.html | head -2
-      
+
+      # ============================================
+      # 8a. Update www/llms.txt (версия и SRI для LLM-агентов)
+      # ============================================
+      - name: Update llms.txt with new version and SRI
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          VERSION_FOLDER: ${{ steps.version.outputs.version_folder }}
+          SRI_HASH: ${{ steps.sri.outputs.sri_hash }}
+        run: |
+          echo "📝 Updating www/llms.txt..."
+
+          sed -i "s|/v[0-9]*\.[0-9]*\.[0-9]*/prefetch.min.js|/${VERSION_FOLDER}/prefetch.min.js|g" www/llms.txt
+          sed -i "s|integrity=\"sha384-[^\"]*\"|integrity=\"${SRI_HASH}\"|g" www/llms.txt
+          sed -i "s|// \"[0-9]*\.[0-9]*\.[0-9]*\"|// \"${VERSION}\"|g" www/llms.txt
+
+          echo "✅ www/llms.txt updated"
+          grep -n "${VERSION_FOLDER}" www/llms.txt | head -3
+
       # ============================================
       # 9. Update www/sitemap.xml
       # ============================================
       - name: Update sitemap.xml with current date
         run: |
           echo "📝 Updating www/sitemap.xml..."
-          
+
           TODAY=$(date -u +"%Y-%m-%d")
-          sed -i "s|<lastmod>[0-9-]*</lastmod>|<lastmod>${TODAY}</lastmod>|g" www/sitemap.xml
-          
+          # Релиз меняет только главную и llms.txt - обновляем lastmod точечно,
+          # глобальная замена ставила сегодняшнюю дату и неизменённым URL
+          sed -i "/<loc>https:\/\/prefetch\.ru\/<\/loc>/,/<\/url>/ s|<lastmod>[0-9-]*</lastmod>|<lastmod>${TODAY}</lastmod>|" www/sitemap.xml
+          sed -i "/<loc>https:\/\/prefetch\.ru\/llms\.txt<\/loc>/,/<\/url>/ s|<lastmod>[0-9-]*</lastmod>|<lastmod>${TODAY}</lastmod>|" www/sitemap.xml
+
           echo "✅ www/sitemap.xml updated with date: $TODAY"
           cat www/sitemap.xml
       
@@ -251,9 +311,9 @@ jobs:
         run: |
           echo "📤 Uploading changed www/ files to MAIN bucket: $BUCKET"
           
-          # During release, only index.html and sitemap.xml are modified
+          # During release, only index.html, llms.txt and sitemap.xml are modified
           # Upload them directly instead of full sync
-          for file in www/index.html www/sitemap.xml; do
+          for file in www/index.html www/llms.txt www/sitemap.xml; do
             if [ -f "$file" ]; then
               S3_PATH="${file#www/}"
               echo "  📄 Uploading: $file → $S3_PATH"
@@ -298,13 +358,15 @@ jobs:
           # prefetch.js and prefetch.esm.js are in .gitignore — use -f to force add
           # dist/ is NOT committed — only used for CDN upload, npm publish, and release artifacts
           git add -f prefetch.js prefetch.esm.js
-          git add package.json package-lock.json README.md www/index.html www/sitemap.xml
-          
+          git add package.json package-lock.json README.md www/index.html www/llms.txt www/sitemap.xml
+
           # Check if there are staged changes
           if git diff --cached --quiet; then
             echo "ℹ️ No changes to commit"
           else
             git commit -m "chore: release v${VERSION} - update version, SRI hash, sitemap [skip ci]"
+            # main мог уйти вперёд за время сборки - rebase, чтобы push не падал
+            git pull --rebase origin main
             git push origin main
             echo "✅ Changes committed and pushed"
           fi
@@ -366,11 +428,10 @@ jobs:
       - name: Upload release assets
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.version.outputs.tag }}
         run: |
           echo "📤 Uploading assets to release..."
-          
-          TAG="${{ steps.version.outputs.tag }}"
-          
+
           gh release upload "$TAG" \
             artifacts/prefetch.min.js.zip \
             artifacts/prefetch.esm.min.js.zip \
@@ -382,13 +443,19 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SRI_HASH: ${{ steps.sri.outputs.sri_hash }}
+          TAG: ${{ steps.version.outputs.tag }}
         run: |
           echo "📝 Updating release notes..."
-          
+
           # Get current release body
-          TAG="${{ steps.version.outputs.tag }}"
           CURRENT_BODY=$(gh release view "$TAG" --json body -q '.body')
-          
+
+          # Идемпотентность: при повторном запуске не дублируем секцию SRI
+          if printf '%s' "$CURRENT_BODY" | grep -q "Integrity (SRI) IIFE"; then
+            echo "ℹ️ Секция SRI уже есть в release notes - пропускаем"
+            exit 0
+          fi
+
           # Create notes file with only SRI
           {
             echo ""
@@ -404,10 +471,10 @@ jobs:
           # Combine current body with new notes
           echo "${CURRENT_BODY}" > /tmp/full_notes.md
           cat /tmp/release_notes.md >> /tmp/full_notes.md
-          
+
           # Update release
           gh release edit "$TAG" --notes-file /tmp/full_notes.md
-          
+
           echo "✅ Release notes updated with SRI hash"
       
       # ============================================
@@ -418,28 +485,42 @@ jobs:
           # Remove authToken from .npmrc to allow OIDC authentication
           sed -i '/_authToken/d' $NPM_CONFIG_USERCONFIG 2>/dev/null || true
       
+      # Раньше здесь стоял continue-on-error, который глушил ЛЮБЫЕ ошибки публикации
+      # (OIDC, сеть, сборка) при уже обновлённом сайте - jsDelivr-ссылки вели в никуда.
+      # Теперь пропускаем только честный случай "версия уже опубликована"
       - name: Publish to npm (OIDC Trusted Publishing)
-        run: npm publish --access public --provenance
-        continue-on-error: true  # Don't fail if version already exists
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          if npm view "@prefetchru/prefetch@${VERSION}" version >/dev/null 2>&1; then
+            echo "ℹ️ Версия ${VERSION} уже опубликована в npm - пропускаем"
+          else
+            npm publish --access public --provenance
+          fi
       
       # ============================================
       # 17. Publish to GitHub Packages
       # ============================================
       - name: Setup for GitHub Packages
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version: '24'
           registry-url: 'https://npm.pkg.github.com'
           scope: '@prefetch-ru'
-      
+
       - name: Update package name for GitHub Packages
         run: npm pkg set name="@prefetch-ru/prefetch"
-      
+
       - name: Publish to GitHub Packages
-        run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          if npm view "@prefetch-ru/prefetch@${VERSION}" version --registry=https://npm.pkg.github.com >/dev/null 2>&1; then
+            echo "ℹ️ Версия ${VERSION} уже опубликована в GitHub Packages - пропускаем"
+          else
+            npm publish --access public
+          fi
       
       # ============================================
       # Summary

@@ -8,23 +8,29 @@ on:
       - 'www/**'
   workflow_dispatch:
 
+# Общая группа с release-full.yml: оба workflow пишут index.html в MAIN bucket
+concurrency:
+  group: site-deploy
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    
+
     # Skip if commit message contains [skip ci]
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
-    
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
         with:
           fetch-depth: 0
-      
-      - name: Install AWS CLI
-        run: pip install awscli
+
+      # AWS CLI v2 предустановлен на ubuntu-latest
+      - name: Verify AWS CLI
+        run: aws --version
       
       - name: Configure AWS CLI for Yandex Cloud
         env:
@@ -74,13 +80,16 @@ jobs:
           # поэтому минифицированная версия НЕ попадёт в репо
       
       - name: Update sitemap.xml dates for changed files
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+          CURRENT_SHA: ${{ github.sha }}
         run: |
           echo "📝 Updating sitemap.xml for changed files..."
-          
+
           TODAY=$(date -u +"%Y-%m-%d")
-          
+
           # Get changed files
-          CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- www/ 2>/dev/null || git diff --name-only HEAD~1 HEAD -- www/ 2>/dev/null || true)
+          CHANGED=$(git diff --name-only "$BEFORE_SHA" "$CURRENT_SHA" -- www/ 2>/dev/null || git diff --name-only HEAD~1 HEAD -- www/ 2>/dev/null || true)
           
           for file in $CHANGED; do
             # Skip sitemap.xml itself
@@ -105,15 +114,18 @@ jobs:
       
       - name: Find changed files in www/
         id: changes
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+          CURRENT_SHA: ${{ github.sha }}
         run: |
           echo "🔍 Finding changed files in www/..."
-          
+
           # Get changed files (added, modified)
-          CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- www/ 2>/dev/null | grep -v '^$' || true)
-          
+          CHANGED=$(git diff --name-only "$BEFORE_SHA" "$CURRENT_SHA" -- www/ 2>/dev/null | grep -v '^$' || true)
+
           # Get deleted files
-          DELETED=$(git diff --name-only --diff-filter=D ${{ github.event.before }} ${{ github.sha }} -- www/ 2>/dev/null | grep -v '^$' || true)
-          
+          DELETED=$(git diff --name-only --diff-filter=D "$BEFORE_SHA" "$CURRENT_SHA" -- www/ 2>/dev/null | grep -v '^$' || true)
+
           # Fallback: if before is empty (first push), compare with HEAD~1
           if [ -z "$CHANGED" ] && [ -z "$DELETED" ]; then
             CHANGED=$(git diff --name-only HEAD~1 HEAD -- www/ 2>/dev/null | grep -v '^$' || true)
@@ -150,9 +162,21 @@ jobs:
         env:
           BUCKET: ${{ secrets.YANDEX_STORAGE_BUCKET_MAIN }}
           ENDPOINT: ${{ secrets.YANDEX_STORAGE_ENDPOINT }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
+          # Ручной запуск - полная синхронизация: diff последнего коммита не догоняет
+          # файлы, потерянные упавшими деплоями, и bucket тихо расходится с репо
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            echo "📤 Ручной запуск - полная синхронизация www/ с bucket"
+            aws s3 sync www/ "s3://${BUCKET}/" \
+              --endpoint-url ${ENDPOINT} \
+              --delete
+            echo "✅ Полная синхронизация завершена"
+            exit 0
+          fi
+
           echo "📤 Deploying changed files to MAIN bucket: $BUCKET"
-          
+
           # Upload changed/added files
           while IFS= read -r file; do
             [ -z "$file" ] && continue
