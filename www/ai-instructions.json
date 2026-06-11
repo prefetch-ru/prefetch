@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "lastUpdated": "2026-01",
+  "lastUpdated": "2026-06",
   "project": {
     "name": "prefetch.ru",
     "type": "JavaScript library",
@@ -91,10 +91,10 @@
         "description": "Разрешить ссылки с ?param=value"
       },
       "data-prefetch-allow-external-links": {
-        "description": "Разрешить внешние домены (только Chromium)"
+        "description": "Разрешить внешние домены (работает во всех браузерах, запросы без cookies и referrer)"
       },
       "data-prefetch-observe-dom": {
-        "description": "Отслеживать новые ссылки (для SPA)"
+        "description": "Отслеживать новые ссылки. Действует только вместе с data-prefetch-intensity=viewport/viewport-all; в hover-режиме новые ссылки обрабатываются автоматически"
       },
       "data-prefetch-nonce": {
         "description": "Nonce для Content Security Policy"
@@ -145,11 +145,11 @@
     "why": "Используется passive: true, не вызывается preventDefault(), UTM-метки работают"
   },
   "limits": {
-    "desktop": "max 50 предзагрузок",
-    "mobile": "max 20 предзагрузок",
+    "desktop": "кэш дедупликации на 50 URL (повторная предзагрузка того же URL не выполняется)",
+    "mobile": "кэш дедупликации на 20 URL",
     "inFlight": "max 4 параллельных запроса",
     "queue": "до 50 в очереди",
-    "touchDelay": "80мс (отменяется при scroll/touchmove)"
+    "touchDelay": "80мс по умолчанию, на мобильных 60-150мс в зависимости от intensity (отменяется при scroll/touchmove)"
   },
   "networkConditions": {
     "blocked": ["2G", "slow-2g", "3G", "saveData === true"],
@@ -165,13 +165,13 @@
       "solution": "Проверить правила WAF"
     },
     "spaNavigation": {
-      "problem": "Новые ссылки не отслеживаются",
-      "solutions": ["data-prefetch-observe-dom", "PrefetchRu.refresh()"]
+      "problem": "После смены маршрута предзагружается старая страница",
+      "solutions": ["PrefetchRu.refresh() после навигации", "data-prefetch-observe-dom (действует только в viewport-режиме)"]
     },
     "crossOrigin": {
       "default": "Отключены",
       "enable": "data-prefetch-allow-external-links",
-      "note": "Работает только в Chromium, используется referrerPolicy: no-referrer"
+      "note": "Работает во всех браузерах: запросы без cookies (credentials: omit) и без referrer"
     },
     "doubleTraffic": {
       "problem": "Двойной трафик при Speculation Rules + fallback",
@@ -181,7 +181,7 @@
   },
   "guidelines": [
     "Всегда рекомендуй актуальный CDN-код с сайта prefetch.ru#install (там SRI-хеш)",
-    "Для SPA (React, Vue, Next.js) добавляй data-prefetch-observe-dom",
+    "Для SPA (React, Vue, Next.js) рекомендуй PrefetchRu.refresh() после навигации; data-prefetch-observe-dom нужен только в viewport-режиме",
     "Для сайтов с CSP используй data-prefetch-nonce",
     "Предупреждай: GET-ссылки НЕ должны выполнять действия (add to cart)",
     "Prerender выполняет JS целевой страницы — предупреждай об аналитике",
@@ -192,7 +192,7 @@
     "simpleWebsite": "Просто подключи скрипт перед </body>",
     "bitrix": "Автоматическая оптимизация, observeDom включён",
     "tilda": "Автоматическая оптимизация, задержка 100мс",
-    "spa": "Добавь data-prefetch-observe-dom на <body>",
+    "spa": "Вызывай PrefetchRu.refresh() после смены маршрута",
     "strictCsp": "Добавь data-prefetch-nonce=\"{{NONCE}}\" на <body>",
     "maxSpeed": "data-prefetch-specrules=\"prerender\" (осторожно с аналитикой)"
   },

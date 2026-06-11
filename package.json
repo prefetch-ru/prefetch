@@ -4,14 +4,15 @@
   "description": "Мгновенная загрузка страниц для российского веба. Instant page loading for Russian web.",
   "main": "prefetch.js",
   "module": "prefetch.esm.js",
-  "browser": "dist/prefetch.min.js",
+  "types": "index.d.ts",
   "unpkg": "dist/prefetch.min.js",
   "jsdelivr": "dist/prefetch.min.js",
   "exports": {
     ".": {
+      "types": "./index.d.ts",
       "import": "./prefetch.esm.js",
       "require": "./prefetch.js",
-      "browser": "./dist/prefetch.min.js"
+      "default": "./prefetch.esm.js"
     },
     "./esm": "./prefetch.esm.js",
     "./esm/min": "./dist/prefetch.esm.min.js"
@@ -20,6 +21,7 @@
     "src/",
     "prefetch.js",
     "prefetch.esm.js",
+    "index.d.ts",
     "dist/prefetch.min.js",
     "dist/prefetch.esm.min.js",
     "README.md"

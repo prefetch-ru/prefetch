@@ -13,6 +13,12 @@
     <priority>0.5</priority>
   </url>
   <url>
+    <loc>https://prefetch.ru/llms.txt</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://prefetch.ru/ai-instructions.json</loc>
     <lastmod>2026-03-05</lastmod>
     <changefreq>monthly</changefreq>

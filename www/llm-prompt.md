@@ -39,13 +39,15 @@ CDN: Актуальный код с SRI на https://prefetch.ru#install (пер
 Атрибуты на <body>:
 - data-prefetch-intensity="65" — задержка hover в мс
 - data-prefetch-intensity="mousedown" — по нажатию мыши
-- data-prefetch-intensity="viewport" — при появлении на экране
+- data-prefetch-intensity="viewport" — при появлении на экране (только мобильные)
+- data-prefetch-intensity="viewport-all" — при появлении на экране (все устройства)
 - data-prefetch-specrules — включить Speculation Rules
 - data-prefetch-specrules="prerender" — полный prerender в фоне
 - data-prefetch-whitelist — только ссылки с data-prefetch
 - data-prefetch-allow-query-string — разрешить ?param=value
 - data-prefetch-allow-external-links — разрешить внешние домены
-- data-prefetch-observe-dom — следить за новыми ссылками (SPA)
+- data-prefetch-observe-dom — следить за новыми ссылками (только в viewport-режиме;
+  в hover-режиме новые ссылки работают автоматически)
 - data-prefetch-nonce="abc" — nonce для CSP
 
 Атрибуты на ссылках:
@@ -62,7 +64,7 @@ window.PrefetchRu.destroy()    // Отключить библиотеку
 
 ## Автоматические исключения
 
-- Пути: /login, /logout, /auth, /cart, /basket, /add, /delete, /remove
+- Пути: /login, /logout, /auth, /register, /cart, /basket, /add, /delete, /remove
 - Файлы: .pdf, .doc, .docx, .xls, .xlsx, .zip, .rar, .exe
 - Внешние ссылки (по умолчанию)
 - Якоря на той же странице
@@ -86,7 +88,7 @@ Tilda: определяется по .t-records, исключаются #popup:,
 
 1. Обычный сайт: подключи скрипт перед </body>
 2. 1С-Битрикс/Tilda: автоматическая оптимизация
-3. SPA (React/Vue): добавь data-prefetch-observe-dom
+3. SPA (React/Vue): вызывай PrefetchRu.refresh() после смены маршрута
 4. Строгий CSP: добавь data-prefetch-nonce
 5. Максимальная скорость: data-prefetch-specrules="prerender"
 
@@ -100,8 +102,8 @@ Tilda: определяется по .t-records, исключаются #popup:,
 
 CSP блокирует: data-prefetch-nonce или data-prefetch-specrules-fallback
 WAF блокирует: проверь правила для заголовка Purpose: prefetch
-SPA навигация: data-prefetch-observe-dom + PrefetchRu.refresh()
-Cross-origin: data-prefetch-allow-external-links (только Chromium)
+SPA навигация: PrefetchRu.refresh() после смены маршрута
+Cross-origin: data-prefetch-allow-external-links (все браузеры, запросы без cookies и referrer)
 
 Помоги настроить prefetch.ru для моего проекта: [опиши свой проект]
 ```
