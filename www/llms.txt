@@ -1,6 +1,6 @@
-# prefetch.ru — Instant Page Loading for Russian Web
+# prefetch.ru - Instant Page Loading for Russian Web
 
-Prefetch pages 65ms before user clicks. Pre-loads links on hover with smart fallbacks for iOS/Safari, optimized for Russian browsers (Yandex.Browser, Atom), CMS platforms (1C-Bitrix, Tilda), and e-commerce. Works everywhere with zero configuration.
+> Prefetch pages 65ms before user clicks. Pre-loads links on hover with smart fallbacks for iOS/Safari, optimized for Russian browsers (Yandex.Browser, Atom), CMS platforms (1C-Bitrix, Tilda), and e-commerce. Works everywhere with zero configuration.
 
 ## What It Does
 
@@ -52,12 +52,12 @@ Configure via data attributes on `<body>`:
 |-----------|--------|-------------|
 | `data-prefetch-intensity` | `65` (default), `mousedown`, `viewport`, `viewport-all` | Hover delay in ms or trigger mode |
 | `data-prefetch-specrules` | empty, `prerender`, `no` | Enable Speculation Rules API |
-| `data-prefetch-specrules-fallback` | — | Enable fallback when using Speculation Rules |
-| `data-prefetch-whitelist` | — | Whitelist mode (only links with `data-prefetch`) |
-| `data-prefetch-allow-query-string` | — | Allow links with query parameters |
-| `data-prefetch-allow-external-links` | — | Allow external domains |
-| `data-prefetch-prerender-all` | — | Allow prerender for all links (use with care) |
-| `data-prefetch-observe-dom` | — | Watch for new links (viewport mode only; hover mode handles new links automatically) |
+| `data-prefetch-specrules-fallback` | - | Enable fallback when using Speculation Rules |
+| `data-prefetch-whitelist` | - | Whitelist mode (only links with `data-prefetch`) |
+| `data-prefetch-allow-query-string` | - | Allow links with query parameters |
+| `data-prefetch-allow-external-links` | - | Allow external domains |
+| `data-prefetch-prerender-all` | - | Allow prerender for all links (use with care) |
+| `data-prefetch-observe-dom` | - | Watch for new links (viewport mode only; hover mode handles new links automatically) |
 | `data-prefetch-nonce` | `"abc123"` | CSP nonce value |
 
 ### Link-Level Control
@@ -94,17 +94,17 @@ PrefetchRu.destroy()
 ### Timeline
 
 ```
-  0ms  → Mouse hover starts
- 65ms  → Prefetch begins
-200ms  → User clicks
- ~0ms  → Page loads from cache
+  0ms  -> Mouse hover starts
+ 65ms  -> Prefetch begins
+200ms  -> User clicks
+ ~0ms  -> Page loads from cache
 ```
 
 ### Prefetch Methods (Auto-Selected)
 
-1. **Speculation Rules API** (Chromium 109+) — Modern API for prefetch/prerender
-2. **Link Prefetch** (`<link rel="prefetch">`) — Standard method for Firefox
-3. **Fetch Fallback** — For iOS/Safari via `fetch()` with caching
+1. **Speculation Rules API** (Chromium 109+) - Modern API for prefetch/prerender
+2. **Link Prefetch** (`<link rel="prefetch">`) - Standard method for Firefox
+3. **Fetch Fallback** - For iOS/Safari via `fetch()` with caching
 
 ## Automatic Exclusions
 
@@ -114,7 +114,7 @@ The library automatically excludes:
 - File downloads: `.pdf`, `.doc`, `.docx`, `.xls`, `.xlsx`, `.zip`, `.rar`, `.exe`
 - Analytics links: Yandex.Metrika, Google Analytics, Matomo classes
 - Same-page anchors
-- Links with `target="_blank"` or `download` attribute
+- Links with a `target` other than `_self`, or with a `download` attribute
 
 ## Platform Support
 
@@ -163,9 +163,13 @@ The library automatically excludes:
 
 ## Links
 
-- Website: https://prefetch.ru
-- GitHub: https://github.com/prefetch-ru/prefetch
-- npm: https://www.npmjs.com/package/@prefetchru/prefetch
+- [Website](https://prefetch.ru): landing page with install snippets, API reference and live demo (Russian)
+- [AI prompt](https://prefetch.ru/llm-prompt.md): ready-to-paste prompt for an LLM agent that integrates the library (Russian)
+- [AI instructions](https://prefetch.ru/ai-instructions.json): machine-readable description of the API, exclusions, limits and edge cases
+- [README](https://github.com/prefetch-ru/prefetch#readme): full documentation (Russian)
+- [Types](https://github.com/prefetch-ru/prefetch/blob/main/index.d.ts): TypeScript definitions of the public API
+- [GitHub](https://github.com/prefetch-ru/prefetch): source code, issues
+- [npm](https://www.npmjs.com/package/@prefetchru/prefetch): package @prefetchru/prefetch
 
 ## License
 

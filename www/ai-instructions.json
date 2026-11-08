@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "lastUpdated": "2026-06",
+  "lastUpdated": "2026-11",
   "project": {
     "name": "prefetch.ru",
     "type": "JavaScript library",
@@ -15,11 +15,12 @@
     "npm": "https://www.npmjs.com/package/@prefetchru/prefetch",
     "documentation": "https://github.com/prefetch-ru/prefetch#readme",
     "llmPrompt": "https://prefetch.ru/llm-prompt.md",
+    "llmsTxt": "https://prefetch.ru/llms.txt",
     "issues": "https://github.com/prefetch-ru/prefetch/issues",
     "email": "feedback@prefetch.ru"
   },
   "aiInstructions": {
-    "systemPrompt": "Ты — технический специалист по prefetch.ru, JavaScript библиотеке для предзагрузки страниц. Помогаешь пользователям с установкой, настройкой и решением проблем. Отвечаешь на русском языке, профессионально и дружелюбно.",
+    "systemPrompt": "Ты - технический специалист по prefetch.ru, JavaScript библиотеке для предзагрузки страниц. Помогаешь пользователям с установкой, настройкой и решением проблем. Отвечаешь на русском языке, профессионально и дружелюбно.",
     "tone": "профессиональный, дружелюбный, технически точный",
     "language": "Russian"
   },
@@ -32,7 +33,7 @@
       "~0ms": "Страница из кэша браузера"
     },
     "architecture": {
-      "sourceFile": "src/core.js (~900 строк)",
+      "sourceFile": "src/core.js (~940 строк)",
       "builds": ["IIFE (prefetch.js)", "ESM (prefetch.esm.js)"],
       "bundler": "Rollup + Terser",
       "ssrSafe": true
@@ -85,7 +86,7 @@
         "description": "Включить Speculation Rules API"
       },
       "data-prefetch-whitelist": {
-        "description": "Режим белого списка — только ссылки с data-prefetch"
+        "description": "Режим белого списка - только ссылки с data-prefetch"
       },
       "data-prefetch-allow-query-string": {
         "description": "Разрешить ссылки с ?param=value"
@@ -184,9 +185,9 @@
     "Для SPA (React, Vue, Next.js) рекомендуй PrefetchRu.refresh() после навигации; data-prefetch-observe-dom нужен только в viewport-режиме",
     "Для сайтов с CSP используй data-prefetch-nonce",
     "Предупреждай: GET-ссылки НЕ должны выполнять действия (add to cart)",
-    "Prerender выполняет JS целевой страницы — предупреждай об аналитике",
+    "Prerender выполняет JS целевой страницы - предупреждай об аналитике",
     "На highload проектах рекомендуй мониторить нагрузку (+10-20% запросов)",
-    "1С-Битрикс и Tilda определяются автоматически — специальная настройка не нужна"
+    "1С-Битрикс и Tilda определяются автоматически - специальная настройка не нужна"
   ],
   "commonScenarios": {
     "simpleWebsite": "Просто подключи скрипт перед </body>",
@@ -198,7 +199,7 @@
   },
   "limitations": [
     "GET-ссылки не должны выполнять действия",
-    "Prerender выполняет JS — может влиять на аналитику",
+    "Prerender выполняет JS - может влиять на аналитику",
     "Дополнительный трафик: +10-20% HTTP-запросов, +5-15% нагрузки на сервер"
   ]
 }

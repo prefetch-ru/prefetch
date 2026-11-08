@@ -1,4 +1,4 @@
-# prefetch.ru — Промт для AI/LLM агентов
+# prefetch.ru - Промт для AI/LLM агентов
 
 > Скопируйте этот промт в своего AI/LLM-агента для получения точных рекомендаций по настройке библиотеки.
 
@@ -9,7 +9,7 @@
 
 ## О библиотеке
 
-**prefetch.ru** — JavaScript библиотека для предзагрузки страниц. Начинает загрузку за 65мс до клика при наведении курсора. ~4KB gzip, без зависимостей.
+**prefetch.ru** - JavaScript библиотека для предзагрузки страниц. Начинает загрузку за 65мс до клика при наведении курсора. ~4KB gzip, без зависимостей.
 
 - Сайт: https://prefetch.ru
 - npm: https://www.npmjs.com/package/@prefetchru/prefetch
@@ -18,15 +18,15 @@
 
 ## Как это работает
 
-    0 мс  → Наведение курсора
-   65 мс  → Начало предзагрузки
-  200 мс  → Клик пользователя
-   ~0 мс  → Страница из кэша
+    0 мс  -> Наведение курсора
+   65 мс  -> Начало предзагрузки
+  200 мс  -> Клик пользователя
+   ~0 мс  -> Страница из кэша
 
 Методы предзагрузки (выбираются автоматически):
-1. Speculation Rules API — Chrome 109+, Edge, Яндекс.Браузер, Atom
-2. Link Prefetch — Firefox
-3. Fetch Fallback — iOS, Safari (WebKit не поддерживает prefetch)
+1. Speculation Rules API - Chrome 109+, Edge, Яндекс.Браузер, Atom
+2. Link Prefetch - Firefox
+3. Fetch Fallback - iOS, Safari (WebKit не поддерживает prefetch)
 
 ## Установка
 
@@ -37,23 +37,23 @@ CDN: Актуальный код с SRI на https://prefetch.ru#install (пер
 ## Конфигурация
 
 Атрибуты на <body>:
-- data-prefetch-intensity="65" — задержка hover в мс
-- data-prefetch-intensity="mousedown" — по нажатию мыши
-- data-prefetch-intensity="viewport" — при появлении на экране (только мобильные)
-- data-prefetch-intensity="viewport-all" — при появлении на экране (все устройства)
-- data-prefetch-specrules — включить Speculation Rules
-- data-prefetch-specrules="prerender" — полный prerender в фоне
-- data-prefetch-whitelist — только ссылки с data-prefetch
-- data-prefetch-allow-query-string — разрешить ?param=value
-- data-prefetch-allow-external-links — разрешить внешние домены
-- data-prefetch-observe-dom — следить за новыми ссылками (только в viewport-режиме;
+- data-prefetch-intensity="65" - задержка hover в мс
+- data-prefetch-intensity="mousedown" - по нажатию мыши
+- data-prefetch-intensity="viewport" - при появлении на экране (только мобильные)
+- data-prefetch-intensity="viewport-all" - при появлении на экране (все устройства)
+- data-prefetch-specrules - включить Speculation Rules
+- data-prefetch-specrules="prerender" - полный prerender в фоне
+- data-prefetch-whitelist - только ссылки с data-prefetch
+- data-prefetch-allow-query-string - разрешить ?param=value
+- data-prefetch-allow-external-links - разрешить внешние домены
+- data-prefetch-observe-dom - следить за новыми ссылками (только в viewport-режиме;
   в hover-режиме новые ссылки работают автоматически)
-- data-prefetch-nonce="abc" — nonce для CSP
+- data-prefetch-nonce="abc" - nonce для CSP
 
 Атрибуты на ссылках:
-- data-prefetch — разрешить предзагрузку
-- data-no-prefetch — запретить предзагрузку
-- data-prefetch-prerender — prerender для этой ссылки
+- data-prefetch - разрешить предзагрузку
+- data-no-prefetch - запретить предзагрузку
+- data-prefetch-prerender - prerender для этой ссылки
 
 ## JavaScript API
 
@@ -95,7 +95,7 @@ Tilda: определяется по .t-records, исключаются #popup:,
 ## Ограничения
 
 - GET-ссылки НЕ должны выполнять действия
-- Prerender выполняет JS — может влиять на аналитику
+- Prerender выполняет JS - может влиять на аналитику
 - Доп. трафик: +10-20% HTTP-запросов
 
 ## Edge-cases
@@ -110,4 +110,4 @@ Cross-origin: data-prefetch-allow-external-links (все браузеры, за�
 
 ---
 
-**Ссылки:** [Документация](https://github.com/prefetch-ru/prefetch#readme) • [Сайт](https://prefetch.ru) • [Issues](https://github.com/prefetch-ru/prefetch/issues) • [feedback@prefetch.ru](mailto:feedback@prefetch.ru)
+**Ссылки:** [Документация](https://github.com/prefetch-ru/prefetch#readme) | [Сайт](https://prefetch.ru) | [Issues](https://github.com/prefetch-ru/prefetch/issues) | [feedback@prefetch.ru](mailto:feedback@prefetch.ru)
