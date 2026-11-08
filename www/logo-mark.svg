@@ -1,0 +1,36 @@
+<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="1024" height="1024">
+  <title>prefetch.ru logo mark</title>
+  <desc>Black halftone square plate with a paper-colored lowercase slab-serif p and a glowing orange-red period.</desc>
+  <defs>
+    <radialGradient id="period-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#ff4a2a" stop-opacity="0.62" />
+      <stop offset="0.36" stop-color="#ff4a2a" stop-opacity="0.34" />
+      <stop offset="0.68" stop-color="#ff4a2a" stop-opacity="0.13" />
+      <stop offset="1" stop-color="#ff4a2a" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="period-disc" cx="50%" cy="50%" r="56%">
+      <stop offset="0" stop-color="#ffd24a" />
+      <stop offset="0.34" stop-color="#ffb437" />
+      <stop offset="0.72" stop-color="#ff652d" />
+      <stop offset="1" stop-color="#ff4a2a" />
+    </radialGradient>
+    <radialGradient id="period-core" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#fff074" stop-opacity="0.92" />
+      <stop offset="1" stop-color="#ffd24a" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <g id="plate">
+    <rect id="black-plate" x="72" y="72" width="880" height="880" fill="#111111" />
+    <path id="halftone-dot-screen" fill="none" stroke="#2a2a2a" stroke-width="6" stroke-linecap="round" stroke-dasharray="0.1 15.9" opacity="0.64" d="M104 104H920 M104 120H920 M104 136H920 M104 152H920 M104 168H920 M104 184H920 M104 200H920 M104 216H920 M104 232H920 M104 248H920 M104 264H920 M104 280H920 M104 296H920 M104 312H920 M104 328H920 M104 344H920 M104 360H920 M104 376H920 M104 392H920 M104 408H920 M104 424H920 M104 440H920 M104 456H920 M104 472H920 M104 488H920 M104 504H920 M104 520H920 M104 536H920 M104 552H920 M104 568H920 M104 584H920 M104 600H920 M104 616H920 M104 632H920 M104 648H920 M104 664H920 M104 680H920 M104 696H920 M104 712H920 M104 728H920 M104 744H920 M104 760H920 M104 776H920 M104 792H920 M104 808H920 M104 824H920 M104 840H920 M104 856H920 M104 872H920 M104 888H920 M104 904H920 M104 920H920" />
+  </g>
+
+  <g id="mark">
+    <circle id="period-soft-glow" cx="730" cy="672" r="126" fill="url(#period-glow)" />
+
+    <path id="letter-p" fill="#f1f1ef" fill-rule="evenodd" d="M347 298H423C439 298 452 311 452 327V341C485 310 527 293 573 293C657 293 722 365 722 466C722 568 658 641 573 641C526 641 485 624 452 593V672H488C506 672 520 686 520 704V722C520 740 506 754 488 754H347C329 754 315 740 315 722V704C315 686 329 672 347 672H365V380H347C329 380 315 366 315 348V330C315 312 329 298 347 298ZM537 380C588 380 625 416 625 467C625 520 588 556 537 556C485 556 453 520 453 467C453 416 485 380 537 380Z" />
+
+    <circle cx="730" cy="672" r="54" fill="url(#period-disc)" />
+    <circle id="period-yellow-core" cx="730" cy="672" r="26" fill="url(#period-core)" />
+  </g>
+</svg>

@@ -248,11 +248,15 @@
       min-height: var(--head);
     }
     .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
       font: 400 17px/1 var(--mono);
       text-decoration: none;
       letter-spacing: 0.02em;
       padding: 12px 0;
     }
+    .brand img { width: 22px; height: 22px; }
     .site-nav { display: flex; align-items: center; gap: 28px; }
     .site-nav ul { display: flex; gap: 22px; list-style: none; margin: 0; padding: 0; }
     .site-nav a:not(.btn) {
@@ -893,7 +897,7 @@
 
   <header class="site-head">
     <div class="wrap head-row">
-      <a href="#" class="brand">prefetch.ru</a>
+      <a href="#" class="brand"><img src="/favicon.svg" width="22" height="22" alt="">prefetch.ru</a>
       <button type="button" class="menu-btn" aria-expanded="false" aria-controls="site-nav">Меню</button>
       <nav id="site-nav" class="site-nav" aria-label="Разделы сайта">
         <ul>
@@ -1692,7 +1696,7 @@ PrefetchRu.destroy()</code></pre>
 
   <footer>
     <div class="wrap foot-row">
-      <a href="#" class="brand">prefetch.ru</a>
+      <a href="#" class="brand"><img src="/favicon.svg" width="22" height="22" alt="">prefetch.ru</a>
       <ul class="foot-links">
         <li><a href="#privacy">Приватность</a></li>
         <li><a href="https://github.com/prefetch-ru/prefetch" target="_blank" rel="noopener">GitHub</a></li>
