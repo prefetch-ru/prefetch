@@ -1,6 +1,6 @@
 # prefetch.ru
 
-<img src="www/logo.svg" alt="prefetch.ru" width="420">
+<a href="https://prefetch.ru"><img src="https://prefetch.ru/logo.svg" alt="prefetch.ru" width="420"></a>
 
 [![npm](https://img.shields.io/npm/v/@prefetchru/prefetch?color=0969da)](https://www.npmjs.com/package/@prefetchru/prefetch)
 [![downloads](https://img.shields.io/npm/dm/@prefetchru/prefetch?color=0969da)](https://www.npmjs.com/package/@prefetchru/prefetch)
